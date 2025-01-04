@@ -26,11 +26,6 @@ const AuthPage = () => {
             description: "欢迎回来!",
           });
           navigate("/");
-        } else if (event === "SIGNED_UP") {
-          toast({
-            title: "注册成功",
-            description: "请查看您的邮箱并点击验证链接!",
-          });
         } else if (event === "USER_UPDATED") {
           toast({
             title: "邮箱已验证",
