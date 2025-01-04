@@ -64,10 +64,10 @@ export const AIDesignStudio = () => {
     <div className="container mx-auto px-4 py-8 mt-16">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text">
-            AI设计师
-          </h1>
-          <p className="text-lg text-muted-foreground">
+          <div className="inline-block bg-slate-900 text-white px-8 py-3 rounded-full mb-4">
+            <h1 className="text-2xl font-bold">AI设计师</h1>
+          </div>
+          <p className="text-slate-600">
             描述你的创意想法，让AI为你打造独一无二的T恤设计
           </p>
         </div>
@@ -75,7 +75,12 @@ export const AIDesignStudio = () => {
         <div className="space-y-12">
           {/* 步骤1：设计描述 */}
           <section className="border rounded-lg bg-muted/10 p-6">
-            <h2 className="text-2xl font-semibold mb-4">第一步：描述创意</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2">第一步：描述创意</h2>
+              <p className="text-slate-600">
+                详细描述你想要的设计风格、元素和主题，可以选择只设计一面，也可以两面都设计
+              </p>
+            </div>
             <DesignInput
               frontPrompt={frontPrompt}
               backPrompt={backPrompt}
@@ -88,7 +93,12 @@ export const AIDesignStudio = () => {
 
           {/* 步骤2：设计预览 */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">2. 设计预览</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2">2. 设计预览</h2>
+              <p className="text-slate-600">
+                查看AI为您生成的设计效果
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <DesignPreview designImage={frontDesignImage} title="正面设计" />
               <DesignPreview designImage={backDesignImage} title="背面设计" />
@@ -97,7 +107,12 @@ export const AIDesignStudio = () => {
 
           {/* 步骤3：T恤款式 */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">3. T恤款式</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2">3. T恤款式</h2>
+              <p className="text-slate-600">
+                选择适合您的T恤款式和颜色
+              </p>
+            </div>
             <TShirtStyleSelector
               style={tshirtStyle}
               color={tshirtColor}
@@ -110,7 +125,12 @@ export const AIDesignStudio = () => {
 
           {/* 步骤4：T恤效果 */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">4. T恤效果</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2">4. T恤效果</h2>
+              <p className="text-slate-600">
+                预览设计效果在T恤上的呈现
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-lg font-medium mb-4">正面效果</h3>
@@ -137,7 +157,12 @@ export const AIDesignStudio = () => {
 
           {/* 步骤5：确认设计 */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">5. 确认设计</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2">5. 确认设计</h2>
+              <p className="text-slate-600">
+                确认您的设计方案并提交订单
+              </p>
+            </div>
             <ConfirmDesign
               tshirtStyle={tshirtStyle}
               tshirtColor={tshirtColor}
