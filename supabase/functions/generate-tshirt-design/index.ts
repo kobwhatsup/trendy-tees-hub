@@ -28,7 +28,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Create a high-quality, professional illustration of ${prompt}. The design should be clear, visually striking, and suitable for a t-shirt print. Use bold colors and clean lines. The image should work well when printed on fabric and be visually appealing when worn. Do not include any text or borders. Make it look like a professional t-shirt design.`,
+        prompt: prompt, // 直接使用用户输入的提示词
         n: 1,
         size: "1024x1024",
         quality: "standard",
