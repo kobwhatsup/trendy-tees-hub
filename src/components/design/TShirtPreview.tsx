@@ -30,32 +30,35 @@ export const TShirtPreview = ({
   }
 }: TShirtPreviewProps) => {
   const getTemplateUrl = () => {
-    // 使用相对于根目录的路径
+    // 构建完整的图片URL路径
+    const basePath = window.location.origin + '/';
+    
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
-          ? './01男士短款正面.jpeg'  // 男士短袖正面
-          : './02男士短款背面.jpeg'; // 男士短袖背面
+          ? basePath + '01男士短款正面.jpeg'  // 男士短袖正面
+          : basePath + '02男士短款背面.jpeg'; // 男士短袖背面
       } else {
         return settings.position === 'front'
-          ? './03男士长款正面.jpeg'  // 男士长袖正面
-          : './04男士长款背面.jpeg'; // 男士长袖背面
+          ? basePath + '03男士长款正面.jpeg'  // 男士长袖正面
+          : basePath + '04男士长款背面.jpeg'; // 男士长袖背面
       }
     } else {
       if (style === 'short') {
         return settings.position === 'front'
-          ? './05女款短袖正面.jpeg'  // 女士短袖正面
-          : './06女士短款背面.jpeg'; // 女士短袖背面
+          ? basePath + '05女款短袖正面.jpeg'  // 女士短袖正面
+          : basePath + '06女士短款背面.jpeg'; // 女士短袖背面
       } else {
         return settings.position === 'front'
-          ? './07女士长款正面.jpeg'  // 女士长袖正面
-          : './08女士长款背面.jpeg'; // 女士长袖背面
+          ? basePath + '07女士长款正面.jpeg'  // 女士长袖正面
+          : basePath + '08女士长款背面.jpeg'; // 女士长袖背面
       }
     }
   };
 
   // 添加调试日志
   console.log('Template URL:', getTemplateUrl());
+  console.log('Current origin:', window.location.origin);
 
   return (
     <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
