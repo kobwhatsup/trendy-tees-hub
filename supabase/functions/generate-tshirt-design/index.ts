@@ -7,7 +7,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // 处理CORS预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -29,7 +28,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Design for a t-shirt: ${prompt}. The design should be clear, visually appealing, and suitable for printing on a t-shirt. Focus on creating a design that would look good when printed on fabric.`,
+        prompt: `Create a high-quality, professional illustration of ${prompt}. The design should be clear, visually striking, and suitable for a t-shirt print. Use bold colors and clean lines. The image should work well when printed on fabric and be visually appealing when worn. Do not include any text or borders. Make it look like a professional t-shirt design.`,
         n: 1,
         size: "1024x1024",
         quality: "standard",
