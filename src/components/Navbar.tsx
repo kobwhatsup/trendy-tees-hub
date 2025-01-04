@@ -1,9 +1,49 @@
-import { ShoppingCart, Menu, Palette } from "lucide-react";
+import { ShoppingCart, Menu, Palette, LogOut, LogIn } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 export function Navbar() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    // 获取当前会话
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
+
+    getSession();
+
+    // 监听认证状态变化
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "注销失败",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "已注销",
+        description: "期待您的再次访问!",
+      });
+      navigate("/");
+    }
+  };
   
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
@@ -33,6 +73,25 @@ export function Navbar() {
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
             </Button>
+            {user ? (
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={handleLogout}
+                title="注销"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => navigate("/auth")}
+                title="登录"
+              >
+                <LogIn className="h-5 w-5" />
+              </Button>
+            )}
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
             </Button>
