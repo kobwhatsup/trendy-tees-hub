@@ -28,7 +28,14 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Create a high-quality, professional illustration of ${prompt}. The design should be clear, visually striking, and artistic. Use bold colors and clean lines. Generate ONLY the artwork itself without any t-shirt mockup or clothing template. The image should be a standalone illustration on a transparent or simple background. Do not include any text, borders, or clothing outlines.`,
+        prompt: `Create a standalone artistic design based on this description: ${prompt}. Important requirements:
+        1. Generate ONLY the artwork itself without any t-shirt or clothing
+        2. Use transparent or simple background
+        3. The design should be clear, visually striking, and artistic
+        4. Use bold colors and clean lines
+        5. Do not include any text, borders, or clothing outlines
+        6. Make sure the design is centered and well-composed
+        7. The design should work well when printed on fabric`,
         n: 1,
         size: "1024x1024",
         quality: "standard",
