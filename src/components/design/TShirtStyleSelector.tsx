@@ -41,9 +41,9 @@ export const TShirtStyleSelector = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 gap-0 items-center">
+        <div className="flex justify-between items-center">
           {/* 性别选择 */}
-          <div className="flex flex-col items-center px-4 py-2">
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
             <span className="text-sm font-medium mb-2 text-muted-foreground">款式性别:</span>
             <div className="flex gap-1">
               <Button
@@ -63,10 +63,8 @@ export const TShirtStyleSelector = ({
             </div>
           </div>
 
-          <Separator orientation="vertical" className="h-20" />
-
           {/* 袖长选择 */}
-          <div className="flex flex-col items-center px-4 py-2">
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
             <span className="text-sm font-medium mb-2 text-muted-foreground">袖长:</span>
             <div className="flex gap-1">
               <Button
@@ -86,10 +84,8 @@ export const TShirtStyleSelector = ({
             </div>
           </div>
 
-          <Separator orientation="vertical" className="h-20" />
-
           {/* 颜色选择 */}
-          <div className="flex flex-col items-center px-4 py-2">
+          <div className="flex-1 flex flex-col items-center px-4 py-2">
             <span className="text-sm font-medium mb-2 text-muted-foreground">颜色:</span>
             <div className="flex gap-4 items-center justify-center">
               {colors.map((colorOption) => (
