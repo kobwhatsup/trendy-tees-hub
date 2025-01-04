@@ -42,5 +42,5 @@
 
 .hero-section {
   @apply relative overflow-hidden;
-  height: calc(100vh - 4rem);
+  height: 50vh; /* Changed from calc(100vh - 4rem) to 50vh */
 }
