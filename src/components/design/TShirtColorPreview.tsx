@@ -16,6 +16,7 @@ interface TShirtColorPreviewProps {
   tshirtStyle: string;
   tshirtColor: string;
   tshirtGender: string;
+  position?: "front" | "back";  // 添加 position 属性
 }
 
 interface DesignSettings {
@@ -29,13 +30,14 @@ export const TShirtColorPreview = ({
   designImage,
   tshirtStyle,
   tshirtColor,
-  tshirtGender
+  tshirtGender,
+  position = "front"  // 设置默认值
 }: TShirtColorPreviewProps) => {
   const [settings, setSettings] = useState<DesignSettings>({
     scale: 1,
     rotation: 0,
     opacity: 1,
-    position: "front"
+    position: position
   });
 
   const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
@@ -60,7 +62,7 @@ export const TShirtColorPreview = ({
             <div className="space-y-2">
               <Label>位置</Label>
               <RadioGroup
-                defaultValue="front"
+                defaultValue={position}
                 onValueChange={(value) => handleSettingChange("position", value)}
                 className="flex space-x-4"
               >
@@ -110,27 +112,14 @@ export const TShirtColorPreview = ({
           </div>
 
           {/* 预览区域 */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium mb-2">正面效果</h3>
-              <TShirtPreview 
-                color={tshirtColor} 
-                designImage={designImage} 
-                settings={{...settings, position: "front"}}
-                style={tshirtStyle}
-                gender={tshirtGender}
-              />
-            </div>
-            <div>
-              <h3 className="text-sm font-medium mb-2">背面效果</h3>
-              <TShirtPreview 
-                color={tshirtColor} 
-                designImage={designImage} 
-                settings={{...settings, position: "back"}}
-                style={tshirtStyle}
-                gender={tshirtGender}
-              />
-            </div>
+          <div>
+            <TShirtPreview 
+              color={tshirtColor} 
+              designImage={designImage} 
+              settings={settings}
+              style={tshirtStyle}
+              gender={tshirtGender}
+            />
           </div>
         </div>
       </CardContent>
