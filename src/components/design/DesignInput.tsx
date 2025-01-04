@@ -31,7 +31,7 @@ export const DesignInput = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>设计描述</CardTitle>
+        <CardTitle></CardTitle>
         <CardDescription>
           详细描述你想要的设计风格、元素和主题，可以选择只设计一面，也可以两面都设计
         </CardDescription>
