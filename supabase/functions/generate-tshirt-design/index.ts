@@ -1,38 +1,35 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { corsHeaders } from '../_shared/cors.ts'
+import "https://deno.land/x/xhr@0.1.0/mod.ts"
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 serve(async (req) => {
+  // 处理CORS预检请求
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
     const { prompt } = await req.json()
     
-    // 验证输入
     if (!prompt) {
-      return new Response(
-        JSON.stringify({ error: 'Prompt is required' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-      )
+      throw new Error('设计描述不能为空')
     }
 
-    // 获取OpenAI API密钥
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    )
-    
+    console.log('正在生成设计，提示词:', prompt)
+
     const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Design for a t-shirt: ${prompt}. The design should be clear, visually appealing, and suitable for printing on a t-shirt.`,
+        prompt: `Design for a t-shirt: ${prompt}. The design should be clear, visually appealing, and suitable for printing on a t-shirt. Focus on creating a design that would look good when printed on fabric.`,
         n: 1,
         size: "1024x1024",
         quality: "standard",
@@ -40,9 +37,10 @@ serve(async (req) => {
     })
 
     const data = await openaiResponse.json()
+    console.log('OpenAI响应:', data)
 
     if (!openaiResponse.ok) {
-      throw new Error(data.error?.message || 'Failed to generate image')
+      throw new Error(data.error?.message || '生成图像失败')
     }
 
     return new Response(
@@ -50,6 +48,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('生成设计时出错:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
