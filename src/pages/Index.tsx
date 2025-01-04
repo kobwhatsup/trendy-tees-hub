@@ -3,13 +3,6 @@ import { Navbar } from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 const Index = () => {
@@ -71,11 +64,11 @@ const Index = () => {
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">热门商品</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {featuredProducts?.map((product) => (
               <Card 
                 key={product.id} 
-                className="product-card cursor-pointer"
+                className="product-card cursor-pointer hover:shadow-lg transition-shadow duration-300"
                 onClick={() => navigate(`/products/${product.id}`)}
               >
                 <CardContent className="p-0">
@@ -101,7 +94,7 @@ const Index = () => {
             {categories?.map((category) => (
               <div 
                 key={category.id} 
-                className="product-card rounded-lg overflow-hidden bg-white shadow-md"
+                className="product-card rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
                 onClick={() => navigate(`/products?category=${category.id}`)}
               >
                 <div className="p-6 text-center cursor-pointer">
