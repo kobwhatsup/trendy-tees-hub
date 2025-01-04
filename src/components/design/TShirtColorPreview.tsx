@@ -23,6 +23,8 @@ interface DesignSettings {
   rotation: number;
   opacity: number;
   position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
 }
 
 export const TShirtColorPreview = ({ 
@@ -36,7 +38,9 @@ export const TShirtColorPreview = ({
     scale: 1,
     rotation: 0,
     opacity: 1,
-    position: position
+    position: position,
+    offsetX: 0,
+    offsetY: 0
   });
 
   const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
@@ -86,6 +90,28 @@ export const TShirtColorPreview = ({
                 value={[settings.opacity * 100]}
                 onValueChange={([value]) => handleSettingChange("opacity", value / 100)}
                 min={20}
+                max={100}
+                step={1}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>水平位置</Label>
+              <Slider
+                value={[settings.offsetX]}
+                onValueChange={([value]) => handleSettingChange("offsetX", value)}
+                min={-100}
+                max={100}
+                step={1}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>垂直位置</Label>
+              <Slider
+                value={[settings.offsetY]}
+                onValueChange={([value]) => handleSettingChange("offsetY", value)}
+                min={-100}
                 max={100}
                 step={1}
               />

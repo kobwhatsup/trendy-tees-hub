@@ -10,6 +10,8 @@ interface TShirtPreviewProps {
     rotation: number;
     opacity: number;
     position: "front" | "back";
+    offsetX: number;  // 新增：水平位置偏移
+    offsetY: number;  // 新增：垂直位置偏移
   };
 }
 
@@ -22,10 +24,11 @@ export const TShirtPreview = ({
     scale: 1,
     rotation: 0,
     opacity: 1,
-    position: "front"
+    position: "front",
+    offsetX: 0,
+    offsetY: 0
   }
 }: TShirtPreviewProps) => {
-  // 根据款式、性别和位置选择对应的T恤模板
   const getTemplateUrl = () => {
     if (gender === 'male') {
       if (style === 'short') {
@@ -66,7 +69,12 @@ export const TShirtPreview = ({
       
       {/* 设计图案 */}
       {designImage && (
-        <div className="absolute top-1/4 left-1/4 right-1/4 bottom-1/2 flex items-center justify-center">
+        <div 
+          className="absolute top-1/4 left-1/4 right-1/4 bottom-1/2 flex items-center justify-center"
+          style={{
+            transform: `translateX(${settings.offsetX}px) translateY(${settings.offsetY}px)`
+          }}
+        >
           <img
             src={designImage}
             alt="T恤设计"
