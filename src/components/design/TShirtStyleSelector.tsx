@@ -3,12 +3,9 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 interface TShirtStyleSelectorProps {
   style: string;
@@ -28,19 +25,13 @@ export const TShirtStyleSelector = ({
   onGenderChange,
 }: TShirtStyleSelectorProps) => {
   const colors = [
-    { label: "白色", value: "white", class: "bg-white" },
+    { label: "白色", value: "white", class: "bg-white border-2 border-gray-200" },
     { label: "黑色", value: "black", class: "bg-black" },
   ];
 
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle>T恤款式</CardTitle>
-        <CardDescription>
-          选择T恤的款式和颜色
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <div className="flex justify-between items-center">
           {/* 性别选择 */}
           <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
@@ -93,16 +84,19 @@ export const TShirtStyleSelector = ({
                   key={colorOption.value}
                   onClick={() => onColorChange(colorOption.value)}
                   className={cn(
-                    "w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center",
+                    "w-8 h-8 rounded-lg transition-all flex items-center justify-center",
                     colorOption.class,
                     color === colorOption.value
-                      ? "border-primary scale-95"
-                      : "border-transparent hover:scale-105"
+                      ? "ring-2 ring-primary ring-offset-2 scale-95"
+                      : "hover:scale-105"
                   )}
                   title={colorOption.label}
                 >
                   {color === colorOption.value && (
-                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <div className={cn(
+                      "w-2 h-2 rounded-full",
+                      colorOption.value === "white" ? "bg-black" : "bg-white"
+                    )} />
                   )}
                   <span className="sr-only">{colorOption.label}</span>
                 </button>
