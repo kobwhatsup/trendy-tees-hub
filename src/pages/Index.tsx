@@ -21,7 +21,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .limit(6);
+        .limit(12); // 增加到12个商品
       
       if (error) throw error;
       return data;
@@ -71,28 +71,26 @@ const Index = () => {
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">热门商品</h2>
-          <Carousel className="mx-auto max-w-5xl">
-            <CarouselContent>
-              {featuredProducts?.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="product-card mx-2">
-                    <CardContent className="p-0">
-                      <div 
-                        className="aspect-square bg-cover bg-center" 
-                        style={{ backgroundImage: `url(${product.image_url})` }}
-                      />
-                    </CardContent>
-                    <CardFooter className="flex flex-col items-start p-4">
-                      <h3 className="font-semibold mb-2">{product.name}</h3>
-                      <p className="text-muted-foreground">¥{product.price}</p>
-                    </CardFooter>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts?.map((product) => (
+              <Card 
+                key={product.id} 
+                className="product-card cursor-pointer"
+                onClick={() => navigate(`/products/${product.id}`)}
+              >
+                <CardContent className="p-0">
+                  <div 
+                    className="aspect-square bg-cover bg-center" 
+                    style={{ backgroundImage: `url(${product.image_url})` }}
+                  />
+                </CardContent>
+                <CardFooter className="flex flex-col items-start p-4">
+                  <h3 className="font-semibold mb-2">{product.name}</h3>
+                  <p className="text-muted-foreground">¥{product.price}</p>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
       
