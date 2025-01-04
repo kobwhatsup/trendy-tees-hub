@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TShirtPreview } from "./TShirtPreview";
 
 interface DesignPreviewProps {
   designImage: string;
@@ -28,7 +27,7 @@ export const DesignPreview = ({ designImage }: DesignPreviewProps) => {
             <img
               src={designImage}
               alt="AI生成的设计"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain p-4"
             />
           ) : (
             <div className="text-muted-foreground text-center p-4">
