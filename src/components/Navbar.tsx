@@ -10,7 +10,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 via-yellow-400 to-orange-400 text-transparent bg-clip-text hover:opacity-80 transition-opacity">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-[#D3E4FD] via-[#FFDEE2] to-[#FDE1D3] text-transparent bg-clip-text hover:opacity-80 transition-opacity">
               AI DESIGN TEE
             </h1>
           </div>
