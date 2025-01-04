@@ -19,13 +19,23 @@ const AuthPage = () => {
 
     // 监听认证状态变化
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (event === "SIGNED_IN") {
           toast({
             title: "登录成功",
             description: "欢迎回来!",
           });
           navigate("/");
+        } else if (event === "SIGNED_UP") {
+          toast({
+            title: "注册成功",
+            description: "请查看您的邮箱并点击验证链接!",
+          });
+        } else if (event === "USER_UPDATED") {
+          toast({
+            title: "邮箱已验证",
+            description: "您现在可以登录了!",
+          });
         }
       }
     );
@@ -69,7 +79,9 @@ const AuthPage = () => {
                 button_label: '登录',
                 loading_button_label: '登录中...',
                 social_provider_text: '使用{{provider}}登录',
-                link_text: '已有账户?立即登录'
+                link_text: '已有账户?立即登录',
+                email_input_placeholder: '请输入邮箱',
+                password_input_placeholder: '请输入密码'
               },
               sign_up: {
                 email_label: '邮箱',
@@ -77,7 +89,10 @@ const AuthPage = () => {
                 button_label: '注册',
                 loading_button_label: '注册中...',
                 social_provider_text: '使用{{provider}}注册',
-                link_text: '没有账户?立即注册'
+                link_text: '没有账户?立即注册',
+                email_input_placeholder: '请输入邮箱',
+                password_input_placeholder: '请输入密码',
+                confirmation_text: '我们已经向您的邮箱发送了验证链接，请查收并点击链接完成验证。'
               }
             }
           }}
