@@ -6,9 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface TShirtStyleSelectorProps {
   style: string;
@@ -49,61 +48,71 @@ export const TShirtStyleSelector = ({
       <CardContent className="space-y-6">
         {/* 性别选择 */}
         <div className="space-y-2">
-          <Label>款式性别</Label>
-          <RadioGroup
-            defaultValue={gender}
-            onValueChange={onGenderChange}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="male" id="male" />
-              <Label htmlFor="male">男款</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="female" id="female" />
-              <Label htmlFor="female">女款</Label>
-            </div>
-          </RadioGroup>
+          <p className="text-sm font-medium mb-2">款式性别</p>
+          <div className="flex gap-2">
+            <Button
+              variant={gender === "male" ? "default" : "outline"}
+              onClick={() => onGenderChange("male")}
+              className="flex-1"
+            >
+              男款
+            </Button>
+            <Button
+              variant={gender === "female" ? "default" : "outline"}
+              onClick={() => onGenderChange("female")}
+              className="flex-1"
+            >
+              女款
+            </Button>
+          </div>
         </div>
 
         {/* 袖长选择 */}
         <div className="space-y-2">
-          <Label>袖长</Label>
-          <RadioGroup
-            defaultValue={style}
-            onValueChange={onStyleChange}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="short" id="short" />
-              <Label htmlFor="short">短袖</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="long" id="long" />
-              <Label htmlFor="long">长袖</Label>
-            </div>
-          </RadioGroup>
+          <p className="text-sm font-medium mb-2">袖长</p>
+          <div className="flex gap-2">
+            <Button
+              variant={style === "short" ? "default" : "outline"}
+              onClick={() => onStyleChange("short")}
+              className="flex-1"
+            >
+              短袖
+            </Button>
+            <Button
+              variant={style === "long" ? "default" : "outline"}
+              onClick={() => onStyleChange("long")}
+              className="flex-1"
+            >
+              长袖
+            </Button>
+          </div>
         </div>
 
         {/* 颜色选择 */}
         <div className="space-y-2">
-          <Label>颜色</Label>
-          <div className="grid grid-cols-4 gap-4">
+          <p className="text-sm font-medium mb-2">颜色</p>
+          <div className="flex gap-2 items-center">
             {colors.map((colorOption) => (
-              <button
-                key={colorOption.value}
-                onClick={() => onColorChange(colorOption.value)}
-                className={cn(
-                  "w-full aspect-square rounded-lg border-2 transition-all",
-                  colorOption.class,
-                  color === colorOption.value
-                    ? "border-primary scale-95"
-                    : "border-transparent hover:scale-105"
+              <div key={colorOption.value} className="text-center">
+                <button
+                  onClick={() => onColorChange(colorOption.value)}
+                  className={cn(
+                    "w-8 h-8 rounded-lg border-2 transition-all mx-auto block",
+                    colorOption.class,
+                    color === colorOption.value
+                      ? "border-primary scale-95"
+                      : "border-transparent hover:scale-105"
+                  )}
+                  title={colorOption.label}
+                >
+                  <span className="sr-only">{colorOption.label}</span>
+                </button>
+                {color === colorOption.value && (
+                  <span className="text-xs mt-1 block text-muted-foreground">
+                    {colorOption.label}
+                  </span>
                 )}
-                title={colorOption.label}
-              >
-                <span className="sr-only">{colorOption.label}</span>
-              </button>
+              </div>
             ))}
           </div>
         </div>
