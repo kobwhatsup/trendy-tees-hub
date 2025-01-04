@@ -29,7 +29,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Create a detailed illustration: ${prompt}. The image should be visually striking with rich details and vibrant colors. Make it suitable for digital art display.`,
+        prompt: `Design for a t-shirt: ${prompt}. The design should be clear, visually appealing, and suitable for printing on a t-shirt. Focus on creating a design that would look good when printed on fabric.`,
         n: 1,
         size: "1024x1024",
         quality: "standard",
