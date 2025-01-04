@@ -12,25 +12,23 @@ export const HeroSection = () => {
       
       <div className="relative h-full flex items-center justify-center text-center">
         <div className="max-w-3xl px-4 space-y-6">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
             AI设计师为你打造专属T恤
           </h1>
-          <p className="text-xl text-white/90 mb-8 animate-fade-in">
+          <p className="text-xl text-white/90 mb-8">
             输入你的创意灵感，让AI为你设计独一无二的T恤
           </p>
           <div className="flex gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white animate-fade-in text-lg px-8"
-              onClick={() => navigate("/design")}
+              className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 h-auto"
             >
               开始设计
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              className="bg-white/10 hover:bg-white/20 text-white border-white/30 animate-fade-in text-lg px-8"
-              onClick={() => navigate("/products")}
+              className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 h-auto"
             >
               浏览作品
             </Button>
