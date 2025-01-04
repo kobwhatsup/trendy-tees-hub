@@ -23,19 +23,13 @@ export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden bg-white">
+        <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden">
           {designImage ? (
-            <div className="w-full h-full flex items-center justify-center p-4">
-              <img
-                src={designImage}
-                alt="AI生成的设计"
-                className="max-w-full max-h-full object-contain"
-                style={{
-                  width: "auto",
-                  height: "auto"
-                }}
-              />
-            </div>
+            <img
+              src={designImage}
+              alt="AI生成的设计"
+              className="w-full h-full object-contain p-4"
+            />
           ) : (
             <div className="text-muted-foreground text-center p-4">
               <Wand2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
