@@ -142,6 +142,8 @@ export const AIDesignStudio = () => {
               tshirtStyle={tshirtStyle}
               tshirtColor={tshirtColor}
               tshirtGender={tshirtGender}
+              frontDesignImage={frontDesignImage}
+              backDesignImage={backDesignImage}
             />
           </section>
         </div>
