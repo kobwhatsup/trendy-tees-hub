@@ -21,7 +21,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .limit(12); // 增加到12个商品
+        .limit(12);
       
       if (error) throw error;
       return data;
