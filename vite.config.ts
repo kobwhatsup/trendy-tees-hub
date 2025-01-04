@@ -13,10 +13,12 @@ export default defineConfig({
     port: 8080,
     host: "::",
   },
-  base: '',  // 设置为空字符串,这样资源引用会使用相对路径
+  base: '',  // 使用相对路径
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
+    outDir: 'dist', // 构建输出目录
+    assetsDir: 'assets', // 静态资源目录
     sourcemap: true,
+    // 添加 copyPublicDir 确保 public 目录下的文件被正确复制
+    copyPublicDir: true
   },
 });
