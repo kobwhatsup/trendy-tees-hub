@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { TShirtPreview } from "./TShirtPreview";
 
 interface TShirtColorPreviewProps {
@@ -16,7 +15,7 @@ interface TShirtColorPreviewProps {
   tshirtStyle: string;
   tshirtColor: string;
   tshirtGender: string;
-  position?: "front" | "back";  // 添加 position 属性
+  position?: "front" | "back";
 }
 
 interface DesignSettings {
@@ -31,7 +30,7 @@ export const TShirtColorPreview = ({
   tshirtStyle,
   tshirtColor,
   tshirtGender,
-  position = "front"  // 设置默认值
+  position = "front"
 }: TShirtColorPreviewProps) => {
   const [settings, setSettings] = useState<DesignSettings>({
     scale: 1,
@@ -40,7 +39,7 @@ export const TShirtColorPreview = ({
     position: position
   });
 
-  const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
+  const handleSettingChange = (key: keyof DesignSettings, value: number) => {
     setSettings(prev => ({
       ...prev,
       [key]: value
@@ -59,24 +58,6 @@ export const TShirtColorPreview = ({
         <div className="grid grid-cols-2 gap-6">
           {/* 控制面板 */}
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>位置</Label>
-              <RadioGroup
-                defaultValue={position}
-                onValueChange={(value) => handleSettingChange("position", value)}
-                className="flex space-x-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="front" id="front" />
-                  <Label htmlFor="front">正面</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="back" id="back" />
-                  <Label htmlFor="back">背面</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
             <div className="space-y-2">
               <Label>大小</Label>
               <Slider
@@ -112,11 +93,14 @@ export const TShirtColorPreview = ({
           </div>
 
           {/* 预览区域 */}
-          <div>
+          <div className="relative w-full">
             <TShirtPreview 
               color={tshirtColor} 
               designImage={designImage} 
-              settings={settings}
+              settings={{
+                ...settings,
+                position: position
+              }}
               style={tshirtStyle}
               gender={tshirtGender}
             />

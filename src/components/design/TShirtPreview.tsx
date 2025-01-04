@@ -27,6 +27,7 @@ export const TShirtPreview = ({
 }: TShirtPreviewProps) => {
   // 根据款式、性别和位置选择对应的T恤模板
   const getTemplateUrl = () => {
+    const baseUrl = '';
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
@@ -50,6 +51,22 @@ export const TShirtPreview = ({
     }
   };
 
+  // 根据颜色应用不同的滤镜效果
+  const getColorFilter = () => {
+    switch (color) {
+      case 'black':
+        return 'brightness(0.2) contrast(1.2)';
+      case 'white':
+        return 'brightness(1) contrast(1)';
+      case 'red':
+        return 'brightness(0.8) contrast(1.1) sepia(0.3) saturate(5) hue-rotate(320deg)';
+      case 'blue':
+        return 'brightness(0.8) contrast(1.1) sepia(0.3) saturate(5) hue-rotate(180deg)';
+      default:
+        return 'brightness(1) contrast(1)';
+    }
+  };
+
   return (
     <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
       {/* T恤背景图片 */}
@@ -58,9 +75,7 @@ export const TShirtPreview = ({
         alt="T恤模板"
         className="absolute inset-0 w-full h-full object-contain"
         style={{ 
-          filter: `brightness(${color === 'white' ? 1 : 0.8}) 
-                  contrast(${color === 'white' ? 1 : 0.9})
-                  saturate(${color === 'white' ? 1 : 0.8})`
+          filter: getColorFilter()
         }}
       />
       
