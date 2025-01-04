@@ -1,23 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { TShirtPreview } from "./TShirtPreview";
+import { DesignInput } from "./DesignInput";
+import { DesignPreview } from "./DesignPreview";
+import { TShirtColorPreview } from "./TShirtColorPreview";
 
 export const AIDesignStudio = () => {
   const [prompt, setPrompt] = useState("");
@@ -73,101 +59,16 @@ export const AIDesignStudio = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>设计描述</CardTitle>
-              <CardDescription>
-                详细描述你想要的设计风格、元素和主题
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Textarea
-                  id="prompt"
-                  placeholder="例如：一个充满未来感的机器人，使用蓝色和紫色的渐变色调..."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  className="h-32"
-                />
-              </div>
-              <Button
-                onClick={handleGenerate}
-                className="w-full"
-                disabled={isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    生成中...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    生成设计
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
+          <DesignInput
+            prompt={prompt}
+            isGenerating={isGenerating}
+            onPromptChange={setPrompt}
+            onGenerate={handleGenerate}
+          />
 
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>设计预览</CardTitle>
-                <CardDescription>
-                  实时查看AI生成的设计效果
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden">
-                  {designImage ? (
-                    <img
-                      src={designImage}
-                      alt="AI生成的设计"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-muted-foreground text-center p-4">
-                      <Wand2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                      <p>AI生成的设计将在这里显示</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {designImage && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>T恤效果</CardTitle>
-                  <CardDescription>
-                    查看设计在不同颜色T恤上的效果
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="white" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="white">白色</TabsTrigger>
-                      <TabsTrigger value="black">黑色</TabsTrigger>
-                      <TabsTrigger value="navy">藏青</TabsTrigger>
-                      <TabsTrigger value="gray">灰色</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="white">
-                      <TShirtPreview color="#ffffff" designImage={designImage} />
-                    </TabsContent>
-                    <TabsContent value="black">
-                      <TShirtPreview color="#000000" designImage={designImage} />
-                    </TabsContent>
-                    <TabsContent value="navy">
-                      <TShirtPreview color="#1B365D" designImage={designImage} />
-                    </TabsContent>
-                    <TabsContent value="gray">
-                      <TShirtPreview color="#808080" designImage={designImage} />
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            )}
+            <DesignPreview designImage={designImage} />
+            {designImage && <TShirtColorPreview designImage={designImage} />}
           </div>
         </div>
       </div>
