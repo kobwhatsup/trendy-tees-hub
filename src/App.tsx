@@ -8,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Design from "./pages/Design";
-import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +40,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -64,7 +63,6 @@ const App = () => (
               </ProtectedRoute>
             } 
           />
-          <Route path="/auth" element={<Auth />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
