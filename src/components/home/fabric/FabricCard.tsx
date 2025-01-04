@@ -16,7 +16,7 @@ export const FabricCard = ({ fabric }: FabricCardProps) => {
       key={fabric.id} 
       className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-xl transition-all duration-300"
     >
-      <div className="aspect-[4/3] w-full overflow-hidden">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-gray-100">
         <img
           src={fabric.image}
           alt={fabric.name}

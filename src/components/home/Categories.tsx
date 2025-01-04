@@ -15,7 +15,7 @@ export const Categories = () => {
         "40支高支纱，织造细腻平整",
         "优异的透气性和吸湿性，穿着更加舒适"
       ],
-      image: "/lovable-uploads/cotton-1.jpg"
+      image: "/placeholder.svg"
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ export const Categories = () => {
         "经过200次以上水洗测试，确保耐用性",
         "独特的编织工艺，提供出色的贴合度"
       ],
-      image: "/lovable-uploads/cotton-2.jpg"
+      image: "/placeholder.svg"
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ export const Categories = () => {
         "经过防起球处理，保持平整美观",
         "立体织造工艺，呈现精致质感"
       ],
-      image: "/lovable-uploads/cotton-3.jpg"
+      image: "/placeholder.svg"
     }
   ];
 
