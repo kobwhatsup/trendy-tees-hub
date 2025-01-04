@@ -12,7 +12,7 @@ export const FeaturedProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .limit(12);
+        .limit(20);
       
       if (error) throw error;
       return data;
