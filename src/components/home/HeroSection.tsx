@@ -6,8 +6,8 @@ export const HeroSection = () => {
   
   return (
     <section className="hero-section">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1562157873-818bc0726f68')] bg-cover bg-center">
+        <div className="absolute inset-0 bg-black/40" />
       </div>
       
       <div className="relative h-full flex items-center justify-center text-center">
