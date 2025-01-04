@@ -9,7 +9,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: '/',
+  server: {
+    port: 8080,
+    host: "::",
+  },
+  base: '',  // 设置为空字符串,这样资源引用会使用相对路径
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

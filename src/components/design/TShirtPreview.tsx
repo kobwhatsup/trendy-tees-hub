@@ -30,44 +30,32 @@ export const TShirtPreview = ({
   }
 }: TShirtPreviewProps) => {
   const getTemplateUrl = () => {
-    // 获取当前环境的基础路径
-    const getBasePath = () => {
-      // 如果是在开发环境中
-      if (process.env.NODE_ENV === 'development') {
-        return '/';
-      }
-      // 如果是在生产环境中
-      return '/';
-    };
-
-    const basePath = getBasePath();
-    
+    // 使用相对路径,这样在开发和生产环境都能正常工作
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
-          ? `${basePath}01男士短款正面.jpeg`  // 男士短袖正面
-          : `${basePath}02男士短款背面.jpeg`; // 男士短袖背面
+          ? './01男士短款正面.jpeg'  // 男士短袖正面
+          : './02男士短款背面.jpeg'; // 男士短袖背面
       } else {
         return settings.position === 'front'
-          ? `${basePath}03男士长款正面.jpeg`  // 男士长袖正面
-          : `${basePath}04男士长款背面.jpeg`; // 男士长袖背面
+          ? './03男士长款正面.jpeg'  // 男士长袖正面
+          : './04男士长款背面.jpeg'; // 男士长袖背面
       }
     } else {
       if (style === 'short') {
         return settings.position === 'front'
-          ? `${basePath}05女款短袖正面.jpeg`  // 女士短袖正面
-          : `${basePath}06女士短款背面.jpeg`; // 女士短袖背面
+          ? './05女款短袖正面.jpeg'  // 女士短袖正面
+          : './06女士短款背面.jpeg'; // 女士短袖背面
       } else {
         return settings.position === 'front'
-          ? `${basePath}07女士长款正面.jpeg`  // 女士长袖正面
-          : `${basePath}08女士长款背面.jpeg`; // 女士长袖背面
+          ? './07女士长款正面.jpeg'  // 女士长袖正面
+          : './08女士长款背面.jpeg'; // 女士长袖背面
       }
     }
   };
 
   // 添加调试日志
-  console.log('Current environment:', process.env.NODE_ENV);
-  console.log('Template URL:', getTemplateUrl());
+  console.log('Template image path:', getTemplateUrl());
 
   return (
     <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
