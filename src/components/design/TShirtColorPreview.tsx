@@ -4,7 +4,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { TShirtPreview } from "./TShirtPreview";
 import { DesignControls } from "./DesignControls";
@@ -52,9 +51,8 @@ export const TShirtColorPreview = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>T恤效果</CardTitle>
-        <CardDescription>
-          调整设计在T恤上的效果
+        <CardDescription className="text-center">
+          调整设计图在T恤上的效果
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
