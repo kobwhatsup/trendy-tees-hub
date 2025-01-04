@@ -22,12 +22,12 @@ export const DesignPreview = ({ designImage }: DesignPreviewProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden bg-black/5">
+        <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden">
           {designImage ? (
             <img
               src={designImage}
               alt="AI生成的设计"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain p-4"
             />
           ) : (
             <div className="text-muted-foreground text-center p-4">
