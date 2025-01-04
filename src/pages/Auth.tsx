@@ -88,6 +88,14 @@ const AuthPage = () => {
                 email_input_placeholder: '请输入邮箱',
                 password_input_placeholder: '请输入密码',
                 confirmation_text: '我们已经向您的邮箱发送了验证链接，请查收并点击链接完成验证。'
+              },
+              forgotten_password: {
+                link_text: '忘记密码?',
+                email_label: '邮箱',
+                password_label: '密码',
+                button_label: '发送重置密码邮件',
+                loading_button_label: '发送中...',
+                confirmation_text: '请检查您的邮箱以获取重置密码链接'
               }
             }
           }}
