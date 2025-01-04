@@ -13,10 +13,17 @@ import {
 interface ConfirmDesignProps {
   tshirtStyle: string;
   tshirtColor: string;
+  tshirtGender: string;
 }
 
-export const ConfirmDesign = ({ tshirtStyle, tshirtColor }: ConfirmDesignProps) => {
+export const ConfirmDesign = ({ tshirtStyle, tshirtColor, tshirtGender }: ConfirmDesignProps) => {
   const { toast } = useToast();
+
+  const getStyleText = () => {
+    const style = tshirtStyle === 'short' ? '短袖' : '长袖';
+    const gender = tshirtGender === 'male' ? '男款' : '女款';
+    return `${gender}${style}`;
+  };
 
   return (
     <Card>
@@ -28,7 +35,7 @@ export const ConfirmDesign = ({ tshirtStyle, tshirtColor }: ConfirmDesignProps) 
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <p><strong>款式：</strong>{tshirtStyle === 'short' ? '短袖' : '长袖'}</p>
+          <p><strong>款式：</strong>{getStyleText()}</p>
           <p><strong>颜色：</strong>{tshirtColor}</p>
         </div>
         <Button className="w-full" onClick={() => {
