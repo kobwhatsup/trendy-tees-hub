@@ -10,8 +10,8 @@ interface TShirtPreviewProps {
     rotation: number;
     opacity: number;
     position: "front" | "back";
-    offsetX: number;
-    offsetY: number;
+    offsetX: number;  // 新增：水平位置偏移
+    offsetY: number;  // 新增：垂直位置偏移
   };
 }
 
