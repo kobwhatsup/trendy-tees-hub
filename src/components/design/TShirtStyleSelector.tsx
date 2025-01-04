@@ -29,12 +29,6 @@ export const TShirtStyleSelector = ({
   const colors = [
     { label: "白色", value: "white", class: "bg-white" },
     { label: "黑色", value: "black", class: "bg-black" },
-    { label: "藏青", value: "navy", class: "bg-navy-600" },
-    { label: "红色", value: "red", class: "bg-red-500" },
-    { label: "绿色", value: "green", class: "bg-green-500" },
-    { label: "粉色", value: "pink", class: "bg-pink-400" },
-    { label: "灰色", value: "gray", class: "bg-gray-400" },
-    { label: "米色", value: "beige", class: "bg-[#F5F5DC]" },
   ];
 
   return (
