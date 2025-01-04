@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Wand2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Card,
   CardContent,
@@ -31,17 +30,22 @@ export const AIDesignStudio = () => {
 
     setIsGenerating(true);
     try {
-      // TODO: 接入实际的AI生成接口
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 模拟API调用
-      setDesignImage("https://images.unsplash.com/photo-1677442136019-21780ecad995");
+      const { data, error } = await supabase.functions.invoke('generate-tshirt-design', {
+        body: { prompt: prompt }
+      });
+
+      if (error) throw error;
+      
+      setDesignImage(data.imageUrl);
       toast({
         title: "设计生成成功",
         description: "AI已为您生成新的设计方案",
       });
     } catch (error) {
+      console.error('生成失败:', error);
       toast({
         title: "生成失败",
-        description: "请稍后重试",
+        description: error.message || "请稍后重试",
         variant: "destructive",
       });
     } finally {
@@ -71,7 +75,6 @@ export const AIDesignStudio = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="prompt">创意描述</Label>
                 <Textarea
                   id="prompt"
                   placeholder="例如：一个充满未来感的机器人，使用蓝色和紫色的渐变色调..."
