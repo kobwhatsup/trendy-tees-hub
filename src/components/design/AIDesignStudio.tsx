@@ -75,7 +75,7 @@ export const AIDesignStudio = () => {
         <div className="space-y-12">
           {/* 步骤1：设计描述 */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">1. 设计描述</h2>
+            <h2 className="text-2xl font-semibold mb-4 px-6 py-3 bg-muted rounded-lg">第一步：描述创意</h2>
             <DesignInput
               frontPrompt={frontPrompt}
               backPrompt={backPrompt}
