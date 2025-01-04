@@ -30,30 +30,32 @@ export const TShirtPreview = ({
   }
 }: TShirtPreviewProps) => {
   const getTemplateUrl = () => {
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    
+    // 直接使用绝对路径，不再使用 BASE_URL
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
-          ? `${baseUrl}01男士短款正面.jpeg`  // 男士短袖正面
-          : `${baseUrl}02男士短款背面.jpeg`; // 男士短袖背面
+          ? '/01男士短款正面.jpeg'  // 男士短袖正面
+          : '/02男士短款背面.jpeg'; // 男士短袖背面
       } else {
         return settings.position === 'front'
-          ? `${baseUrl}03男士长款正面.jpeg`  // 男士长袖正面
-          : `${baseUrl}04男士长款背面.jpeg`; // 男士长袖背面
+          ? '/03男士长款正面.jpeg'  // 男士长袖正面
+          : '/04男士长款背面.jpeg'; // 男士长袖背面
       }
     } else {
       if (style === 'short') {
         return settings.position === 'front'
-          ? `${baseUrl}05女款短袖正面.jpeg`  // 女士短袖正面
-          : `${baseUrl}06女士短款背面.jpeg`; // 女士短袖背面
+          ? '/05女款短袖正面.jpeg'  // 女士短袖正面
+          : '/06女士短款背面.jpeg'; // 女士短袖背面
       } else {
         return settings.position === 'front'
-          ? `${baseUrl}07女士长款正面.jpeg`  // 女士长袖正面
-          : `${baseUrl}08女士长款背面.jpeg`; // 女士长袖背面
+          ? '/07女士长款正面.jpeg'  // 女士长袖正面
+          : '/08女士长款背面.jpeg'; // 女士长袖背面
       }
     }
   };
+
+  // 添加调试日志
+  console.log('Template URL:', getTemplateUrl());
 
   return (
     <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
