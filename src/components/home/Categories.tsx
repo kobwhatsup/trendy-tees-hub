@@ -44,11 +44,9 @@ export const Categories = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-gradient-to-br from-primary/5 via-white to-secondary/5">
+    <section className="py-20 px-4 bg-gradient-to-br from-[#E5DEFF] via-white to-[#FFDEE2]">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          匠心甄选 精工织造
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-4">匠心甄选 精工织造</h2>
         <FabricIntro />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">

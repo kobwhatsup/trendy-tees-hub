@@ -15,15 +15,13 @@ export const TestingItems = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 shadow-md">
-      <h3 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-        专业检测项目
-      </h3>
+    <div className="bg-gradient-to-r from-[#6E59A5]/10 to-[#9b87f5]/10 rounded-2xl p-8">
+      <h3 className="text-2xl font-bold text-center mb-8">专业检测项目</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {testItems.map((item, index) => (
           <div 
             key={index}
-            className="bg-white/80 backdrop-blur-sm rounded-lg p-4 text-center text-sm text-muted-foreground hover:bg-white/90 transition-colors shadow-sm hover:shadow-md"
+            className="bg-white/70 backdrop-blur-sm rounded-lg p-4 text-center text-sm text-muted-foreground hover:bg-white/90 transition-colors"
           >
             {item}
           </div>
