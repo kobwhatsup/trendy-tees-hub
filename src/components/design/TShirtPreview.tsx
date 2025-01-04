@@ -30,22 +30,22 @@ export const TShirtPreview = ({
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
-          ? '/trendy-tees-hub/public/01男士短款正面.jpeg'  // 男士短袖正面
-          : '/trendy-tees-hub/public/02男士短款背面.jpeg'; // 男士短袖背面
+          ? '/01男士短款正面.jpeg'  // 男士短袖正面
+          : '/02男士短款背面.jpeg'; // 男士短袖背面
       } else {
         return settings.position === 'front'
-          ? '/trendy-tees-hub/public/03男士长款正面.jpeg'  // 男士长袖正面
-          : '/trendy-tees-hub/public/04男士长款背面.jpeg'; // 男士长袖背面
+          ? '/03男士长款正面.jpeg'  // 男士长袖正面
+          : '/04男士长款背面.jpeg'; // 男士长袖背面
       }
     } else {
       if (style === 'short') {
         return settings.position === 'front'
-          ? '/trendy-tees-hub/public/05女款短袖正面.jpeg'  // 女士短袖正面
-          : '/trendy-tees-hub/public/06女士短款背面.jpeg'; // 女士短袖背面
+          ? '/05女款短袖正面.jpeg'  // 女士短袖正面
+          : '/06女士短款背面.jpeg'; // 女士短袖背面
       } else {
         return settings.position === 'front'
-          ? '/trendy-tees-hub/public/07女士长款正面.jpeg'  // 女士长袖正面
-          : '/trendy-tees-hub/public/08女士长款背面.jpeg'; // 女士长袖背面
+          ? '/07女士长款正面.jpeg'  // 女士长袖正面
+          : '/08女士长款背面.jpeg'; // 女士长袖背面
       }
     }
   };
