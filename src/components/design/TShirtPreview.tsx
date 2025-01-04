@@ -3,6 +3,7 @@ import React from "react";
 interface TShirtPreviewProps {
   color: string;
   style: string;
+  gender: string;
   designImage: string;
   settings?: {
     scale: number;
@@ -15,6 +16,7 @@ interface TShirtPreviewProps {
 export const TShirtPreview = ({ 
   color, 
   style,
+  gender,
   designImage, 
   settings = {
     scale: 1,
@@ -23,16 +25,28 @@ export const TShirtPreview = ({
     position: "front"
   }
 }: TShirtPreviewProps) => {
-  // 根据款式和位置选择对应的T恤模板
+  // 根据款式、性别和位置选择对应的T恤模板
   const getTemplateUrl = () => {
-    if (style === 'short') {
-      return settings.position === 'front' 
-        ? '/01男士短款正面.jpeg'  // 短袖正面
-        : '/02男士短款背面.jpeg'; // 短袖背面
+    if (gender === 'male') {
+      if (style === 'short') {
+        return settings.position === 'front' 
+          ? '/01男士短款正面.jpeg'  // 男士短袖正面
+          : '/02男士短款背面.jpeg'; // 男士短袖背面
+      } else {
+        return settings.position === 'front'
+          ? '/03男士长款正面.jpeg'  // 男士长袖正面
+          : '/04男士长款背面.jpeg'; // 男士长袖背面
+      }
     } else {
-      return settings.position === 'front'
-        ? '/03男士长款正面.jpeg'  // 长袖正面
-        : '/04男士长款背面.jpeg'; // 长袖背面
+      if (style === 'short') {
+        return settings.position === 'front'
+          ? '/05女款短袖正面.jpeg'  // 女士短袖正面
+          : '/06女士短款背面.jpeg'; // 女士短袖背面
+      } else {
+        return settings.position === 'front'
+          ? '/07女士长款正面.jpeg'  // 女士长袖正面
+          : '/08女士长款背面.jpeg'; // 女士长袖背面
+      }
     }
   };
 

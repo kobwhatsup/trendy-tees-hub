@@ -13,6 +13,7 @@ export const AIDesignStudio = () => {
   const [designImage, setDesignImage] = useState("");
   const [tshirtStyle, setTshirtStyle] = useState("short");
   const [tshirtColor, setTshirtColor] = useState("white");
+  const [tshirtGender, setTshirtGender] = useState("male");
   const { toast } = useToast();
 
   const handleGenerate = async () => {
@@ -86,8 +87,10 @@ export const AIDesignStudio = () => {
             <TShirtStyleSelector
               style={tshirtStyle}
               color={tshirtColor}
+              gender={tshirtGender}
               onStyleChange={setTshirtStyle}
               onColorChange={setTshirtColor}
+              onGenderChange={setTshirtGender}
             />
           </section>
 
@@ -98,6 +101,7 @@ export const AIDesignStudio = () => {
               designImage={designImage}
               tshirtStyle={tshirtStyle}
               tshirtColor={tshirtColor}
+              tshirtGender={tshirtGender}
             />
           </section>
 
@@ -107,6 +111,7 @@ export const AIDesignStudio = () => {
             <ConfirmDesign
               tshirtStyle={tshirtStyle}
               tshirtColor={tshirtColor}
+              tshirtGender={tshirtGender}
             />
           </section>
         </div>

@@ -15,6 +15,7 @@ interface TShirtColorPreviewProps {
   designImage: string;
   tshirtStyle: string;
   tshirtColor: string;
+  tshirtGender: string;
 }
 
 interface DesignSettings {
@@ -27,7 +28,8 @@ interface DesignSettings {
 export const TShirtColorPreview = ({ 
   designImage,
   tshirtStyle,
-  tshirtColor
+  tshirtColor,
+  tshirtGender
 }: TShirtColorPreviewProps) => {
   const [settings, setSettings] = useState<DesignSettings>({
     scale: 1,
@@ -116,6 +118,7 @@ export const TShirtColorPreview = ({
                 designImage={designImage} 
                 settings={{...settings, position: "front"}}
                 style={tshirtStyle}
+                gender={tshirtGender}
               />
             </div>
             <div>
@@ -125,6 +128,7 @@ export const TShirtColorPreview = ({
                 designImage={designImage} 
                 settings={{...settings, position: "back"}}
                 style={tshirtStyle}
+                gender={tshirtGender}
               />
             </div>
           </div>
