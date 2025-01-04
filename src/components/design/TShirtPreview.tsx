@@ -27,7 +27,6 @@ export const TShirtPreview = ({
 }: TShirtPreviewProps) => {
   // 根据款式、性别和位置选择对应的T恤模板
   const getTemplateUrl = () => {
-    const baseUrl = '';
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
