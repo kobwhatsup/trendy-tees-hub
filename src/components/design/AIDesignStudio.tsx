@@ -3,7 +3,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { DesignInput } from "./DesignInput";
 import { DesignPreview } from "./DesignPreview";
-import { TShirtColorPreview } from "./TShirtColorPreview";
 
 export const AIDesignStudio = () => {
   const [prompt, setPrompt] = useState("");
@@ -48,28 +47,24 @@ export const AIDesignStudio = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             AI设计工作室
           </h1>
           <p className="text-lg text-muted-foreground">
-            描述你的创意想法，让AI为你打造独一无二的T恤设计
+            描述你的创意想法，让AI为你打造独特的艺术设计
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <DesignInput
-              prompt={prompt}
-              isGenerating={isGenerating}
-              onPromptChange={setPrompt}
-              onGenerate={handleGenerate}
-            />
-            <DesignPreview designImage={designImage} />
-          </div>
-          
-          {designImage && <TShirtColorPreview designImage={designImage} />}
+        <div className="space-y-8">
+          <DesignInput
+            prompt={prompt}
+            isGenerating={isGenerating}
+            onPromptChange={setPrompt}
+            onGenerate={handleGenerate}
+          />
+          <DesignPreview designImage={designImage} />
         </div>
       </div>
     </div>
