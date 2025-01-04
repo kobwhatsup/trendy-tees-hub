@@ -3,84 +3,106 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface TShirtStyleSelectorProps {
   style: string;
   color: string;
+  gender: string;
   onStyleChange: (value: string) => void;
   onColorChange: (value: string) => void;
+  onGenderChange: (value: string) => void;
 }
 
 export const TShirtStyleSelector = ({
   style,
   color,
+  gender,
   onStyleChange,
   onColorChange,
+  onGenderChange,
 }: TShirtStyleSelectorProps) => {
   const colors = [
-    { label: "白色", value: "white" },
-    { label: "黑色", value: "black" },
-    { label: "藏青", value: "navy" },
-    { label: "红色", value: "red" },
-    { label: "绿色", value: "green" },
-    { label: "粉色", value: "pink" },
-    { label: "灰色", value: "gray" },
-    { label: "米色", value: "beige" },
+    { label: "白色", value: "white", class: "bg-white border-2 border-gray-200" },
+    { label: "黑色", value: "black", class: "bg-black" },
   ];
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>T恤款式</CardTitle>
-        <CardDescription>
-          选择T恤的款式和颜色
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label>款式</Label>
-          <RadioGroup
-            defaultValue={style}
-            onValueChange={onStyleChange}
-            className="flex space-x-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="short" id="short" />
-              <Label htmlFor="short">短袖</Label>
+      <CardContent className="pt-6">
+        <div className="flex justify-between items-center">
+          {/* 性别选择 */}
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
+            <span className="text-sm font-medium mb-2 text-muted-foreground">款式性别:</span>
+            <div className="flex gap-1">
+              <Button
+                size="sm"
+                variant={gender === "male" ? "default" : "outline"}
+                onClick={() => onGenderChange("male")}
+              >
+                男款
+              </Button>
+              <Button
+                size="sm"
+                variant={gender === "female" ? "default" : "outline"}
+                onClick={() => onGenderChange("female")}
+              >
+                女款
+              </Button>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="long" id="long" />
-              <Label htmlFor="long">长袖</Label>
-            </div>
-          </RadioGroup>
-        </div>
+          </div>
 
-        <div className="space-y-2">
-          <Label>颜色</Label>
-          <Select value={color} onValueChange={onColorChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="选择颜色" />
-            </SelectTrigger>
-            <SelectContent>
-              {colors.map((color) => (
-                <SelectItem key={color.value} value={color.value}>
-                  {color.label}
-                </SelectItem>
+          {/* 袖长选择 */}
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
+            <span className="text-sm font-medium mb-2 text-muted-foreground">袖长:</span>
+            <div className="flex gap-1">
+              <Button
+                size="sm"
+                variant={style === "short" ? "default" : "outline"}
+                onClick={() => onStyleChange("short")}
+              >
+                短袖
+              </Button>
+              <Button
+                size="sm"
+                variant={style === "long" ? "default" : "outline"}
+                onClick={() => onStyleChange("long")}
+              >
+                长袖
+              </Button>
+            </div>
+          </div>
+
+          {/* 颜色选择 */}
+          <div className="flex-1 flex flex-col items-center px-4 py-2">
+            <span className="text-sm font-medium mb-2 text-muted-foreground">颜色:</span>
+            <div className="flex gap-4 items-center justify-center">
+              {colors.map((colorOption) => (
+                <button
+                  key={colorOption.value}
+                  onClick={() => onColorChange(colorOption.value)}
+                  className={cn(
+                    "w-8 h-8 rounded-lg transition-all flex items-center justify-center",
+                    colorOption.class,
+                    color === colorOption.value
+                      ? "ring-2 ring-primary ring-offset-2 scale-95"
+                      : "hover:scale-105"
+                  )}
+                  title={colorOption.label}
+                >
+                  {color === colorOption.value && (
+                    <div className={cn(
+                      "w-2 h-2 rounded-full",
+                      colorOption.value === "white" ? "bg-black" : "bg-white"
+                    )} />
+                  )}
+                  <span className="sr-only">{colorOption.label}</span>
+                </button>
               ))}
-            </SelectContent>
-          </Select>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

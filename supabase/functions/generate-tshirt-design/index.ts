@@ -7,6 +7,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // 处理CORS预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -18,39 +19,57 @@ serve(async (req) => {
       throw new Error('设计描述不能为空')
     }
 
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API密钥未设置')
+    }
+
     console.log('正在生成设计，提示词:', prompt)
 
     const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: `Create a high-quality, professional illustration of ${prompt}. The design should be clear, visually striking, and suitable for a t-shirt print. Use bold colors and clean lines. The image should work well when printed on fabric and be visually appealing when worn. Do not include any text or borders. Make it look like a professional t-shirt design.`,
+        prompt: prompt, // 直接使用用户输入的提示词
         n: 1,
         size: "1024x1024",
         quality: "standard",
       }),
     })
 
+    if (!openaiResponse.ok) {
+      const errorData = await openaiResponse.json()
+      console.error('OpenAI API错误:', errorData)
+      throw new Error(errorData.error?.message || '生成图像失败')
+    }
+
     const data = await openaiResponse.json()
     console.log('OpenAI响应:', data)
 
-    if (!openaiResponse.ok) {
-      throw new Error(data.error?.message || '生成图像失败')
-    }
-
     return new Response(
       JSON.stringify({ imageUrl: data.data[0].url }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
+      }
     )
   } catch (error) {
     console.error('生成设计时出错:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      { 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }, 
+        status: 500 
+      }
     )
   }
 })

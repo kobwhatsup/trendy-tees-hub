@@ -6,14 +6,15 @@ export const HeroSection = () => {
   
   return (
     <section className="hero-section">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1684487747720-1ba29cda82f8')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c]">
+        <div className="absolute inset-0 bg-black/10" />
       </div>
       
       <div className="relative h-full flex items-center justify-center text-center">
         <div className="max-w-3xl px-4 space-y-6">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
-            AI设计师为你打造专属T恤
+          <h1 className="flex flex-col gap-2 text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+            <span>AI设计师</span>
+            <span>为你打造专属T恤</span>
           </h1>
           <p className="text-xl text-white/90 mb-8 animate-fade-in">
             输入你的创意灵感，让AI为你设计独一无二的T恤
@@ -21,7 +22,7 @@ export const HeroSection = () => {
           <div className="flex gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white animate-fade-in text-lg px-8"
+              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white animate-fade-in text-lg px-8"
               onClick={() => navigate("/design")}
             >
               开始设计
