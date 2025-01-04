@@ -21,7 +21,7 @@ export const Navbar = () => {
 
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN") {
         toast({
           title: "登录成功",
@@ -30,10 +30,12 @@ export const Navbar = () => {
         setUser(session?.user || null);
         setIsSheetOpen(false);
       } else if (event === "USER_UPDATED") {
-        toast({
-          title: "邮箱已验证",
-          description: "您现在可以登录了!",
-        });
+        if (session?.user.email_confirmed_at) {
+          toast({
+            title: "邮箱验证成功",
+            description: "您现在可以登录了!",
+          });
+        }
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         toast({
@@ -50,6 +52,26 @@ export const Navbar = () => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+  };
+
+  const handleResendVerificationEmail = async () => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: user?.email,
+    });
+    
+    if (error) {
+      toast({
+        title: "发送失败",
+        description: "验证邮件发送失败，请稍后重试",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "发送成功",
+        description: "验证邮件已发送，请查收",
+      });
+    }
   };
 
   return (
@@ -91,6 +113,15 @@ export const Navbar = () => {
                 <span className="text-sm text-muted-foreground">
                   {user.email}
                 </span>
+                {!user.email_confirmed_at && (
+                  <Button 
+                    variant="outline"
+                    onClick={handleResendVerificationEmail}
+                    className="text-yellow-600 border-yellow-600 hover:bg-yellow-50"
+                  >
+                    重新发送验证邮件
+                  </Button>
+                )}
                 <Button 
                   variant="outline"
                   onClick={handleSignOut}
@@ -145,7 +176,7 @@ export const Navbar = () => {
                             link_text: '没有账户?立即注册',
                             email_input_placeholder: '请输入邮箱',
                             password_input_placeholder: '请输入密码',
-                            confirmation_text: '我们已经向您的邮箱发送了验证链接，请查收并点击链接完成验证。'
+                            confirmation_text: '我们已经向您的邮箱发送了验证链接，请查收并点击链接完成验证。如果没有收到邮件，请检查垃圾邮件文件夹。'
                           },
                           forgotten_password: {
                             link_text: '忘记密码?',
