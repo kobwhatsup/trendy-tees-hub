@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { FabricCard } from './fabric/FabricCard';
+import { ProcessSteps } from './fabric/ProcessSteps';
+import { TestingItems } from './fabric/TestingItems';
+import { FabricIntro } from './fabric/FabricIntro';
 
 export const Categories = () => {
-  const navigate = useNavigate();
-  
   const fabrics = [
     {
       id: 1,
@@ -46,111 +47,16 @@ export const Categories = () => {
     <section className="py-20 px-4 bg-gradient-to-br from-[#E5DEFF] via-white to-[#FFDEE2]">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">匠心甄选 精工织造</h2>
-        <div className="text-center text-muted-foreground mb-16 max-w-4xl mx-auto space-y-6">
-          <p className="text-lg leading-relaxed">
-            在寻找完美面料的道路上，我们走访了江浙沪三地超过50家面料工厂，
-            对数百种面料样品进行了严格的测试和筛选。
-          </p>
-          <p className="text-lg leading-relaxed">
-            每一块入选的面料都经过了透气性、吸汗性、起球性、水洗牢度等多达18项专业检测，
-            确保它们能够带来卓越的穿着体验。
-          </p>
-          <p className="text-lg leading-relaxed">
-            从原料采购到成品面料，我们坚持严格把控每一个环节。
-            在长达8个月的筛选过程中，我们反复比对、测试、改进，
-            最终选定了这三款能够满足不同场景需求的优质面料。
-          </p>
-        </div>
+        <FabricIntro />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
           {fabrics.map((fabric) => (
-            <div 
-              key={fabric.id} 
-              className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              <div className="aspect-[4/3] w-full overflow-hidden">
-                <img
-                  src={fabric.image}
-                  alt={fabric.name}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-8">
-                <h3 className="font-bold text-2xl mb-4 text-[#6E59A5] group-hover:text-[#9b87f5] transition-colors">
-                  {fabric.name}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {fabric.description}
-                </p>
-                <ul className="space-y-4">
-                  {fabric.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="text-[#6E59A5] mt-1 text-lg">•</span>
-                      <span className="text-muted-foreground leading-relaxed">{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#9b87f5] rounded-xl transition-all duration-300" />
-            </div>
+            <FabricCard key={fabric.id} fabric={fabric} />
           ))}
         </div>
 
-        <div className="bg-white/50 rounded-2xl p-8 backdrop-blur-sm mb-16">
-          <h3 className="text-2xl font-bold text-center mb-8">严苛的面料选择流程</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                step: "1. 实地考察",
-                desc: "走访优质面料厂，深入了解面料生产工艺"
-              },
-              {
-                step: "2. 样品测试",
-                desc: "对采集的样品进行18项专业检测"
-              },
-              {
-                step: "3. 反复验证",
-                desc: "多轮水洗测试，确保耐用性和舒适度"
-              },
-              {
-                step: "4. 持续优化",
-                desc: "收集用户反馈，不断改进面料品质"
-              }
-            ].map((item, index) => (
-              <div key={index} className="text-center p-8 rounded-xl bg-white/70 backdrop-blur-sm">
-                <div className="font-bold text-lg text-[#6E59A5] mb-3">{item.step}</div>
-                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-[#6E59A5]/10 to-[#9b87f5]/10 rounded-2xl p-8">
-          <h3 className="text-2xl font-bold text-center mb-8">专业检测项目</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              "透气性测试",
-              "吸湿速干性",
-              "起球测试",
-              "水洗牢度",
-              "耐磨性能",
-              "抗皱性能",
-              "尺寸稳定性",
-              "色牢度测试",
-              "接缝强度",
-              "手感评估",
-              "抗静电性",
-              "防紫外线"
-            ].map((item, index) => (
-              <div 
-                key={index}
-                className="bg-white/70 backdrop-blur-sm rounded-lg p-4 text-center text-sm text-muted-foreground hover:bg-white/90 transition-colors"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
+        <ProcessSteps />
+        <TestingItems />
       </div>
     </section>
   );
