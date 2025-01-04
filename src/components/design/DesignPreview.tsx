@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TShirtPreview } from "./TShirtPreview";
 
 interface DesignPreviewProps {
   designImage: string;

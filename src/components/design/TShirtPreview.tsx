@@ -3,7 +3,7 @@ import React from "react";
 interface TShirtPreviewProps {
   color: string;
   designImage: string;
-  settings: {
+  settings?: {
     scale: number;
     rotation: number;
     opacity: number;
@@ -11,7 +11,16 @@ interface TShirtPreviewProps {
   };
 }
 
-export const TShirtPreview = ({ color, designImage, settings }: TShirtPreviewProps) => (
+export const TShirtPreview = ({ 
+  color, 
+  designImage, 
+  settings = {
+    scale: 1,
+    rotation: 0,
+    opacity: 1,
+    position: "front"
+  }
+}: TShirtPreviewProps) => (
   <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
     <div 
       className="absolute inset-0 transition-colors"
