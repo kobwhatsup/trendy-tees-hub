@@ -6,9 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
 import { TShirtPreview } from "./TShirtPreview";
+import { DesignControls } from "./DesignControls";
 
 interface TShirtColorPreviewProps {
   designImage: string;
@@ -61,62 +60,10 @@ export const TShirtColorPreview = ({
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-6">
           {/* 控制面板 */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>大小</Label>
-              <Slider
-                value={[settings.scale * 100]}
-                onValueChange={([value]) => handleSettingChange("scale", value / 100)}
-                min={50}
-                max={150}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>旋转角度</Label>
-              <Slider
-                value={[settings.rotation]}
-                onValueChange={([value]) => handleSettingChange("rotation", value)}
-                min={-180}
-                max={180}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>透明度</Label>
-              <Slider
-                value={[settings.opacity * 100]}
-                onValueChange={([value]) => handleSettingChange("opacity", value / 100)}
-                min={20}
-                max={100}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>水平位置</Label>
-              <Slider
-                value={[settings.offsetX]}
-                onValueChange={([value]) => handleSettingChange("offsetX", value)}
-                min={-100}
-                max={100}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>垂直位置</Label>
-              <Slider
-                value={[settings.offsetY]}
-                onValueChange={([value]) => handleSettingChange("offsetY", value)}
-                min={-100}
-                max={100}
-                step={1}
-              />
-            </div>
-          </div>
+          <DesignControls 
+            settings={settings}
+            onSettingChange={handleSettingChange}
+          />
 
           {/* 预览区域 */}
           <div>
