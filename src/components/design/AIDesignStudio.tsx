@@ -65,7 +65,7 @@ export const AIDesignStudio = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text">
-            AI设计工作室
+            AI设计师
           </h1>
           <p className="text-lg text-muted-foreground">
             描述你的创意想法，让AI为你打造独一无二的T恤设计
