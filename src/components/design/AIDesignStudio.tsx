@@ -94,7 +94,11 @@ export const AIDesignStudio = () => {
           {/* 步骤4：T恤效果 */}
           <section>
             <h2 className="text-2xl font-semibold mb-4">4. T恤效果</h2>
-            <TShirtColorPreview designImage={designImage} />
+            <TShirtColorPreview 
+              designImage={designImage}
+              tshirtStyle={tshirtStyle}
+              tshirtColor={tshirtColor}
+            />
           </section>
 
           {/* 步骤5：确认设计 */}
