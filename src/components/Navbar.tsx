@@ -1,4 +1,4 @@
-import { ShoppingCart, Menu, Palette } from "lucide-react";
+import { ShoppingCart, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -17,14 +17,6 @@ export function Navbar() {
           
           <div className="hidden md:flex items-center space-x-8">
             <Button variant="ghost" onClick={() => navigate("/products")}>所有商品</Button>
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate("/design")}
-              className="flex items-center gap-2"
-            >
-              <Palette className="h-4 w-4" />
-              AI设计
-            </Button>
             <Button variant="ghost">新品上市</Button>
             <Button variant="ghost">热卖商品</Button>
           </div>

@@ -10,14 +10,13 @@ import {
 
 interface DesignPreviewProps {
   designImage: string;
-  title: string;
 }
 
-export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
+export const DesignPreview = ({ designImage }: DesignPreviewProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>设计预览</CardTitle>
         <CardDescription>
           实时查看AI生成的设计效果
         </CardDescription>
@@ -33,7 +32,7 @@ export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
           ) : (
             <div className="text-muted-foreground text-center p-4">
               <Wand2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>AI生成的{title}将在这里显示</p>
+              <p>AI生成的设计将在这里显示</p>
             </div>
           )}
         </div>

@@ -9,42 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      cart_items: {
-        Row: {
-          created_at: string
-          design_back: string | null
-          design_front: string | null
-          id: string
-          quantity: number
-          tshirt_color: string
-          tshirt_gender: string
-          tshirt_style: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          design_back?: string | null
-          design_front?: string | null
-          id?: string
-          quantity?: number
-          tshirt_color: string
-          tshirt_gender: string
-          tshirt_style: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          design_back?: string | null
-          design_front?: string | null
-          id?: string
-          quantity?: number
-          tshirt_color?: string
-          tshirt_gender?: string
-          tshirt_style?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       categories: {
         Row: {
           created_at: string
