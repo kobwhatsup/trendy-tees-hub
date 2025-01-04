@@ -59,17 +59,17 @@ export const AIDesignStudio = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <DesignInput
-            prompt={prompt}
-            isGenerating={isGenerating}
-            onPromptChange={setPrompt}
-            onGenerate={handleGenerate}
-          />
-
           <div className="space-y-6">
+            <DesignInput
+              prompt={prompt}
+              isGenerating={isGenerating}
+              onPromptChange={setPrompt}
+              onGenerate={handleGenerate}
+            />
             <DesignPreview designImage={designImage} />
-            {designImage && <TShirtColorPreview designImage={designImage} />}
           </div>
+          
+          {designImage && <TShirtColorPreview designImage={designImage} />}
         </div>
       </div>
     </div>
