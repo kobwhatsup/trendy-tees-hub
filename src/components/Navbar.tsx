@@ -80,15 +80,15 @@ export const Navbar = () => {
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={() => navigate("/products")}
+                onClick={() => navigate("/design")}
               >
-                浏览作品
+                AI设计师
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={() => navigate("/design")}
+                onClick={() => navigate("/products")}
               >
-                开始设计
+                浏览作品
               </Button>
             </div>
           </div>
