@@ -22,13 +22,13 @@ interface ThemeOptionsProps {
 export const ThemeOptions = ({ selectedThemes, onToggleTheme }: ThemeOptionsProps) => {
   return (
     <div>
-      <h3 className="text-sm font-medium mb-3">主题元素</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <h3 className="text-sm font-medium mb-2">主题元素</h3>
+      <div className="flex flex-wrap gap-2">
         {themeOptions.map((option) => (
           <Badge
             key={option.value}
             variant={selectedThemes.includes(option.value) ? "default" : "outline"}
-            className="cursor-pointer hover:bg-primary/90 py-2 justify-center"
+            className="cursor-pointer hover:bg-primary/90"
             onClick={() => onToggleTheme(option.value)}
           >
             {option.label}
