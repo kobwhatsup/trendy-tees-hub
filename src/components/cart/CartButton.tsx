@@ -16,9 +16,12 @@ export const CartButton = () => {
       if (user) {
         const { data: cartItems } = await supabase
           .from('cart_items')
-          .select('id')
+          .select('quantity')
           .eq('user_id', user.id);
-        setItemCount(cartItems?.length || 0);
+        
+        // 计算总数量
+        const totalQuantity = cartItems?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+        setItemCount(totalQuantity);
       }
     };
 
@@ -60,7 +63,7 @@ export const CartButton = () => {
 
   // 暴露全局方法供其他组件调用
   useEffect(() => {
-    (window as Window).showAddToCartAnimation = showAddToCartAnimation;
+    (window as any).showAddToCartAnimation = showAddToCartAnimation;
   }, []);
   
   return (
