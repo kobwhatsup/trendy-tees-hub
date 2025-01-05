@@ -32,16 +32,23 @@ export const AIDesignStudio = () => {
 
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('generate-tshirt-design', {
+      const response = await supabase.functions.invoke('generate-tshirt-design', {
         body: { prompt: prompt }
       });
 
-      if (error) throw error;
+      if (response.error) {
+        console.error('生成失败:', response.error);
+        throw new Error(response.error.message || '生成设计时出现错误');
+      }
+
+      if (!response.data?.imageUrl) {
+        throw new Error('未能获取到设计图片');
+      }
       
       if (position === "front") {
-        setFrontDesignImage(data.imageUrl);
+        setFrontDesignImage(response.data.imageUrl);
       } else {
-        setBackDesignImage(data.imageUrl);
+        setBackDesignImage(response.data.imageUrl);
       }
       
       toast({
@@ -50,9 +57,21 @@ export const AIDesignStudio = () => {
       });
     } catch (error) {
       console.error('生成失败:', error);
+      
+      // 根据错误类型显示不同的错误信息
+      let errorMessage = '生成设计时出现错误，请稍后重试';
+      
+      if (error.message?.includes('Failed to fetch') || error.message?.includes('network')) {
+        errorMessage = '网络连接错误，请检查您的网络连接并重试';
+      } else if (error.message?.includes('timeout')) {
+        errorMessage = '请求超时，请稍后重试';
+      } else if (error.message?.includes('rate limit')) {
+        errorMessage = 'API调用次数已达上限，请稍后再试';
+      }
+      
       toast({
         title: "生成失败",
-        description: error.message || "请稍后重试",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
