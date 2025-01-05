@@ -35,25 +35,6 @@ export const PromptInput = ({
             className="h-32"
           />
         </div>
-        <div className="flex justify-center">
-          <Button
-            onClick={() => onGenerate("front")}
-            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full"
-            disabled={isGenerating}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                生成中...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-6 w-6" />
-                生成正面设计
-              </>
-            )}
-          </Button>
-        </div>
       </TabsContent>
       <TabsContent value="back" className="space-y-4">
         <div className="space-y-2">
@@ -64,26 +45,26 @@ export const PromptInput = ({
             className="h-32"
           />
         </div>
-        <div className="flex justify-center">
-          <Button
-            onClick={() => onGenerate("back")}
-            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full"
-            disabled={isGenerating}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                生成中...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-6 w-6" />
-                生成背面设计
-              </>
-            )}
-          </Button>
-        </div>
       </TabsContent>
+      <div className="flex justify-center w-full mt-8">
+        <Button
+          onClick={() => onGenerate("front")}
+          className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full max-w-[300px] w-full"
+          disabled={isGenerating}
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+              生成中...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-6 w-6" />
+              生成正面设计
+            </>
+          )}
+        </Button>
+      </div>
     </Tabs>
   );
 };

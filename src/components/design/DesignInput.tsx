@@ -3,8 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { StyleOptions, styleOptions } from "./options/StyleOptions";
 import { ColorOptions, colorOptions } from "./options/ColorOptions";
@@ -72,13 +70,10 @@ export const DesignInput = ({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>设计描述</CardTitle>
-        <CardDescription>
+      <CardContent className="pt-6">
+        <CardDescription className="mb-6">
           选择设计风格和元素，或直接描述你的创意想法。可以选择只设计一面，也可以两面都设计
         </CardDescription>
-      </CardHeader>
-      <CardContent>
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
             <StyleOptions 
