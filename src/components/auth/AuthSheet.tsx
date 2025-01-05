@@ -14,7 +14,8 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   // 添加调试日志
   useEffect(() => {
     const logAuthDetails = async () => {
-      console.log('Supabase URL:', supabase.config.supabaseUrl);
+      // 直接使用环境变量中的URL
+      console.log('Supabase URL:', process.env.SUPABASE_URL);
       const { data: { session } } = await supabase.auth.getSession();
       console.log('Auth session:', session);
     };
