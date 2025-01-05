@@ -54,17 +54,17 @@ export const DesignInput = ({
             <div className="flex justify-center">
               <Button
                 onClick={() => onGenerate("front")}
-                className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+                className="bg-[#F97316] hover:bg-[#EA580C] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                     生成中...
                   </>
                 ) : (
                   <>
-                    <Wand2 className="mr-2 h-5 w-5" />
+                    <Wand2 className="mr-2 h-6 w-6" />
                     生成正面设计
                   </>
                 )}
@@ -83,17 +83,17 @@ export const DesignInput = ({
             <div className="flex justify-center">
               <Button
                 onClick={() => onGenerate("back")}
-                className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+                className="bg-[#F97316] hover:bg-[#EA580C] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                     生成中...
                   </>
                 ) : (
                   <>
-                    <Wand2 className="mr-2 h-5 w-5" />
+                    <Wand2 className="mr-2 h-6 w-6" />
                     生成背面设计
                   </>
                 )}
