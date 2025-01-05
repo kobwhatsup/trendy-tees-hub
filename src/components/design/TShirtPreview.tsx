@@ -38,22 +38,22 @@ export const TShirtPreview = ({
     if (gender === 'male') {
       if (style === 'short') {
         return settings.position === 'front' 
-          ? '/01manshortfront.jpeg'  // 男士短袖正面
-          : '/02manshortback.jpeg';  // 男士短袖背面
+          ? (color === 'white' ? '/01manshortfrontwhite.jpeg' : '/09manshortfrontblack.jpeg')  // 男士短袖正面
+          : (color === 'white' ? '/02manshortbackwhite.jpeg' : '/10manshortbackblack.jpg');  // 男士短袖背面
       } else {
         return settings.position === 'front'
-          ? '/03manlongfront.jpeg'   // 男士长袖正面
-          : '/04manlongback.jpeg';   // 男士长袖背面
+          ? (color === 'white' ? '/03manlongfrontwhite.jpeg' : '/11manlongfrontblack.jpg')   // 男士长袖正面
+          : (color === 'white' ? '/04manlongbackwhite.jpeg' : '/12manlongbackblack.jpg');   // 男士长袖背面
       }
     } else {
       if (style === 'short') {
         return settings.position === 'front'
-          ? '/05womenshortfront.jpeg'  // 女士短袖正面
-          : '/06womenshortback.jpeg';  // 女士短袖背面
+          ? (color === 'white' ? '/05womenshortfrontwhite.jpeg' : '/13womenshortfrontblack.jpg')  // 女士短袖正面
+          : (color === 'white' ? '/06womenshortbackwhite.jpeg' : '/14womenshortbackblack.jpg');  // 女士短袖背面
       } else {
         return settings.position === 'front'
-          ? '/07womenlongfront.jpeg'   // 女士长袖正面
-          : '/08womenlongback.jpeg';   // 女士长袖背面
+          ? (color === 'white' ? '/07womenlongfrontwhite.jpeg' : '/15womenlongfrontblack.jpg')   // 女士长袖正面
+          : (color === 'white' ? '/08womenlongbackwhite.jpeg' : '/16womenlongbackblack.jpg');   // 女士长袖背面
       }
     }
   };
@@ -65,11 +65,6 @@ export const TShirtPreview = ({
         src={getTemplateUrl()}
         alt="T恤模板"
         className="absolute inset-0 w-full h-full object-contain"
-        style={{ 
-          filter: `brightness(${color === 'white' ? 1 : 0.8}) 
-                  contrast(${color === 'white' ? 1 : 0.9})
-                  saturate(${color === 'white' ? 1 : 0.8})`
-        }}
       />
       
       {/* 设计图案 */}
