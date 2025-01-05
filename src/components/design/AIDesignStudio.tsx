@@ -20,6 +20,11 @@ export const AIDesignStudio = () => {
     generateDesign
   } = useDesignGeneration();
 
+  const handleGenerate = (position: "front" | "back") => {
+    const prompt = position === "front" ? frontPrompt : backPrompt;
+    generateDesign(prompt, position);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 mt-16">
       <div className="max-w-6xl mx-auto">
@@ -45,7 +50,7 @@ export const AIDesignStudio = () => {
                 isGenerating={isGenerating}
                 onFrontPromptChange={setFrontPrompt}
                 onBackPromptChange={setBackPrompt}
-                onGenerate={generateDesign}
+                onGenerate={handleGenerate}
               />
             </div>
           </section>
