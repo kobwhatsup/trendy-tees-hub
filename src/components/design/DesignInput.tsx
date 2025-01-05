@@ -51,23 +51,25 @@ export const DesignInput = ({
                 className="h-32"
               />
             </div>
-            <Button
-              onClick={() => onGenerate("front")}
-              className="w-full"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  生成中...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  生成正面设计
-                </>
-              )}
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => onGenerate("front")}
+                className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-5 w-5" />
+                    生成正面设计
+                  </>
+                )}
+              </Button>
+            </div>
           </TabsContent>
           <TabsContent value="back" className="space-y-4">
             <div className="space-y-2">
@@ -78,23 +80,25 @@ export const DesignInput = ({
                 className="h-32"
               />
             </div>
-            <Button
-              onClick={() => onGenerate("back")}
-              className="w-full"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  生成中...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  生成背面设计
-                </>
-              )}
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => onGenerate("back")}
+                className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-5 w-5" />
+                    生成背面设计
+                  </>
+                )}
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
