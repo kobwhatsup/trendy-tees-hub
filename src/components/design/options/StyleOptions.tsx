@@ -21,14 +21,14 @@ interface StyleOptionsProps {
 
 export const StyleOptions = ({ selectedStyles, onToggleStyle }: StyleOptionsProps) => {
   return (
-    <div>
-      <h3 className="text-sm font-medium mb-2">设计风格</h3>
-      <div className="flex flex-wrap gap-2">
+    <div className="w-full">
+      <h3 className="text-sm font-medium mb-4">设计风格</h3>
+      <div className="flex flex-wrap gap-3">
         {styleOptions.map((option) => (
           <Badge
             key={option.value}
             variant={selectedStyles.includes(option.value) ? "default" : "outline"}
-            className="cursor-pointer hover:bg-primary/90"
+            className="cursor-pointer hover:bg-primary/90 px-6 py-2 text-base"
             onClick={() => onToggleStyle(option.value)}
           >
             {option.label}
