@@ -66,6 +66,7 @@ export const Navbar = () => {
     { title: "首页", path: "/" },
     { title: "AI设计师", path: "/design" },
     { title: "浏览作品", path: "/products" },
+    { title: "我的设计", path: "/my-designs" },
   ];
 
   if (isLoading) {

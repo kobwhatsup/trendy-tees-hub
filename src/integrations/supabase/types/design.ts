@@ -8,6 +8,9 @@ export type DesignDraft = {
   prompt_front: string | null;
   prompt_back: string | null;
   created_at: string;
+  is_public: boolean | null;
+  title: string | null;
+  description: string | null;
 }
 
 export type DesignDraftInsert = Omit<DesignDraft, 'id' | 'created_at'>;

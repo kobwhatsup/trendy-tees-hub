@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Design from "./pages/Design";
 import Cart from "./pages/Cart";
+import MyDesigns from "./pages/MyDesigns";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Design />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/my-designs" 
+            element={
+              <ProtectedRoute>
+                <MyDesigns />
               </ProtectedRoute>
             } 
           />

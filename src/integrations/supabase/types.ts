@@ -75,35 +75,44 @@ export type Database = {
       design_drafts: {
         Row: {
           created_at: string
+          description: string | null
           design_back: string | null
           design_front: string | null
           id: string
+          is_public: boolean | null
           preview_back: string | null
           preview_front: string | null
           prompt_back: string | null
           prompt_front: string | null
+          title: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           design_back?: string | null
           design_front?: string | null
           id?: string
+          is_public?: boolean | null
           preview_back?: string | null
           preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
+          title?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           design_back?: string | null
           design_front?: string | null
           id?: string
+          is_public?: boolean | null
           preview_back?: string | null
           preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
+          title?: string | null
           user_id?: string
         }
         Relationships: []
