@@ -60,7 +60,7 @@ export const CartButton = () => {
 
   // 暴露全局方法供其他组件调用
   useEffect(() => {
-    window.showAddToCartAnimation = showAddToCartAnimation;
+    (window as Window).showAddToCartAnimation = showAddToCartAnimation;
   }, []);
   
   return (

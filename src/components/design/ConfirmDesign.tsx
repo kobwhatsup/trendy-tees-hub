@@ -56,8 +56,8 @@ export const ConfirmDesign = ({
       if (error) throw error;
 
       // 触发添加到购物车动画
-      if (window.showAddToCartAnimation) {
-        window.showAddToCartAnimation();
+      if ((window as Window).showAddToCartAnimation) {
+        (window as Window).showAddToCartAnimation();
       }
 
       toast({
