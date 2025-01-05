@@ -55,6 +55,11 @@ export const ConfirmDesign = ({
 
       if (error) throw error;
 
+      // 触发添加到购物车动画
+      if (window.showAddToCartAnimation) {
+        window.showAddToCartAnimation();
+      }
+
       toast({
         title: "添加成功",
         description: "设计已添加到购物车",
