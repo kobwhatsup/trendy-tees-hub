@@ -77,7 +77,7 @@ export const ConfirmDesign = ({
   return (
     <div className="flex justify-center">
       <Button 
-        className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+        className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-4 h-auto text-lg rounded-lg"
         onClick={handleAddToCart}
         disabled={isAdding}
       >
