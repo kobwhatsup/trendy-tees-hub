@@ -54,7 +54,7 @@ export const DesignInput = ({
             <div className="flex justify-center">
               <Button
                 onClick={() => onGenerate("front")}
-                className="bg-[#F97316] hover:bg-[#EA580C] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
+                className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
@@ -83,7 +83,7 @@ export const DesignInput = ({
             <div className="flex justify-center">
               <Button
                 onClick={() => onGenerate("back")}
-                className="bg-[#F97316] hover:bg-[#EA580C] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
+                className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-6 h-auto text-lg rounded-full"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
