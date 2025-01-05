@@ -94,7 +94,7 @@ export const AIDesignStudio = () => {
         <div className="space-y-12">
           {/* 步骤1：设计描述 */}
           <section className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+            <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
               第一步 设计描述
             </h2>
             <div className="w-full">
@@ -111,7 +111,7 @@ export const AIDesignStudio = () => {
 
           {/* 步骤2：设计预览 */}
           <section className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+            <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
               第二步 设计预览
             </h2>
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -122,7 +122,7 @@ export const AIDesignStudio = () => {
 
           {/* 步骤3：T恤款式 */}
           <section className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+            <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
               第三步 T恤款式
             </h2>
             <div className="w-full">
@@ -139,7 +139,7 @@ export const AIDesignStudio = () => {
 
           {/* 步骤4：T恤效果 */}
           <section className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+            <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
               第四步 T恤效果
             </h2>
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -168,7 +168,7 @@ export const AIDesignStudio = () => {
 
           {/* 步骤5：确认设计 */}
           <section className="flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+            <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
               第五步 确认设计
             </h2>
             <div className="w-full">
