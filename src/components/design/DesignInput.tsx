@@ -24,31 +24,31 @@ export const DesignInput = ({
   onGenerate,
 }: DesignInputProps) => {
   const generatePrompt = (basePrompt: string) => {
-    // 设计规范
+    // 优化后的设计规范
     const designRules = `
 设计要求：
-1. 图案要简洁清晰，避免过于复杂的细节
-2. 避免大面积的纯色填充和复杂的渐变效果
-3. 主体元素要突出，建议使用2-3种主要颜色
-4. 线条要清晰，不要过细，建议最小线条粗度0.5mm
-5. 文字设计要清晰易读，避免过于花哨的字体
-6. 图案边缘要清晰，避免模糊和过渡区域
-7. 考虑面料特性，避免需要完美对齐的对称设计
+1. 图案要简洁大方，避免复杂和细小的图案元素
+2. 设计需要具有透明背景，不要带有方形边框
+3. 如果包含文字，确保文字清晰易读
+4. 使用2-3种主要颜色，避免过多色彩
+5. 图案边缘要清晰，避免模糊效果
+6. 主体元素要突出且居中
+7. 避免过于密集或凌乱的排列
 8. 图案大小适中，建议不超过A4纸大小
-9. 确保设计适合印刷工艺
-10. 保持图案比例协调`;
+9. 线条粗细要适中，最小线条粗度不低于0.5mm
+10. 确保设计适合T恤印刷工艺`;
 
     const combinedPrompt = [basePrompt, designRules]
       .filter(text => text)
       .join('，');
 
+    console.log('最终发送的提示词:', combinedPrompt);
     return combinedPrompt;
   };
 
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
     const finalPrompt = generatePrompt(prompt);
-    console.log('最终发送的提示词:', finalPrompt);
     onGenerate(position);
   };
 
