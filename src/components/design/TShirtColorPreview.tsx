@@ -33,12 +33,12 @@ export const TShirtColorPreview = ({
   position = "front"
 }: TShirtColorPreviewProps) => {
   const [settings, setSettings] = useState<DesignSettings>({
-    scale: 1,
+    scale: 0.8, // 80%
     rotation: 0,
-    opacity: 1,
+    opacity: 1, // 100%
     position: position,
     offsetX: 0,
-    offsetY: 0
+    offsetY: position === "front" ? 30 : 10 // 根据正面/背面设置不同的垂直位置
   });
 
   const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
