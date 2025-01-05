@@ -61,11 +61,20 @@ export const DesignInput = ({
         ).join('、')}`
       : '';
 
-    const combinedPrompt = [basePrompt, styleText, colorText, themeText]
+    const designRules = "设计要求：图案要清晰可见,适合印制在T恤上,避免过于复杂的细节,保持简洁大方";
+
+    const combinedPrompt = [basePrompt, styleText, colorText, themeText, designRules]
       .filter(text => text)
       .join('，');
 
     return combinedPrompt;
+  };
+
+  const handleGenerate = (position: "front" | "back") => {
+    const prompt = position === "front" ? frontPrompt : backPrompt;
+    const finalPrompt = generatePrompt(prompt);
+    console.log('最终发送的提示词:', finalPrompt);
+    onGenerate(position);
   };
 
   return (
@@ -99,7 +108,7 @@ export const DesignInput = ({
             isGenerating={isGenerating}
             onFrontPromptChange={onFrontPromptChange}
             onBackPromptChange={onBackPromptChange}
-            onGenerate={onGenerate}
+            onGenerate={handleGenerate}
           />
         </div>
       </CardContent>
