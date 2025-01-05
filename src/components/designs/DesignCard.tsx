@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
+import { DesignImage } from "@/components/cart/DesignImage";
 
 export const DesignCard = ({ design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -42,13 +43,12 @@ export const DesignCard = ({ design }) => {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="p-0">
-        <div className="relative aspect-square">
-          <img
-            src={design.preview_front || design.design_front}
-            alt="设计预览"
-            className="w-full h-full object-cover"
-          />
+      <CardHeader className="p-4">
+        <div className="grid grid-cols-2 gap-4">
+          <DesignImage imageUrl={design.design_front} title="正面设计图" />
+          <DesignImage imageUrl={design.design_back} title="背面设计图" />
+          <DesignImage imageUrl={design.preview_front} title="正面效果图" />
+          <DesignImage imageUrl={design.preview_back} title="背面效果图" />
         </div>
       </CardHeader>
       <CardContent className="p-4">
