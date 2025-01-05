@@ -35,10 +35,7 @@ export const TShirtStyleSelector = ({
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className={cn(
-          "grid grid-cols-3 gap-4",
-          isMobile && "grid-cols-1"
-        )}>
+        <div className="grid grid-cols-3 gap-4">
           {/* 性别选择 */}
           <div className="flex flex-col space-y-2">
             <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
@@ -94,12 +91,13 @@ export const TShirtStyleSelector = ({
                   key={colorOption.value}
                   onClick={() => onColorChange(colorOption.value)}
                   className={cn(
-                    "w-full h-9 rounded-md transition-all flex items-center justify-center",
+                    "h-9 rounded-md transition-all flex items-center justify-center",
                     colorOption.class,
                     color === colorOption.value
                       ? "ring-2 ring-primary ring-offset-2"
                       : "hover:opacity-90"
                   )}
+                  style={{ width: '64px', margin: '0 auto' }}
                   title={colorOption.label}
                 >
                   {color === colorOption.value && (
