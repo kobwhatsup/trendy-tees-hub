@@ -10,6 +10,8 @@ interface ConfirmDesignProps {
   tshirtGender: string;
   frontDesignImage?: string;
   backDesignImage?: string;
+  frontPreviewImage?: string;
+  backPreviewImage?: string;
 }
 
 export const ConfirmDesign = ({ 
@@ -17,7 +19,9 @@ export const ConfirmDesign = ({
   tshirtColor, 
   tshirtGender,
   frontDesignImage,
-  backDesignImage 
+  backDesignImage,
+  frontPreviewImage,
+  backPreviewImage
 }: ConfirmDesignProps) => {
   const { toast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
@@ -39,12 +43,30 @@ export const ConfirmDesign = ({
         return;
       }
 
-      const { error } = await supabase
+      // 保存设计方案
+      const { error: draftError } = await supabase
+        .from('design_drafts')
+        .insert({
+          user_id: user.id,
+          design_front: frontDesignImage,
+          design_back: backDesignImage,
+          preview_front: frontPreviewImage,
+          preview_back: backPreviewImage,
+        })
+        .select()
+        .single();
+
+      if (draftError) throw draftError;
+
+      // 添加到购物车
+      const { error: cartError } = await supabase
         .from('cart_items')
         .insert({
           user_id: user.id,
           design_front: frontDesignImage,
           design_back: backDesignImage,
+          preview_front: frontPreviewImage,
+          preview_back: backPreviewImage,
           tshirt_style: tshirtStyle,
           tshirt_color: tshirtColor,
           tshirt_gender: tshirtGender,
@@ -52,7 +74,7 @@ export const ConfirmDesign = ({
         .select()
         .single();
 
-      if (error) throw error;
+      if (cartError) throw cartError;
 
       if ((window as Window).showAddToCartAnimation) {
         (window as Window).showAddToCartAnimation();

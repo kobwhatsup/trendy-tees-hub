@@ -15,6 +15,8 @@ export type Database = {
           design_back: string | null
           design_front: string | null
           id: string
+          preview_back: string | null
+          preview_front: string | null
           quantity: number
           tshirt_color: string
           tshirt_gender: string
@@ -26,6 +28,8 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          preview_back?: string | null
+          preview_front?: string | null
           quantity?: number
           tshirt_color: string
           tshirt_gender: string
@@ -37,6 +41,8 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          preview_back?: string | null
+          preview_front?: string | null
           quantity?: number
           tshirt_color?: string
           tshirt_gender?: string
@@ -72,6 +78,8 @@ export type Database = {
           design_back: string | null
           design_front: string | null
           id: string
+          preview_back: string | null
+          preview_front: string | null
           prompt_back: string | null
           prompt_front: string | null
           user_id: string
@@ -81,6 +89,8 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          preview_back?: string | null
+          preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
           user_id: string
@@ -90,6 +100,8 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          preview_back?: string | null
+          preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
           user_id?: string
