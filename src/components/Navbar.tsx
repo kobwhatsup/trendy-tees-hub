@@ -54,21 +54,24 @@ export const Navbar = () => {
   }, []);
 
   if (isLoading) {
-    return null; // 或者显示一个加载指示器
+    return null;
   }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <a 
-              href="/" 
-              className="text-2xl font-bold bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text"
-            >
-              AI DESIGN TEE
-            </a>
-            <div className="hidden md:flex items-center space-x-4">
+          {/* Logo */}
+          <a 
+            href="/" 
+            className="text-2xl font-bold bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text"
+          >
+            AI DESIGN TEE
+          </a>
+
+          {/* Navigation Links - Centered */}
+          <div className="flex-1 flex justify-center">
+            <div className="hidden md:flex items-center space-x-8">
               <Button 
                 variant="ghost" 
                 onClick={() => navigate("/")}
@@ -90,6 +93,7 @@ export const Navbar = () => {
             </div>
           </div>
 
+          {/* User Menu */}
           <div className="flex items-center space-x-4">
             {user ? (
               <UserMenu user={user} />
