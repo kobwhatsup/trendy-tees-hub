@@ -11,7 +11,15 @@ import Design from "./pages/Design";
 import Cart from "./pages/Cart";
 import MyDesigns from "./pages/MyDesigns";
 
-const queryClient = new QueryClient();
+// 将 queryClient 实例移到组件外部
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // 路由保护组件
 const ProtectedRoute = ({ children }) => {
