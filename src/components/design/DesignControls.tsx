@@ -23,7 +23,10 @@ export const DesignControls = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>大小</Label>
+        <div className="flex justify-between items-center">
+          <Label>大小</Label>
+          <span className="text-sm text-gray-500">{Math.round(settings.scale * 100)}%</span>
+        </div>
         <Slider
           value={[settings.scale * 100]}
           onValueChange={([value]) => onSettingChange("scale", value / 100)}
@@ -34,7 +37,10 @@ export const DesignControls = ({
       </div>
 
       <div className="space-y-2">
-        <Label>旋转角度</Label>
+        <div className="flex justify-between items-center">
+          <Label>旋转角度</Label>
+          <span className="text-sm text-gray-500">{Math.round(settings.rotation)}°</span>
+        </div>
         <Slider
           value={[settings.rotation]}
           onValueChange={([value]) => onSettingChange("rotation", value)}
@@ -45,7 +51,10 @@ export const DesignControls = ({
       </div>
 
       <div className="space-y-2">
-        <Label>透明度</Label>
+        <div className="flex justify-between items-center">
+          <Label>透明度</Label>
+          <span className="text-sm text-gray-500">{Math.round(settings.opacity * 100)}%</span>
+        </div>
         <Slider
           value={[settings.opacity * 100]}
           onValueChange={([value]) => onSettingChange("opacity", value / 100)}
@@ -56,7 +65,10 @@ export const DesignControls = ({
       </div>
 
       <div className="space-y-2">
-        <Label>水平位置</Label>
+        <div className="flex justify-between items-center">
+          <Label>水平位置</Label>
+          <span className="text-sm text-gray-500">{settings.offsetX}</span>
+        </div>
         <Slider
           value={[settings.offsetX]}
           onValueChange={([value]) => onSettingChange("offsetX", value)}
@@ -67,7 +79,10 @@ export const DesignControls = ({
       </div>
 
       <div className="space-y-2">
-        <Label>垂直位置</Label>
+        <div className="flex justify-between items-center">
+          <Label>垂直位置</Label>
+          <span className="text-sm text-gray-500">{settings.offsetY}</span>
+        </div>
         <Slider
           value={[settings.offsetY]}
           onValueChange={([value]) => onSettingChange("offsetY", value)}
