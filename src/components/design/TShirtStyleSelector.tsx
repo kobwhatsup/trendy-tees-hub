@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TShirtStyleSelectorProps {
   style: string;
@@ -25,8 +24,6 @@ export const TShirtStyleSelector = ({
   onColorChange,
   onGenderChange,
 }: TShirtStyleSelectorProps) => {
-  const isMobile = useIsMobile();
-  
   const colors = [
     { label: "白色", value: "white", class: "bg-white border-2 border-gray-200" },
     { label: "黑色", value: "black", class: "bg-black" },
@@ -35,15 +32,9 @@ export const TShirtStyleSelector = ({
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className={cn(
-          "flex items-start gap-4",
-          isMobile ? "flex-col" : "justify-between"
-        )}>
+        <div className="flex justify-between items-center">
           {/* 性别选择 */}
-          <div className={cn(
-            "flex flex-col items-center",
-            !isMobile && "flex-1 px-4 py-2 border-r border-border"
-          )}>
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
             <span className="text-sm font-medium mb-2 text-muted-foreground">款式性别:</span>
             <div className="flex gap-1">
               <Button
@@ -64,10 +55,7 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 袖长选择 */}
-          <div className={cn(
-            "flex flex-col items-center",
-            !isMobile && "flex-1 px-4 py-2 border-r border-border"
-          )}>
+          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
             <span className="text-sm font-medium mb-2 text-muted-foreground">袖长:</span>
             <div className="flex gap-1">
               <Button
@@ -88,10 +76,7 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 颜色选择 */}
-          <div className={cn(
-            "flex flex-col items-center",
-            !isMobile && "flex-1 px-4 py-2"
-          )}>
+          <div className="flex-1 flex flex-col items-center px-4 py-2">
             <span className="text-sm font-medium mb-2 text-muted-foreground">颜色:</span>
             <div className="flex gap-4 items-center justify-center">
               {colors.map((colorOption) => (
