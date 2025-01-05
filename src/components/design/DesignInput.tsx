@@ -3,6 +3,8 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { StyleOptions, styleOptions } from "./options/StyleOptions";
 import { ColorOptions, colorOptions } from "./options/ColorOptions";
@@ -70,39 +72,38 @@ export const DesignInput = ({
 
   return (
     <Card>
-      <CardContent className="pt-6">
-        <CardDescription className="mb-6">
+      <CardHeader>
+        <CardTitle>设计描述</CardTitle>
+        <CardDescription>
           选择设计风格和元素，或直接描述你的创意想法。可以选择只设计一面，也可以两面都设计
         </CardDescription>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <StyleOptions 
-              selectedStyles={selectedStyles}
-              onToggleStyle={(style) => toggleOption(style, selectedStyles, setSelectedStyles)}
-            />
-            
-            <ColorOptions 
-              selectedColors={selectedColors}
-              onToggleColor={(color) => toggleOption(color, selectedColors, setSelectedColors)}
-            />
-            
-            <ThemeOptions 
-              selectedThemes={selectedThemes}
-              onToggleTheme={(theme) => toggleOption(theme, selectedThemes, setSelectedThemes)}
-            />
-          </div>
-
-          <div>
-            <PromptInput 
-              frontPrompt={frontPrompt}
-              backPrompt={backPrompt}
-              isGenerating={isGenerating}
-              onFrontPromptChange={onFrontPromptChange}
-              onBackPromptChange={onBackPromptChange}
-              onGenerate={onGenerate}
-            />
-          </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <StyleOptions 
+            selectedStyles={selectedStyles}
+            onToggleStyle={(style) => toggleOption(style, selectedStyles, setSelectedStyles)}
+          />
+          
+          <ColorOptions 
+            selectedColors={selectedColors}
+            onToggleColor={(color) => toggleOption(color, selectedColors, setSelectedColors)}
+          />
+          
+          <ThemeOptions 
+            selectedThemes={selectedThemes}
+            onToggleTheme={(theme) => toggleOption(theme, selectedThemes, setSelectedThemes)}
+          />
         </div>
+
+        <PromptInput 
+          frontPrompt={frontPrompt}
+          backPrompt={backPrompt}
+          isGenerating={isGenerating}
+          onFrontPromptChange={onFrontPromptChange}
+          onBackPromptChange={onBackPromptChange}
+          onGenerate={onGenerate}
+        />
       </CardContent>
     </Card>
   );
