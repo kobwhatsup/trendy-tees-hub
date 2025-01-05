@@ -10,6 +10,10 @@ interface AuthSheetProps {
 }
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
+  // 添加调试日志
+  console.log('Supabase URL:', supabase.supabaseUrl);
+  console.log('Auth session:', supabase.auth.session);
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
