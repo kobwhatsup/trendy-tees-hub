@@ -1,4 +1,9 @@
 import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface TShirtPreviewProps {
   color: string;
@@ -53,7 +58,7 @@ export const TShirtPreview = ({
     }
   };
 
-  return (
+  const PreviewContent = () => (
     <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
       {/* T恤背景图片 */}
       <img 
@@ -87,5 +92,20 @@ export const TShirtPreview = ({
         </div>
       )}
     </div>
+  );
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="w-full cursor-zoom-in">
+          <PreviewContent />
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl w-[90vw] h-[90vh]">
+        <div className="w-full h-full flex items-center justify-center">
+          <PreviewContent />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
