@@ -93,16 +93,20 @@ export const AIDesignStudio = () => {
 
         <div className="space-y-12">
           {/* 步骤1：设计描述 */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4 text-center inline-block mx-auto px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">第一步 设计描述</h2>
-            <DesignInput
-              frontPrompt={frontPrompt}
-              backPrompt={backPrompt}
-              isGenerating={isGenerating}
-              onFrontPromptChange={setFrontPrompt}
-              onBackPromptChange={setBackPrompt}
-              onGenerate={handleGenerate}
-            />
+          <section className="flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+              第一步 设计描述
+            </h2>
+            <div className="w-full">
+              <DesignInput
+                frontPrompt={frontPrompt}
+                backPrompt={backPrompt}
+                isGenerating={isGenerating}
+                onFrontPromptChange={setFrontPrompt}
+                onBackPromptChange={setBackPrompt}
+                onGenerate={handleGenerate}
+              />
+            </div>
           </section>
 
           {/* 步骤2：设计预览 */}
