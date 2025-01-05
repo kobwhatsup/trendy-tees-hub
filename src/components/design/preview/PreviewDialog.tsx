@@ -46,10 +46,10 @@ export const PreviewDialog = ({
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl w-[90vw] max-h-[90vh] p-4">
+      <DialogContent className="max-w-3xl w-[90vw] h-[85vh] p-6">
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-full max-h-full overflow-hidden">
-            <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="relative w-full h-full">
+            <div className="relative w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
               <TShirtImage 
                 color={color}
                 style={style}

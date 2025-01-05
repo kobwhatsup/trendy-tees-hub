@@ -14,7 +14,7 @@ export const DesignOverlay = ({ designImage, settings }: DesignOverlayProps) => 
 
   return (
     <div 
-      className="absolute top-1/4 left-1/4 right-1/4 bottom-1/2 flex items-center justify-center"
+      className="absolute top-[15%] left-1/4 right-1/4 bottom-1/2 flex items-center justify-center"
       style={{
         transform: `translateX(${settings.offsetX}px) translateY(${settings.offsetY}px)`
       }}
