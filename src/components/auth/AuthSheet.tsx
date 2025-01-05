@@ -28,7 +28,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
       <SheetTrigger asChild>
         <Button>登录/注册</Button>
       </SheetTrigger>
-      <SheetContent className="w-[30vw] sm:max-w-none">
+      <SheetContent className="w-[80vw] sm:w-[30vw]">
         <div className="mt-8">
           <Auth
             supabaseClient={supabase}
