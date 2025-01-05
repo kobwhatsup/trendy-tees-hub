@@ -66,6 +66,36 @@ export type Database = {
         }
         Relationships: []
       }
+      design_drafts: {
+        Row: {
+          created_at: string
+          design_back: string | null
+          design_front: string | null
+          id: string
+          prompt_back: string | null
+          prompt_front: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          design_back?: string | null
+          design_front?: string | null
+          id?: string
+          prompt_back?: string | null
+          prompt_front?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          design_back?: string | null
+          design_front?: string | null
+          id?: string
+          prompt_back?: string | null
+          prompt_front?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       product_categories: {
         Row: {
           category_id: string

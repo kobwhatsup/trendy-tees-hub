@@ -42,7 +42,6 @@ export const CartItem = ({
     }
     
     // 如果是相对路径，添加基础URL
-    // 注意：这里需要根据实际的Supabase项目配置来设置正确的基础URL
     return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${url}`;
   };
 
