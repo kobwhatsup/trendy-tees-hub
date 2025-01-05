@@ -1,100 +1,24 @@
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { DesignInput } from "./DesignInput";
 import { DesignPreview } from "./DesignPreview";
 import { TShirtStyleSelector } from "./TShirtStyleSelector";
 import { TShirtColorPreview } from "./TShirtColorPreview";
 import { ConfirmDesign } from "./ConfirmDesign";
-
-// T恤设计规范
-const DESIGN_GUIDELINES = `
-请生成一个适合T恤印刷的设计图案，需要遵循以下规范:
-1. 设计要简洁清晰，避免过于复杂的细节
-2. 使用4-5种主要颜色，避免大面积纯色和复杂渐变
-3. 确保线条粗细适合印刷，最小线条粗度不低于0.5mm
-4. 如果包含文字，确保清晰易读
-5. 图案边缘要清晰锐利，避免模糊效果
-6. 考虑T恤面料特性，避免完全对称的设计
-7. 图案尺寸适中，建议不超过A4纸大小
-8. 设计要适合丝网印刷或数码直喷工艺
-9. 设计要考虑不同尺码下的视觉效果
-10. 生成的图像背景必须是透明的
-请基于以上规范生成一个适合印刷的T恤图案。`;
+import { useDesignGeneration } from "./hooks/useDesignGeneration";
 
 export const AIDesignStudio = () => {
   const [frontPrompt, setFrontPrompt] = useState("");
   const [backPrompt, setBackPrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [frontDesignImage, setFrontDesignImage] = useState("");
-  const [backDesignImage, setBackDesignImage] = useState("");
   const [tshirtStyle, setTshirtStyle] = useState("short");
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
-  const { toast } = useToast();
 
-  const handleGenerate = async (position: "front" | "back") => {
-    const prompt = position === "front" ? frontPrompt : backPrompt;
-    
-    if (!prompt.trim()) {
-      toast({
-        title: "请输入设计描述",
-        description: "请告诉AI设计师你想要什么样的设计",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      // 将用户输入的提示词与设计规范结合
-      const fullPrompt = `${prompt}\n\n${DESIGN_GUIDELINES}`;
-      
-      const response = await supabase.functions.invoke('generate-tshirt-design', {
-        body: { prompt: fullPrompt }
-      });
-
-      if (response.error) {
-        console.error('生成失败:', response.error);
-        throw new Error(response.error.message || '生成设计时出现错误');
-      }
-
-      if (!response.data?.imageUrl) {
-        throw new Error('未能获取到设计图片');
-      }
-      
-      if (position === "front") {
-        setFrontDesignImage(response.data.imageUrl);
-      } else {
-        setBackDesignImage(response.data.imageUrl);
-      }
-      
-      toast({
-        title: "设计生成成功",
-        description: `AI已为您生成新的${position === "front" ? "正面" : "背面"}设计方案`,
-      });
-    } catch (error) {
-      console.error('生成失败:', error);
-      
-      let errorMessage = '生成设计时出现错误，请稍后重试';
-      
-      if (error.message?.includes('Failed to fetch') || error.message?.includes('network')) {
-        errorMessage = '网络连接错误，请检查您的网络连接并重试';
-      } else if (error.message?.includes('timeout')) {
-        errorMessage = '请求超时，请稍后重试';
-      } else if (error.message?.includes('rate limit')) {
-        errorMessage = 'API调用次数已达上限，请稍后再试';
-      }
-      
-      toast({
-        title: "生成失败",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const {
+    isGenerating,
+    frontDesignImage,
+    backDesignImage,
+    generateDesign
+  } = useDesignGeneration();
 
   return (
     <div className="container mx-auto px-4 py-8 mt-16">
@@ -121,7 +45,7 @@ export const AIDesignStudio = () => {
                 isGenerating={isGenerating}
                 onFrontPromptChange={setFrontPrompt}
                 onBackPromptChange={setBackPrompt}
-                onGenerate={handleGenerate}
+                onGenerate={generateDesign}
               />
             </div>
           </section>
