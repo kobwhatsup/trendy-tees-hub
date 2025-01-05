@@ -29,6 +29,11 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
                   },
                 },
               },
+              className: {
+                button: 'transition-opacity',
+                container: 'transition-opacity',
+                loader: 'opacity-50',
+              },
             }}
             localization={{
               variables: {

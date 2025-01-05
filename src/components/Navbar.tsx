@@ -10,11 +10,16 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     checkUser();
@@ -47,6 +52,10 @@ export const Navbar = () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  if (isLoading) {
+    return null; // 或者显示一个加载指示器
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b">
