@@ -61,7 +61,7 @@ export const DesignInput = ({
         ).join('、')}`
       : '';
 
-    const designRules = "设计要求：图案要清晰可见,适合印制在T恤上,避免过于复杂的细节,保持简洁大方";
+    const designRules = "设计要求：图案要简洁清晰,避免大面积填充和复杂渐变,主体元素突出,细节适中,适合T恤印制工艺,确保印刷效果持久";
 
     const combinedPrompt = [basePrompt, styleText, colorText, themeText, designRules]
       .filter(text => text)
