@@ -1,75 +1,80 @@
-import { useState, useEffect } from "react";
-import { TShirtImage } from "./preview/TShirtImage";
-import { DesignOverlay } from "./preview/DesignOverlay";
-import { PreviewDialog } from "./preview/PreviewDialog";
-import html2canvas from "html2canvas";
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
+import { TShirtPreview } from "./TShirtPreview";
+import { DesignControls } from "./DesignControls";
 
 interface TShirtColorPreviewProps {
   designImage: string;
   tshirtStyle: string;
   tshirtColor: string;
   tshirtGender: string;
-  position: "front" | "back";
-  onPreviewImageChange?: (imageUrl: string) => void;
+  position?: "front" | "back";
 }
 
-export const TShirtColorPreview = ({
+interface DesignSettings {
+  scale: number;
+  rotation: number;
+  opacity: number;
+  position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
+}
+
+export const TShirtColorPreview = ({ 
   designImage,
   tshirtStyle,
   tshirtColor,
   tshirtGender,
-  position,
-  onPreviewImageChange
+  position = "front"
 }: TShirtColorPreviewProps) => {
-  const [settings, setSettings] = useState({
-    scale: 0.8,
+  const [settings, setSettings] = useState<DesignSettings>({
+    scale: 0.8, // 80%
     rotation: 0,
-    opacity: 0.9,
+    opacity: 1, // 100%
+    position: position,
     offsetX: 0,
-    offsetY: 0,
-    position
+    offsetY: position === "front" ? 30 : 10 // 根据正面/背面设置不同的垂直位置
   });
 
-  const handleSettingChange = (key: keyof typeof settings, value: number | string) => {
+  const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
     setSettings(prev => ({
       ...prev,
       [key]: value
     }));
   };
 
-  useEffect(() => {
-    if (designImage && onPreviewImageChange) {
-      const previewContainer = document.getElementById(`preview-container-${position}`);
-      if (previewContainer) {
-        html2canvas(previewContainer).then(canvas => {
-          const imageUrl = canvas.toDataURL('image/png');
-          onPreviewImageChange(imageUrl);
-        });
-      }
-    }
-  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position, onPreviewImageChange]);
-
   return (
-    <PreviewDialog
-      color={tshirtColor}
-      style={tshirtStyle}
-      gender={tshirtGender}
-      designImage={designImage}
-      settings={settings}
-      onSettingChange={handleSettingChange}
-    >
-      <div id={`preview-container-${position}`} className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
-        <TShirtImage 
-          color={tshirtColor}
-          style={tshirtStyle}
-          gender={tshirtGender}
-          position={position}
-        />
-        <DesignOverlay 
-          designImage={designImage}
-          settings={settings}
-        />
-      </div>
-    </PreviewDialog>
+    <Card>
+      <CardHeader>
+        <CardDescription className="text-center">
+          调整设计图在T恤上的效果
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-2 gap-6">
+          {/* 控制面板 */}
+          <DesignControls 
+            settings={settings}
+            onSettingChange={handleSettingChange}
+          />
+
+          {/* 预览区域 */}
+          <div>
+            <TShirtPreview 
+              color={tshirtColor} 
+              designImage={designImage} 
+              settings={settings}
+              style={tshirtStyle}
+              gender={tshirtGender}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

@@ -12,8 +12,6 @@ export const AIDesignStudio = () => {
   const [tshirtStyle, setTshirtStyle] = useState("short");
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
-  const [frontPreviewImage, setFrontPreviewImage] = useState("");
-  const [backPreviewImage, setBackPreviewImage] = useState("");
 
   const {
     isGenerating,
@@ -25,14 +23,6 @@ export const AIDesignStudio = () => {
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
     generateDesign(prompt, position);
-  };
-
-  const handlePreviewImageChange = (position: "front" | "back", imageUrl: string) => {
-    if (position === "front") {
-      setFrontPreviewImage(imageUrl);
-    } else {
-      setBackPreviewImage(imageUrl);
-    }
   };
 
   return (
@@ -107,7 +97,6 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="front"
-                  onPreviewImageChange={(imageUrl) => handlePreviewImageChange("front", imageUrl)}
                 />
               </div>
               <div>
@@ -118,7 +107,6 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="back"
-                  onPreviewImageChange={(imageUrl) => handlePreviewImageChange("back", imageUrl)}
                 />
               </div>
             </div>
@@ -136,8 +124,6 @@ export const AIDesignStudio = () => {
                 tshirtGender={tshirtGender}
                 frontDesignImage={frontDesignImage}
                 backDesignImage={backDesignImage}
-                frontPreviewImage={frontPreviewImage}
-                backPreviewImage={backPreviewImage}
               />
             </div>
           </section>
