@@ -5,14 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { AuthSheet } from "./auth/AuthSheet";
 import { UserMenu } from "./auth/UserMenu";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -61,12 +59,12 @@ export const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b">
-      <div className="container mx-auto px-2 md:px-4">
+      <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a 
             href="/" 
-            className={`text-xl md:text-2xl font-bold bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text ${isMobile ? 'mr-2' : ''}`}
+            className="text-2xl font-bold bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text"
           >
             AI DESIGN TEE
           </a>
@@ -96,7 +94,7 @@ export const Navbar = () => {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
             {user ? (
               <UserMenu user={user} />
             ) : (
