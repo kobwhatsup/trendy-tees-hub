@@ -22,8 +22,8 @@ interface ThemeOptionsProps {
 export const ThemeOptions = ({ selectedThemes, onToggleTheme }: ThemeOptionsProps) => {
   return (
     <div>
-      <h3 className="text-sm font-medium mb-3">主题元素</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <h3 className="text-sm font-medium mb-3 text-center">主题元素</h3>
+      <div className="grid grid-cols-6 gap-3">
         {themeOptions.map((option) => (
           <Badge
             key={option.value}

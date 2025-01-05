@@ -22,8 +22,8 @@ interface StyleOptionsProps {
 export const StyleOptions = ({ selectedStyles, onToggleStyle }: StyleOptionsProps) => {
   return (
     <div>
-      <h3 className="text-sm font-medium mb-3">设计风格</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <h3 className="text-sm font-medium mb-3 text-center">设计风格</h3>
+      <div className="grid grid-cols-6 gap-3">
         {styleOptions.map((option) => (
           <Badge
             key={option.value}

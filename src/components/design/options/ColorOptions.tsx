@@ -22,8 +22,8 @@ interface ColorOptionsProps {
 export const ColorOptions = ({ selectedColors, onToggleColor }: ColorOptionsProps) => {
   return (
     <div>
-      <h3 className="text-sm font-medium mb-3">色调选择</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <h3 className="text-sm font-medium mb-3 text-center">色调选择</h3>
+      <div className="grid grid-cols-6 gap-3">
         {colorOptions.map((option) => (
           <Badge
             key={option.value}
