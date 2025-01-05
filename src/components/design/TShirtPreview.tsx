@@ -101,9 +101,11 @@ export const TShirtPreview = ({
           <PreviewContent />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl w-[90vw] h-[90vh]">
+      <DialogContent className="max-w-3xl w-[90vw] max-h-[90vh] p-4">
         <div className="w-full h-full flex items-center justify-center">
-          <PreviewContent />
+          <div className="w-full max-h-full overflow-hidden">
+            <PreviewContent />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
