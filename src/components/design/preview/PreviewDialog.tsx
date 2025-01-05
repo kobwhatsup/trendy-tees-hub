@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/dialog";
 import { TShirtImage } from "./TShirtImage";
 import { DesignOverlay } from "./DesignOverlay";
+import { ReactNode } from "react";
 
 interface PreviewDialogProps {
   color: string;
@@ -19,6 +20,7 @@ interface PreviewDialogProps {
     offsetX: number;
     offsetY: number;
   };
+  children?: ReactNode;
 }
 
 export const PreviewDialog = ({ 
@@ -26,25 +28,28 @@ export const PreviewDialog = ({
   style, 
   gender,
   designImage, 
-  settings 
+  settings,
+  children 
 }: PreviewDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-full cursor-zoom-in">
-          <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
-            <TShirtImage 
-              color={color}
-              style={style}
-              gender={gender}
-              position={settings.position}
-            />
-            <DesignOverlay 
-              designImage={designImage}
-              settings={settings}
-            />
-          </div>
-        </button>
+        {children || (
+          <button className="w-full cursor-zoom-in">
+            <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
+              <TShirtImage 
+                color={color}
+                style={style}
+                gender={gender}
+                position={settings.position}
+              />
+              <DesignOverlay 
+                designImage={designImage}
+                settings={settings}
+              />
+            </div>
+          </button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-3xl w-[90vw] h-[85vh] p-6">
         <div className="w-full h-full flex items-center justify-center">

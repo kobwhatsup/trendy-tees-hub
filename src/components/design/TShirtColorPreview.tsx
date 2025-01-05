@@ -40,7 +40,7 @@ export const TShirtColorPreview = ({
         });
       }
     }
-  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position]);
+  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position, onPreviewImageChange]);
 
   return (
     <PreviewDialog
