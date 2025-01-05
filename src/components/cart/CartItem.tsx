@@ -32,6 +32,20 @@ export const CartItem = ({
     return `${genderText}${styleText}`;
   };
 
+  // 确保图片URL是有效的
+  const getValidImageUrl = (url: string | null) => {
+    if (!url) return null;
+    
+    // 如果是完整的URL，直接返回
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // 如果是相对路径，添加基础URL
+    // 注意：这里需要根据实际的Supabase项目配置来设置正确的基础URL
+    return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${url}`;
+  };
+
   const updateQuantity = async (newQuantity: number) => {
     if (newQuantity < 1) return;
     
@@ -81,21 +95,29 @@ export const CartItem = ({
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
         {design_front && (
           <div>
-            <h3 className="font-medium mb-2">正面设计</h3>
+            <h3 className="font-medium mb-2 text-center">正面设计</h3>
             <img 
-              src={design_front} 
+              src={getValidImageUrl(design_front)} 
               alt="正面设计" 
-              className="w-full aspect-square object-cover rounded-lg"
+              className="w-full aspect-square object-contain rounded-lg"
+              onError={(e) => {
+                console.error('图片加载失败:', design_front);
+                e.currentTarget.src = '/placeholder.svg';
+              }}
             />
           </div>
         )}
         {design_back && (
           <div>
-            <h3 className="font-medium mb-2">背面设计</h3>
+            <h3 className="font-medium mb-2 text-center">背面设计</h3>
             <img 
-              src={design_back} 
+              src={getValidImageUrl(design_back)} 
               alt="背面设计" 
-              className="w-full aspect-square object-cover rounded-lg"
+              className="w-full aspect-square object-contain rounded-lg"
+              onError={(e) => {
+                console.error('图片加载失败:', design_back);
+                e.currentTarget.src = '/placeholder.svg';
+              }}
             />
           </div>
         )}
