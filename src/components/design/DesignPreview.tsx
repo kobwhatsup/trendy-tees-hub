@@ -72,7 +72,8 @@ export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
                 alt="AI生成的设计"
                 className="w-full h-full object-contain p-4"
               />
-              <Button
+              {/* 暂时隐藏去除背景按钮 */}
+              {/* <Button
                 variant="secondary"
                 size="sm"
                 className="absolute bottom-2 right-2"
@@ -81,7 +82,7 @@ export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
               >
                 <Eraser className="mr-2 h-4 w-4" />
                 {isProcessing ? "处理中..." : "去除背景"}
-              </Button>
+              </Button> */}
             </div>
           ) : (
             <div className="text-muted-foreground text-center p-4">
