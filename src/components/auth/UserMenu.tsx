@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ShoppingCart } from "lucide-react";
 
 interface UserMenuProps {
   user: any;
@@ -33,6 +34,13 @@ export const UserMenu = ({ user }: UserMenuProps) => {
 
   return (
     <div className="flex items-center space-x-4">
+      <Button 
+        variant="ghost" 
+        size="icon"
+        className="relative"
+      >
+        <ShoppingCart className="h-5 w-5" />
+      </Button>
       <span className="text-sm text-muted-foreground">
         {user.email}
       </span>
