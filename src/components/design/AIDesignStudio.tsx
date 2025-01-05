@@ -7,6 +7,21 @@ import { TShirtStyleSelector } from "./TShirtStyleSelector";
 import { TShirtColorPreview } from "./TShirtColorPreview";
 import { ConfirmDesign } from "./ConfirmDesign";
 
+// T恤设计规范
+const DESIGN_GUIDELINES = `
+请生成一个适合T恤印刷的设计图案，需要遵循以下规范:
+1. 设计要简洁清晰，避免过于复杂的细节
+2. 使用4-5种主要颜色，避免大面积纯色和复杂渐变
+3. 确保线条粗细适合印刷，最小线条粗度不低于0.5mm
+4. 如果包含文字，确保清晰易读
+5. 图案边缘要清晰锐利，避免模糊效果
+6. 考虑T恤面料特性，避免完全对称的设计
+7. 图案尺寸适中，建议不超过A4纸大小
+8. 设计要适合丝网印刷或数码直喷工艺
+9. 设计要考虑不同尺码下的视觉效果
+10. 生成的图像背景必须是透明的
+请基于以上规范生成一个适合印刷的T恤图案。`;
+
 export const AIDesignStudio = () => {
   const [frontPrompt, setFrontPrompt] = useState("");
   const [backPrompt, setBackPrompt] = useState("");
@@ -32,8 +47,11 @@ export const AIDesignStudio = () => {
 
     setIsGenerating(true);
     try {
+      // 将用户输入的提示词与设计规范结合
+      const fullPrompt = `${prompt}\n\n${DESIGN_GUIDELINES}`;
+      
       const response = await supabase.functions.invoke('generate-tshirt-design', {
-        body: { prompt: prompt }
+        body: { prompt: fullPrompt }
       });
 
       if (response.error) {
@@ -58,7 +76,6 @@ export const AIDesignStudio = () => {
     } catch (error) {
       console.error('生成失败:', error);
       
-      // 根据错误类型显示不同的错误信息
       let errorMessage = '生成设计时出现错误，请稍后重试';
       
       if (error.message?.includes('Failed to fetch') || error.message?.includes('network')) {
