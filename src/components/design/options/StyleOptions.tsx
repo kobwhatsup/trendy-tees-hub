@@ -5,7 +5,7 @@ interface StyleOption {
   value: string;
 }
 
-const styleOptions: StyleOption[] = [
+export const styleOptions: StyleOption[] = [
   { label: "写实", value: "realistic" },
   { label: "卡通", value: "cartoon" },
   { label: "抽象", value: "abstract" },

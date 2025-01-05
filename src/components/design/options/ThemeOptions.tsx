@@ -5,7 +5,7 @@ interface ThemeOption {
   value: string;
 }
 
-const themeOptions: ThemeOption[] = [
+export const themeOptions: ThemeOption[] = [
   { label: "自然", value: "nature" },
   { label: "科技", value: "tech" },
   { label: "动物", value: "animals" },

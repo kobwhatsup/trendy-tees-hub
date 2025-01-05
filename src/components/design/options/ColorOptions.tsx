@@ -5,7 +5,7 @@ interface ColorOption {
   value: string;
 }
 
-const colorOptions: ColorOption[] = [
+export const colorOptions: ColorOption[] = [
   { label: "明亮", value: "bright" },
   { label: "暗色", value: "dark" },
   { label: "柔和", value: "soft" },

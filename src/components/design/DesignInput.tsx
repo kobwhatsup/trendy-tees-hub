@@ -6,9 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { StyleOptions } from "./options/StyleOptions";
-import { ColorOptions } from "./options/ColorOptions";
-import { ThemeOptions } from "./options/ThemeOptions";
+import { StyleOptions, styleOptions } from "./options/StyleOptions";
+import { ColorOptions, colorOptions } from "./options/ColorOptions";
+import { ThemeOptions, themeOptions } from "./options/ThemeOptions";
 import { PromptInput } from "./options/PromptInput";
 
 interface DesignInputProps {
