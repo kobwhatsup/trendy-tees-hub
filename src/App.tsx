@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Design from "./pages/Design";
+import Cart from "./pages/Cart";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/cart" element={<Cart />} />
           <Route 
             path="/design" 
             element={

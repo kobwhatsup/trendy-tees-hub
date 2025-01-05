@@ -2,12 +2,15 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserMenuProps {
   user: any;
 }
 
 export const UserMenu = ({ user }: UserMenuProps) => {
+  const navigate = useNavigate();
+  
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
@@ -38,6 +41,7 @@ export const UserMenu = ({ user }: UserMenuProps) => {
         variant="ghost" 
         size="icon"
         className="relative"
+        onClick={() => navigate("/cart")}
       >
         <ShoppingCart className="h-5 w-5" />
       </Button>
