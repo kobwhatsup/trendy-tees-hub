@@ -144,7 +144,7 @@ export const AIDesignStudio = () => {
             </h2>
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-lg font-medium mb-4">正面效果</h3>
+                <h3 className="text-lg font-medium mb-4 text-center">正面效果</h3>
                 <TShirtColorPreview 
                   designImage={frontDesignImage}
                   tshirtStyle={tshirtStyle}
@@ -154,7 +154,7 @@ export const AIDesignStudio = () => {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-medium mb-4">背面效果</h3>
+                <h3 className="text-lg font-medium mb-4 text-center">背面效果</h3>
                 <TShirtColorPreview 
                   designImage={backDesignImage}
                   tshirtStyle={tshirtStyle}
