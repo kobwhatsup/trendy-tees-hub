@@ -13,8 +13,8 @@ export const HeroSection = () => {
       <div className="relative h-full flex items-center justify-center text-center pt-16">
         <div className="max-w-3xl px-4 space-y-6">
           <h1 className="flex flex-col gap-2 text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
-            <span className="whitespace-nowrap">AI设计师为你</span>
-            <span className="whitespace-nowrap">打造专属T恤</span>
+            <span className="whitespace-nowrap">AI设计师</span>
+            <span className="whitespace-nowrap">为你打造专属T恤</span>
           </h1>
           <div className="flex flex-col gap-2 text-xl text-white/90 mb-8 animate-fade-in">
             <p>输入你的创意灵感</p>
