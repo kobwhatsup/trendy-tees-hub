@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TShirtStyleSelectorProps {
   style: string;
@@ -24,6 +25,8 @@ export const TShirtStyleSelector = ({
   onColorChange,
   onGenderChange,
 }: TShirtStyleSelectorProps) => {
+  const isMobile = useIsMobile();
+  
   const colors = [
     { label: "白色", value: "white", class: "bg-white border-2 border-gray-200" },
     { label: "黑色", value: "black", class: "bg-black" },
@@ -32,15 +35,19 @@ export const TShirtStyleSelector = ({
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex justify-between items-center">
+        <div className={cn(
+          "grid grid-cols-3 gap-4",
+          isMobile && "grid-cols-1"
+        )}>
           {/* 性别选择 */}
-          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
-            <span className="text-sm font-medium mb-2 text-muted-foreground">款式性别:</span>
-            <div className="flex gap-1">
+          <div className="flex flex-col space-y-2">
+            <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
+            <div className="flex flex-col gap-2">
               <Button
                 size="sm"
                 variant={gender === "male" ? "default" : "outline"}
                 onClick={() => onGenderChange("male")}
+                className="w-full"
               >
                 男款
               </Button>
@@ -48,6 +55,7 @@ export const TShirtStyleSelector = ({
                 size="sm"
                 variant={gender === "female" ? "default" : "outline"}
                 onClick={() => onGenderChange("female")}
+                className="w-full"
               >
                 女款
               </Button>
@@ -55,13 +63,14 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 袖长选择 */}
-          <div className="flex-1 flex flex-col items-center px-4 py-2 border-r border-border">
-            <span className="text-sm font-medium mb-2 text-muted-foreground">袖长:</span>
-            <div className="flex gap-1">
+          <div className="flex flex-col space-y-2">
+            <span className="text-sm font-medium text-muted-foreground text-center">袖长:</span>
+            <div className="flex flex-col gap-2">
               <Button
                 size="sm"
                 variant={style === "short" ? "default" : "outline"}
                 onClick={() => onStyleChange("short")}
+                className="w-full"
               >
                 短袖
               </Button>
@@ -69,6 +78,7 @@ export const TShirtStyleSelector = ({
                 size="sm"
                 variant={style === "long" ? "default" : "outline"}
                 onClick={() => onStyleChange("long")}
+                className="w-full"
               >
                 长袖
               </Button>
@@ -76,19 +86,19 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 颜色选择 */}
-          <div className="flex-1 flex flex-col items-center px-4 py-2">
-            <span className="text-sm font-medium mb-2 text-muted-foreground">颜色:</span>
-            <div className="flex gap-4 items-center justify-center">
+          <div className="flex flex-col space-y-2">
+            <span className="text-sm font-medium text-muted-foreground text-center">颜色:</span>
+            <div className="flex flex-col gap-2">
               {colors.map((colorOption) => (
                 <button
                   key={colorOption.value}
                   onClick={() => onColorChange(colorOption.value)}
                   className={cn(
-                    "w-8 h-8 rounded-lg transition-all flex items-center justify-center",
+                    "w-full h-9 rounded-md transition-all flex items-center justify-center",
                     colorOption.class,
                     color === colorOption.value
-                      ? "ring-2 ring-primary ring-offset-2 scale-95"
-                      : "hover:scale-105"
+                      ? "ring-2 ring-primary ring-offset-2"
+                      : "hover:opacity-90"
                   )}
                   title={colorOption.label}
                 >
