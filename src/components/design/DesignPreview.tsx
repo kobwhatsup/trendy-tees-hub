@@ -57,8 +57,8 @@ export const DesignPreview = ({ designImage, title }: DesignPreviewProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
+      <CardHeader className="text-center">
+        <CardTitle className="text-xl font-bold">{title}</CardTitle>
         <CardDescription>
           实时查看AI生成的设计效果
         </CardDescription>
