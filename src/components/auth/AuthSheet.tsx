@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -11,8 +12,15 @@ interface AuthSheetProps {
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   // 添加调试日志
-  console.log('Supabase URL:', supabase.supabaseUrl);
-  console.log('Auth session:', supabase.auth.session);
+  useEffect(() => {
+    const logAuthDetails = async () => {
+      console.log('Supabase URL:', supabase.config.supabaseUrl);
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Auth session:', session);
+    };
+    
+    logAuthDetails();
+  }, []);
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
