@@ -9,6 +9,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { DesignImage } from "@/components/cart/DesignImage";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Eye } from "lucide-react";
 
 export const DesignCard = ({ design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -68,9 +70,55 @@ export const DesignCard = ({ design }) => {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between">
-        <Button variant="outline" onClick={() => window.location.href = '/design'}>
-          编辑设计
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Eye className="mr-2 h-4 w-4" />
+              查看设计
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>设计详情</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-6 mt-4">
+              <div className="space-y-4">
+                <h3 className="font-medium">正面设计</h3>
+                <div className="aspect-square relative">
+                  <img 
+                    src={design.design_front} 
+                    alt="正面设计图" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <img 
+                    src={design.preview_front} 
+                    alt="正面效果图" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-medium">背面设计</h3>
+                <div className="aspect-square relative">
+                  <img 
+                    src={design.design_back} 
+                    alt="背面设计图" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <img 
+                    src={design.preview_back} 
+                    alt="背面效果图" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
         <Button onClick={() => window.location.href = '/cart'}>
           加入购物车
         </Button>
