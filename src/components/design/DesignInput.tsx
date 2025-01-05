@@ -35,8 +35,8 @@ export const DesignInput = ({
 6. 图案边缘要清晰，避免模糊和过渡区域
 7. 考虑面料特性，避免需要完美对齐的对称设计
 8. 图案大小适中，建议不超过A4纸大小
-9. 确保设计适合丝网印刷或数码直喷工艺
-10. 考虑不同尺码下的图案效果，保持图案比例协调`;
+9. 确保设计适合印刷工艺
+10. 保持图案比例协调`;
 
     const combinedPrompt = [basePrompt, designRules]
       .filter(text => text)
