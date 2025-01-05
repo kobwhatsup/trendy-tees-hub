@@ -23,7 +23,7 @@ export const ConfirmDesign = ({
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async () => {
-    if (isAdding) return; // 防止重复点击
+    if (isAdding) return;
     
     setIsAdding(true);
     
@@ -39,7 +39,6 @@ export const ConfirmDesign = ({
         return;
       }
 
-      // 使用单个数据库操作添加商品
       const { error } = await supabase
         .from('cart_items')
         .insert({
@@ -55,7 +54,6 @@ export const ConfirmDesign = ({
 
       if (error) throw error;
 
-      // 触发添加到购物车动画
       if ((window as Window).showAddToCartAnimation) {
         (window as Window).showAddToCartAnimation();
       }
@@ -77,22 +75,24 @@ export const ConfirmDesign = ({
   };
 
   return (
-    <Button 
-      className="w-full" 
-      onClick={handleAddToCart}
-      disabled={isAdding}
-    >
-      {isAdding ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          正在添加到购物车...
-        </>
-      ) : (
-        <>
-          <Check className="mr-2 h-4 w-4" />
-          确认设计并加入购物车
-        </>
-      )}
-    </Button>
+    <div className="flex justify-center">
+      <Button 
+        className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity px-8 py-6 h-auto text-lg"
+        onClick={handleAddToCart}
+        disabled={isAdding}
+      >
+        {isAdding ? (
+          <>
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            正在添加到购物车...
+          </>
+        ) : (
+          <>
+            <Check className="mr-2 h-5 w-5" />
+            确认设计并加入购物车
+          </>
+        )}
+      </Button>
+    </div>
   );
 };
