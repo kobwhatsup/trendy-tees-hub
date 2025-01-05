@@ -11,10 +11,8 @@ interface AuthSheetProps {
 }
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
-  // 添加调试日志
   useEffect(() => {
     const logAuthDetails = async () => {
-      // 直接使用环境变量中的URL
       console.log('Supabase URL:', process.env.SUPABASE_URL);
       const { data: { session } } = await supabase.auth.getSession();
       console.log('Auth session:', session);
@@ -28,7 +26,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
       <SheetTrigger asChild>
         <Button>登录/注册</Button>
       </SheetTrigger>
-      <SheetContent className="w-[30vw] sm:max-w-none">
+      <SheetContent className="w-[80vw] sm:w-[30vw] sm:max-w-none">
         <div className="mt-8">
           <Auth
             supabaseClient={supabase}
