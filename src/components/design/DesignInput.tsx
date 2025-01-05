@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { StyleOptions, styleOptions } from "./options/StyleOptions";
-import { ColorOptions, colorOptions } from "./options/ColorOptions";
-import { ThemeOptions, themeOptions } from "./options/ThemeOptions";
 import { PromptInput } from "./options/PromptInput";
 
 interface DesignInputProps {
@@ -26,42 +23,8 @@ export const DesignInput = ({
   onBackPromptChange,
   onGenerate,
 }: DesignInputProps) => {
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-
-  const toggleOption = (
-    option: string,
-    selectedOptions: string[],
-    setSelectedOptions: (options: string[]) => void
-  ) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
-    }
-  };
-
   const generatePrompt = (basePrompt: string) => {
-    const styleText = selectedStyles.length > 0
-      ? `风格：${selectedStyles.map(style => 
-          styleOptions.find(opt => opt.value === style)?.label
-        ).join('、')}`
-      : '';
-    
-    const colorText = selectedColors.length > 0
-      ? `色调：${selectedColors.map(color => 
-          colorOptions.find(opt => opt.value === color)?.label
-        ).join('、')}`
-      : '';
-    
-    const themeText = selectedThemes.length > 0
-      ? `主题：${selectedThemes.map(theme => 
-          themeOptions.find(opt => opt.value === theme)?.label
-        ).join('、')}`
-      : '';
-
-    // T恤印刷设计规范
+    // 设计规范
     const designRules = `
 设计要求：
 1. 图案要简洁清晰，避免过于复杂的细节
@@ -70,12 +33,12 @@ export const DesignInput = ({
 4. 线条要清晰，不要过细，建议最小线条粗度0.5mm
 5. 文字设计要清晰易读，避免过于花哨的字体
 6. 图案边缘要清晰，避免模糊和过渡区域
-7. 考虑T恤面料特性，避免需要完美对齐的对称设计
+7. 考虑面料特性，避免需要完美对齐的对称设计
 8. 图案大小适中，建议不超过A4纸大小
 9. 确保设计适合丝网印刷或数码直喷工艺
 10. 考虑不同尺码下的图案效果，保持图案比例协调`;
 
-    const combinedPrompt = [basePrompt, styleText, colorText, themeText, designRules]
+    const combinedPrompt = [basePrompt, designRules]
       .filter(text => text)
       .join('，');
 
@@ -93,36 +56,17 @@ export const DesignInput = ({
     <Card>
       <CardContent className="pt-6">
         <CardDescription className="text-center mb-8 text-base">
-          选择设计风格和元素，或直接描述你的创意想法。可以选择只设计一面，也可以两面都设计
+          描述你的创意想法，可以选择只设计一面，也可以两面都设计
         </CardDescription>
         
-        <div className="grid grid-cols-1 gap-8">
-          <div className="space-y-8">
-            <StyleOptions 
-              selectedStyles={selectedStyles}
-              onToggleStyle={(style) => toggleOption(style, selectedStyles, setSelectedStyles)}
-            />
-            
-            <ColorOptions 
-              selectedColors={selectedColors}
-              onToggleColor={(color) => toggleOption(color, selectedColors, setSelectedColors)}
-            />
-            
-            <ThemeOptions 
-              selectedThemes={selectedThemes}
-              onToggleTheme={(theme) => toggleOption(theme, selectedThemes, setSelectedThemes)}
-            />
-          </div>
-
-          <PromptInput 
-            frontPrompt={frontPrompt}
-            backPrompt={backPrompt}
-            isGenerating={isGenerating}
-            onFrontPromptChange={onFrontPromptChange}
-            onBackPromptChange={onBackPromptChange}
-            onGenerate={handleGenerate}
-          />
-        </div>
+        <PromptInput 
+          frontPrompt={frontPrompt}
+          backPrompt={backPrompt}
+          isGenerating={isGenerating}
+          onFrontPromptChange={onFrontPromptChange}
+          onBackPromptChange={onBackPromptChange}
+          onGenerate={handleGenerate}
+        />
       </CardContent>
     </Card>
   );
