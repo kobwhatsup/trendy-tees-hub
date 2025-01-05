@@ -35,10 +35,10 @@ export const PromptInput = ({
             className="h-32"
           />
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center w-full">
           <Button
             onClick={() => onGenerate("front")}
-            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full"
+            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full w-full max-w-md mx-auto"
             disabled={isGenerating}
           >
             {isGenerating ? (
@@ -64,10 +64,10 @@ export const PromptInput = ({
             className="h-32"
           />
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center w-full">
           <Button
             onClick={() => onGenerate("back")}
-            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full"
+            className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full w-full max-w-md mx-auto"
             disabled={isGenerating}
           >
             {isGenerating ? (
