@@ -110,31 +110,39 @@ export const AIDesignStudio = () => {
           </section>
 
           {/* 步骤2：设计预览 */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">2. 设计预览</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section className="flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+              第二步 设计预览
+            </h2>
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
               <DesignPreview designImage={frontDesignImage} title="正面设计" />
               <DesignPreview designImage={backDesignImage} title="背面设计" />
             </div>
           </section>
 
           {/* 步骤3：T恤款式 */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">3. T恤款式</h2>
-            <TShirtStyleSelector
-              style={tshirtStyle}
-              color={tshirtColor}
-              gender={tshirtGender}
-              onStyleChange={setTshirtStyle}
-              onColorChange={setTshirtColor}
-              onGenderChange={setTshirtGender}
-            />
+          <section className="flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+              第三步 T恤款式
+            </h2>
+            <div className="w-full">
+              <TShirtStyleSelector
+                style={tshirtStyle}
+                color={tshirtColor}
+                gender={tshirtGender}
+                onStyleChange={setTshirtStyle}
+                onColorChange={setTshirtColor}
+                onGenderChange={setTshirtGender}
+              />
+            </div>
           </section>
 
           {/* 步骤4：T恤效果 */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">4. T恤效果</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section className="flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+              第四步 T恤效果
+            </h2>
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-lg font-medium mb-4">正面效果</h3>
                 <TShirtColorPreview 
@@ -159,15 +167,19 @@ export const AIDesignStudio = () => {
           </section>
 
           {/* 步骤5：确认设计 */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">5. 确认设计</h2>
-            <ConfirmDesign
-              tshirtStyle={tshirtStyle}
-              tshirtColor={tshirtColor}
-              tshirtGender={tshirtGender}
-              frontDesignImage={frontDesignImage}
-              backDesignImage={backDesignImage}
-            />
+          <section className="flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-4 inline-flex px-8 py-2 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white whitespace-nowrap">
+              第五步 确认设计
+            </h2>
+            <div className="w-full">
+              <ConfirmDesign
+                tshirtStyle={tshirtStyle}
+                tshirtColor={tshirtColor}
+                tshirtGender={tshirtGender}
+                frontDesignImage={frontDesignImage}
+                backDesignImage={backDesignImage}
+              />
+            </div>
           </section>
         </div>
       </div>
