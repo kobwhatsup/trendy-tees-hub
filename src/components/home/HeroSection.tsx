@@ -10,7 +10,7 @@ export const HeroSection = () => {
         <div className="absolute inset-0 bg-black/10" />
       </div>
       
-      <div className="relative h-full flex items-center justify-center text-center">
+      <div className="relative h-full flex items-center justify-center text-center pt-16">
         <div className="max-w-3xl px-4 space-y-6">
           <h1 className="flex flex-col gap-2 text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
             <span>AI设计师</span>
