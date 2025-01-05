@@ -21,7 +21,7 @@ export const TShirtColorPreview = ({
   position,
   onPreviewImageChange
 }: TShirtColorPreviewProps) => {
-  const [settings] = useState({
+  const [settings, setSettings] = useState({
     scale: 0.8,
     rotation: 0,
     opacity: 0.9,
@@ -29,6 +29,13 @@ export const TShirtColorPreview = ({
     offsetY: 0,
     position
   });
+
+  const handleSettingChange = (key: keyof typeof settings, value: number | string) => {
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
 
   useEffect(() => {
     if (designImage && onPreviewImageChange) {
@@ -49,15 +56,16 @@ export const TShirtColorPreview = ({
       gender={tshirtGender}
       designImage={designImage}
       settings={settings}
+      onSettingChange={handleSettingChange}
     >
       <div id={`preview-container-${position}`} className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
-        <TShirtImage
+        <TShirtImage 
           color={tshirtColor}
           style={tshirtStyle}
           gender={tshirtGender}
           position={position}
         />
-        <DesignOverlay
+        <DesignOverlay 
           designImage={designImage}
           settings={settings}
         />
