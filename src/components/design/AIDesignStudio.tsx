@@ -13,7 +13,9 @@ export const AIDesignStudio = () => {
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
   const [tshirtSize, setTshirtSize] = useState("M");
-  const [tshirtMaterial, setTshirtMaterial] = useState("cotton"); // 新增材质状态
+  const [tshirtMaterial, setTshirtMaterial] = useState("cotton");
+  const [frontPreviewImage, setFrontPreviewImage] = useState<string>();
+  const [backPreviewImage, setBackPreviewImage] = useState<string>();
 
   const {
     isGenerating,
@@ -25,6 +27,15 @@ export const AIDesignStudio = () => {
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
     generateDesign(prompt, position);
+  };
+
+  // 当T恤预览图更新时的处理函数
+  const handlePreviewUpdate = (position: "front" | "back", imageUrl: string) => {
+    if (position === "front") {
+      setFrontPreviewImage(imageUrl);
+    } else {
+      setBackPreviewImage(imageUrl);
+    }
   };
 
   return (
@@ -103,6 +114,7 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="front"
+                  onPreviewUpdate={(url) => handlePreviewUpdate("front", url)}
                 />
               </div>
               <div>
@@ -113,6 +125,7 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="back"
+                  onPreviewUpdate={(url) => handlePreviewUpdate("back", url)}
                 />
               </div>
             </div>
@@ -131,6 +144,8 @@ export const AIDesignStudio = () => {
                 tshirtSize={tshirtSize}
                 frontDesignImage={frontDesignImage}
                 backDesignImage={backDesignImage}
+                frontPreviewImage={frontPreviewImage}
+                backPreviewImage={backPreviewImage}
               />
             </div>
           </section>
