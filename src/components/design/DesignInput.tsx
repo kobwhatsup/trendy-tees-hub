@@ -5,6 +5,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { PromptInput } from "./options/PromptInput";
+import { DESIGN_GUIDELINES } from "./constants/designGuidelines";
 
 interface DesignInputProps {
   frontPrompt: string;
@@ -24,24 +25,7 @@ export const DesignInput = ({
   onGenerate,
 }: DesignInputProps) => {
   const generatePrompt = (basePrompt: string) => {
-    // 优化后的设计规范
-    const designRules = `
-设计要求：
-1. 主体图案要求：保持主体图案设计简洁大方，突出主要元素，避免复杂和细小的图案元素。避免密集或凌乱的排列。
-
-2. 文字图案要求：只生成文字本身，文字周围的背景为纯黑色或纯白色背景，不要有复杂背景图案。
-
-3. 色彩要求：设计图案色彩对比明显，图案中不超过3种颜色，避免过多色彩。
-
-4. 图案线条要求：使用清晰、粗细适中的线条，最小线条粗度不低于1mm。避免模糊效果，确保图案在不同尺寸下都能清晰呈现。
-
-5. 图案背景要求：主题图案或文字图案的背景图案和元素为纯黑色或纯白色背景，使主体图案更加突出。
-
-6. 图像格式要求：保存图像为支持透明背景的PNG格式。
-
-7. 印刷要求：确保设计适合T恤印刷工艺，生成的图案要能直接印在T恤上。`;
-
-    const combinedPrompt = [basePrompt, designRules]
+    const combinedPrompt = [basePrompt, DESIGN_GUIDELINES]
       .filter(text => text)
       .join('，');
 
