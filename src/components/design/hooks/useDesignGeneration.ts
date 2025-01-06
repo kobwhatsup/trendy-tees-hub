@@ -12,7 +12,9 @@ export const useDesignGeneration = () => {
   const saveImageToStorage = async (imageUrl: string, position: string) => {
     try {
       // 从OpenAI URL获取图片数据
-      const response = await fetch(imageUrl);
+      const response = await fetch(imageUrl, {
+        mode: 'no-cors' // 添加no-cors模式
+      });
       const blob = await response.blob();
       
       // 生成唯一文件名
@@ -97,6 +99,7 @@ export const useDesignGeneration = () => {
             prompt_back: position === "back" ? prompt : "",
             preview_front: position === "front" ? persistentImageUrl : frontDesignImage,
             preview_back: position === "back" ? persistentImageUrl : backDesignImage,
+            title: `设计方案-${crypto.randomUUID()}`,
           });
 
         if (draftError) {
