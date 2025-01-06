@@ -9,41 +9,6 @@ export const useDesignGeneration = () => {
   const [frontDesignImage, setFrontDesignImage] = useState("");
   const [backDesignImage, setBackDesignImage] = useState("");
 
-  const saveImageToStorage = async (imageUrl: string, position: string) => {
-    try {
-      // 使用 fetch 获取图片数据，不使用 no-cors 模式
-      const response = await fetch(imageUrl);
-      if (!response.ok) {
-        throw new Error(`获取图片失败: ${response.status} ${response.statusText}`);
-      }
-      
-      const blob = await response.blob();
-      
-      // 生成唯一文件名
-      const fileName = `${crypto.randomUUID()}-${position}.png`;
-      
-      // 上传到Supabase存储
-      const { data, error } = await supabase.storage
-        .from('design-images')
-        .upload(fileName, blob, {
-          contentType: 'image/png',
-          upsert: false
-        });
-
-      if (error) throw error;
-
-      // 获取公开访问URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('design-images')
-        .getPublicUrl(fileName);
-
-      return publicUrl;
-    } catch (error) {
-      console.error('保存图片失败:', error);
-      throw error;
-    }
-  };
-
   const generateDesign = async (prompt: string, position: "front" | "back") => {
     if (!prompt.trim()) {
       toast({
@@ -75,19 +40,11 @@ export const useDesignGeneration = () => {
 
       console.log('获取到图片URL:', response.data.imageUrl);
 
-      // 保存图片到存储
-      const persistentImageUrl = await saveImageToStorage(
-        response.data.imageUrl,
-        position
-      );
-
-      console.log('图片已保存到存储:', persistentImageUrl);
-
       // 更新状态
       if (position === "front") {
-        setFrontDesignImage(persistentImageUrl);
+        setFrontDesignImage(response.data.imageUrl);
       } else {
-        setBackDesignImage(persistentImageUrl);
+        setBackDesignImage(response.data.imageUrl);
       }
       
       toast({
@@ -102,12 +59,12 @@ export const useDesignGeneration = () => {
           .from('design_drafts')
           .insert({
             user_id: user.id,
-            design_front: position === "front" ? persistentImageUrl : frontDesignImage,
-            design_back: position === "back" ? persistentImageUrl : backDesignImage,
+            design_front: position === "front" ? response.data.imageUrl : frontDesignImage,
+            design_back: position === "back" ? response.data.imageUrl : backDesignImage,
             prompt_front: position === "front" ? prompt : "",
             prompt_back: position === "back" ? prompt : "",
-            preview_front: position === "front" ? persistentImageUrl : frontDesignImage,
-            preview_back: position === "back" ? persistentImageUrl : backDesignImage,
+            preview_front: position === "front" ? response.data.imageUrl : frontDesignImage,
+            preview_back: position === "back" ? response.data.imageUrl : backDesignImage,
             title: `设计方案-${new Date().toISOString()}`,
           });
 
