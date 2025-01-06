@@ -12,12 +12,8 @@ export const getValidImageUrl = (url: string | null) => {
   }
   
   // 获取Supabase URL
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  if (!supabaseUrl) {
-    console.error('VITE_SUPABASE_URL环境变量未设置');
-    return url;
-  }
-
+  const supabaseUrl = "https://gfraqpwyfxmpzdllsfoc.supabase.co";
+  
   // 如果是storage路径，添加完整的Supabase存储URL
   return `${supabaseUrl}/storage/v1/object/public/design-images/${url}`;
 };

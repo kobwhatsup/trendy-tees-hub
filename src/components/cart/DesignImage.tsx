@@ -24,7 +24,9 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
   console.log('图片处理:', {
     标题: title,
     原始URL: imageUrl,
-    处理后URL: validImageUrl
+    处理后URL: validImageUrl,
+    是否为完整URL: imageUrl.startsWith('http'),
+    是否为base64: imageUrl.startsWith('data:image')
   });
 
   return (
@@ -39,7 +41,10 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
             console.error('图片加载失败:', {
               标题: title,
               URL: validImageUrl,
-              错误: e
+              错误: e,
+              图片路径类型: imageUrl.startsWith('http') ? '完整URL' : 
+                          imageUrl.startsWith('data:image') ? 'base64' : 
+                          'storage路径'
             });
             setHasError(true);
           }}
