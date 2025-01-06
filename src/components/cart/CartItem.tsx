@@ -8,6 +8,8 @@ interface CartItemProps {
   id: string;
   design_front: string | null;
   design_back: string | null;
+  preview_front: string | null;
+  preview_back: string | null;
   tshirt_style: string;
   tshirt_color: string;
   tshirt_gender: string;
@@ -19,6 +21,8 @@ export const CartItem = ({
   id,
   design_front,
   design_back,
+  preview_front,
+  preview_back,
   tshirt_style,
   tshirt_color,
   tshirt_gender,
@@ -74,18 +78,34 @@ export const CartItem = ({
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg shadow">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {design_front && (
-          <DesignImage 
-            imageUrl={design_front} 
-            title="正面设计" 
-          />
-        )}
-        {design_back && (
-          <DesignImage 
-            imageUrl={design_back} 
-            title="背面设计" 
-          />
-        )}
+        <div className="space-y-4">
+          {design_front && (
+            <DesignImage 
+              imageUrl={design_front} 
+              title="正面设计" 
+            />
+          )}
+          {design_back && (
+            <DesignImage 
+              imageUrl={design_back} 
+              title="背面设计" 
+            />
+          )}
+        </div>
+        <div className="space-y-4">
+          {preview_front && (
+            <DesignImage 
+              imageUrl={preview_front} 
+              title="正面效果" 
+            />
+          )}
+          {preview_back && (
+            <DesignImage 
+              imageUrl={preview_back} 
+              title="背面效果" 
+            />
+          )}
+        </div>
       </div>
       
       <div className="flex-1 space-y-4">
