@@ -13,7 +13,9 @@ export const AIDesignStudio = () => {
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
   const [tshirtSize, setTshirtSize] = useState("M");
-  const [tshirtMaterial, setTshirtMaterial] = useState("cotton"); // 新增材质状态
+  const [tshirtMaterial, setTshirtMaterial] = useState("cotton");
+  const [frontPreviewImage, setFrontPreviewImage] = useState<string>();
+  const [backPreviewImage, setBackPreviewImage] = useState<string>();
 
   const {
     isGenerating,
@@ -103,6 +105,7 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="front"
+                  onPreviewCapture={setFrontPreviewImage}
                 />
               </div>
               <div>
@@ -113,6 +116,7 @@ export const AIDesignStudio = () => {
                   tshirtColor={tshirtColor}
                   tshirtGender={tshirtGender}
                   position="back"
+                  onPreviewCapture={setBackPreviewImage}
                 />
               </div>
             </div>
@@ -131,6 +135,8 @@ export const AIDesignStudio = () => {
                 tshirtSize={tshirtSize}
                 frontDesignImage={frontDesignImage}
                 backDesignImage={backDesignImage}
+                frontPreviewImage={frontPreviewImage}
+                backPreviewImage={backPreviewImage}
               />
             </div>
           </section>
