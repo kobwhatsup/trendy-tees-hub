@@ -20,6 +20,7 @@ export type Database = {
           quantity: number
           tshirt_color: string
           tshirt_gender: string
+          tshirt_size: string
           tshirt_style: string
           user_id: string
         }
@@ -33,6 +34,7 @@ export type Database = {
           quantity?: number
           tshirt_color: string
           tshirt_gender: string
+          tshirt_size?: string
           tshirt_style: string
           user_id: string
         }
@@ -46,6 +48,7 @@ export type Database = {
           quantity?: number
           tshirt_color?: string
           tshirt_gender?: string
+          tshirt_size?: string
           tshirt_style?: string
           user_id?: string
         }

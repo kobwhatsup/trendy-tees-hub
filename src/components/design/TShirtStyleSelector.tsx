@@ -12,18 +12,22 @@ interface TShirtStyleSelectorProps {
   style: string;
   color: string;
   gender: string;
+  size: string;
   onStyleChange: (value: string) => void;
   onColorChange: (value: string) => void;
   onGenderChange: (value: string) => void;
+  onSizeChange: (value: string) => void;
 }
 
 export const TShirtStyleSelector = ({
   style,
   color,
   gender,
+  size,
   onStyleChange,
   onColorChange,
   onGenderChange,
+  onSizeChange,
 }: TShirtStyleSelectorProps) => {
   const isMobile = useIsMobile();
   
@@ -32,10 +36,12 @@ export const TShirtStyleSelector = ({
     { label: "黑色", value: "black", class: "bg-black" },
   ];
 
+  const sizes = ["S", "M", "L", "XL", "2XL", "3XL"];
+
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* 性别选择 */}
           <div className="flex flex-col space-y-2">
             <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
@@ -79,6 +85,24 @@ export const TShirtStyleSelector = ({
               >
                 长袖
               </Button>
+            </div>
+          </div>
+
+          {/* 尺码选择 */}
+          <div className="flex flex-col space-y-2">
+            <span className="text-sm font-medium text-muted-foreground text-center">尺码:</span>
+            <div className="grid grid-cols-2 gap-2">
+              {sizes.map((sizeOption) => (
+                <Button
+                  key={sizeOption}
+                  size="sm"
+                  variant={size === sizeOption ? "default" : "outline"}
+                  onClick={() => onSizeChange(sizeOption)}
+                  className="w-full"
+                >
+                  {sizeOption}
+                </Button>
+              ))}
             </div>
           </div>
 
