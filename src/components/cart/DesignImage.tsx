@@ -9,7 +9,16 @@ interface DesignImageProps {
 export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
   const [hasError, setHasError] = useState(false);
 
-  if (!imageUrl) return null;
+  if (!imageUrl) {
+    return (
+      <div>
+        <h3 className="font-medium mb-2 text-center">{title}</h3>
+        <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-lg">
+          <p className="text-sm text-muted-foreground">暂无图片</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -19,10 +28,9 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
           src={getValidImageUrl(imageUrl)} 
           alt={title} 
           className="w-full aspect-square object-contain rounded-lg"
-          onError={(e) => {
+          onError={() => {
             console.error('图片加载失败:', imageUrl);
             setHasError(true);
-            e.currentTarget.src = '/placeholder.svg';
           }}
         />
       ) : (
