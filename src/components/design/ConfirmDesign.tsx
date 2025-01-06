@@ -42,6 +42,7 @@ export const ConfirmDesign = ({
           description: "添加商品到购物车需要先登录",
           variant: "destructive",
         });
+        setIsAdding(false);
         return;
       }
 

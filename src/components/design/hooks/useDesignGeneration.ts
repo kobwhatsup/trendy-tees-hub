@@ -42,29 +42,6 @@ export const useDesignGeneration = () => {
       } else {
         setBackDesignImage(response.data.imageUrl);
       }
-
-      // 获取当前用户
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        throw new Error('需要登录才能保存设计');
-      }
-
-      // 保存设计到数据库
-      const { error: saveError } = await supabase
-        .from('design_drafts')
-        .insert({
-          user_id: user.id,
-          design_front: position === "front" ? response.data.imageUrl : frontDesignImage,
-          design_back: position === "back" ? response.data.imageUrl : backDesignImage,
-          prompt_front: position === "front" ? prompt : null,
-          prompt_back: position === "back" ? prompt : null,
-        });
-
-      if (saveError) {
-        console.error('保存设计失败:', saveError);
-        throw new Error('保存设计时出现错误');
-      }
       
       toast({
         title: "设计生成成功",
@@ -81,8 +58,6 @@ export const useDesignGeneration = () => {
         errorMessage = '请求超时，请稍后重试';
       } else if (error.message?.includes('rate limit')) {
         errorMessage = 'API调用次数已达上限，请稍后再试';
-      } else if (error.message?.includes('需要登录')) {
-        errorMessage = '请先登录后再生成设计';
       }
       
       toast({
