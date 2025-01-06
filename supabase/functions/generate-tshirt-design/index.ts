@@ -27,9 +27,9 @@ serve(async (req) => {
 
     console.log('正在生成设计，提示词:', prompt)
 
-    // 创建一个60秒超时的AbortController
+    // 创建一个90秒超时的AbortController
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
 
     try {
       const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
@@ -45,6 +45,7 @@ serve(async (req) => {
           size: "1024x1024",
           quality: "standard",
           response_format: "url",
+          style: "natural" // 添加style参数以获得更稳定的结果
         }),
         signal: controller.signal,
       });
