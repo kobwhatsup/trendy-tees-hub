@@ -11,10 +11,12 @@ export const useDesignGeneration = () => {
 
   const saveImageToStorage = async (imageUrl: string, position: string) => {
     try {
-      // 从OpenAI URL获取图片数据
-      const response = await fetch(imageUrl, {
-        mode: 'no-cors' // 添加no-cors模式
-      });
+      // 使用 fetch 获取图片数据，不使用 no-cors 模式
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`获取图片失败: ${response.status} ${response.statusText}`);
+      }
+      
       const blob = await response.blob();
       
       // 生成唯一文件名
@@ -54,11 +56,14 @@ export const useDesignGeneration = () => {
 
     setIsGenerating(true);
     try {
+      console.log('开始生成设计...');
       const fullPrompt = `${prompt}\n\n${DESIGN_GUIDELINES}`;
       
       const response = await supabase.functions.invoke('generate-tshirt-design', {
         body: { prompt: fullPrompt }
       });
+
+      console.log('OpenAI响应:', response);
 
       if (response.error) {
         throw new Error(response.error.message || '生成设计时出现错误');
@@ -68,11 +73,15 @@ export const useDesignGeneration = () => {
         throw new Error('未能获取到设计图片');
       }
 
+      console.log('获取到图片URL:', response.data.imageUrl);
+
       // 保存图片到存储
       const persistentImageUrl = await saveImageToStorage(
         response.data.imageUrl,
         position
       );
+
+      console.log('图片已保存到存储:', persistentImageUrl);
 
       // 更新状态
       if (position === "front") {
@@ -99,7 +108,7 @@ export const useDesignGeneration = () => {
             prompt_back: position === "back" ? prompt : "",
             preview_front: position === "front" ? persistentImageUrl : frontDesignImage,
             preview_back: position === "back" ? persistentImageUrl : backDesignImage,
-            title: `设计方案-${crypto.randomUUID()}`,
+            title: `设计方案-${new Date().toISOString()}`,
           });
 
         if (draftError) {
