@@ -35,6 +35,14 @@ export const TShirtImage = ({
     }
   };
 
+  console.log('T恤模板参数:', {
+    性别: gender,
+    款式: style,
+    颜色: color,
+    位置: position,
+    模板URL: getTemplateUrl()
+  });
+
   return (
     <img 
       src={getTemplateUrl()}
