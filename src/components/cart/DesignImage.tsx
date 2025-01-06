@@ -20,16 +20,25 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
     );
   }
 
+  const validImageUrl = getValidImageUrl(imageUrl);
+  console.log('处理后的图片URL:', {
+    original: imageUrl,
+    processed: validImageUrl
+  });
+
   return (
     <div>
       <h3 className="font-medium mb-2 text-center">{title}</h3>
       {!hasError ? (
         <img 
-          src={getValidImageUrl(imageUrl)} 
+          src={validImageUrl} 
           alt={title} 
           className="w-full aspect-square object-contain rounded-lg"
-          onError={() => {
-            console.error('图片加载失败:', imageUrl);
+          onError={(e) => {
+            console.error('图片加载失败:', {
+              url: validImageUrl,
+              error: e
+            });
             setHasError(true);
           }}
         />

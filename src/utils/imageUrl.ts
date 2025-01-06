@@ -11,6 +11,11 @@ export const getValidImageUrl = (url: string | null) => {
     return url;
   }
   
-  // 如果是相对路径，添加基础URL
+  // 如果是storage路径，添加完整的Supabase存储URL
+  if (url.includes('design-images/')) {
+    return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/design-images/${url.split('design-images/')[1]}`;
+  }
+  
+  // 其他情况，尝试作为存储路径处理
   return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${url}`;
 };
