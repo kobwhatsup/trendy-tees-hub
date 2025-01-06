@@ -4,6 +4,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -11,16 +12,27 @@ interface AuthSheetProps {
 }
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
-  // 添加调试日志
   useEffect(() => {
-    const logAuthDetails = async () => {
-      // 使用 import.meta.env 替代 process.env
-      console.log('Supabase URL:', import.meta.env.SUPABASE_URL);
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Auth session:', session);
+    // 监听认证状态变化
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        // 清除本地存储的认证信息
+        window?.localStorage?.removeItem('supabase.auth.token');
+      } else if (event === 'SIGNED_IN') {
+        if (!session?.access_token || !session?.refresh_token) {
+          toast({
+            title: "登录失败",
+            description: "请重新尝试登录",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
     };
-    
-    logAuthDetails();
   }, []);
 
   return (

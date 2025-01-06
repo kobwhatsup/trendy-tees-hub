@@ -11,7 +11,9 @@ export const supabase = createClient<Database>(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true
+      detectSessionInUrl: true,
+      storage: window?.localStorage, // 确保使用localStorage存储session
+      storageKey: 'supabase.auth.token', // 指定存储key
     }
   }
 );
