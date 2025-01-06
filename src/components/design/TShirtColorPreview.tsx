@@ -1,63 +1,80 @@
-import React, { useEffect, useRef } from 'react';
-import html2canvas from 'html2canvas';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
+import { TShirtPreview } from "./TShirtPreview";
+import { DesignControls } from "./DesignControls";
 
 interface TShirtColorPreviewProps {
-  designImage?: string;
+  designImage: string;
   tshirtStyle: string;
   tshirtColor: string;
   tshirtGender: string;
-  position: "front" | "back";
-  onPreviewUpdate?: (imageUrl: string) => void;
+  position?: "front" | "back";
 }
 
-export const TShirtColorPreview = ({
+interface DesignSettings {
+  scale: number;
+  rotation: number;
+  opacity: number;
+  position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
+}
+
+export const TShirtColorPreview = ({ 
   designImage,
   tshirtStyle,
   tshirtColor,
   tshirtGender,
-  position,
-  onPreviewUpdate
+  position = "front"
 }: TShirtColorPreviewProps) => {
-  const previewRef = useRef<HTMLDivElement>(null);
+  const [settings, setSettings] = useState<DesignSettings>({
+    scale: 0.8, // 80%
+    rotation: 0,
+    opacity: 1, // 100%
+    position: position,
+    offsetX: 0,
+    offsetY: position === "front" ? 30 : 10 // 根据正面/背面设置不同的垂直位置
+  });
 
-  // 获取T恤图片路径
-  const getTshirtImage = () => {
-    const style = tshirtStyle === "short" ? "short" : "long";
-    const gender = tshirtGender === "male" ? "man" : "women";
-    const pos = position === "front" ? "front" : "back";
-    const color = tshirtColor.toLowerCase();
-    
-    return `/public/${gender}${style}${pos}${color}.jpeg`;
+  const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
-  useEffect(() => {
-    if (previewRef.current && designImage && onPreviewUpdate) {
-      html2canvas(previewRef.current).then(canvas => {
-        const imageUrl = canvas.toDataURL('image/png');
-        onPreviewUpdate(imageUrl);
-      });
-    }
-  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position]);
-
   return (
-    <div ref={previewRef} className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
-      <img
-        src={getTshirtImage()}
-        alt={`${position} view`}
-        className="w-full h-full object-contain"
-      />
-      {designImage && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <img
-            src={designImage}
-            alt="design"
-            className="w-1/2 h-auto object-contain"
-            style={{
-              filter: tshirtColor === 'black' ? 'invert(1)' : 'none'
-            }}
+    <Card>
+      <CardHeader>
+        <CardDescription className="text-center">
+          调整设计图在T恤上的效果
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-2 gap-6">
+          {/* 控制面板 */}
+          <DesignControls 
+            settings={settings}
+            onSettingChange={handleSettingChange}
           />
+
+          {/* 预览区域 */}
+          <div>
+            <TShirtPreview 
+              color={tshirtColor} 
+              designImage={designImage} 
+              settings={settings}
+              style={tshirtStyle}
+              gender={tshirtGender}
+            />
+          </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
