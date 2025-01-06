@@ -48,7 +48,7 @@ export const TShirtStyleSelector = ({
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {/* 性别选择 */}
           <div className="flex flex-col space-y-3">
-            <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
+            <span className="text-sm font-medium text-muted-foreground text-center">款式性别</span>
             <div className="flex flex-col gap-2">
               <Button
                 size="lg"
@@ -77,7 +77,7 @@ export const TShirtStyleSelector = ({
 
           {/* 袖长选择 */}
           <div className="flex flex-col space-y-3">
-            <span className="text-sm font-medium text-muted-foreground text-center">袖长:</span>
+            <span className="text-sm font-medium text-muted-foreground text-center">袖长</span>
             <div className="flex flex-col gap-2">
               <Button
                 size="lg"
@@ -106,7 +106,7 @@ export const TShirtStyleSelector = ({
 
           {/* 材质选择 */}
           <div className="flex flex-col space-y-3">
-            <span className="text-sm font-medium text-muted-foreground text-center">材质:</span>
+            <span className="text-sm font-medium text-muted-foreground text-center">材质</span>
             <div className="flex flex-col gap-2">
               <Button
                 size="lg"
@@ -125,8 +125,8 @@ export const TShirtStyleSelector = ({
           {/* 尺码选择 */}
           <div className="flex flex-col space-y-3">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">尺码:</span>
-              <SizeGuideDialog />
+              <span className="text-sm font-medium text-muted-foreground">尺码</span>
+              <SizeGuideDialog className="underline" />
             </div>
             <div className="grid grid-cols-3 gap-2">
               {sizes.map((sizeOption) => (
@@ -148,7 +148,7 @@ export const TShirtStyleSelector = ({
 
           {/* 颜色选择 */}
           <div className="flex flex-col space-y-3">
-            <span className="text-sm font-medium text-muted-foreground text-center">颜色:</span>
+            <span className="text-sm font-medium text-muted-foreground text-center">颜色</span>
             <div className="flex flex-col items-center gap-3">
               {colors.map((colorOption) => (
                 <button

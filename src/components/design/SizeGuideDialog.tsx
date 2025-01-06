@@ -9,14 +9,18 @@ import { Button } from "@/components/ui/button";
 import { RulerIcon } from "lucide-react";
 import { SizeTable } from "./SizeTable";
 
-export const SizeGuideDialog = () => {
+interface SizeGuideDialogProps {
+  className?: string;
+}
+
+export const SizeGuideDialog = ({ className }: SizeGuideDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 px-2 text-muted-foreground hover:text-primary"
+          className={`h-6 px-2 text-muted-foreground hover:text-primary ${className}`}
         >
           <RulerIcon className="h-4 w-4 mr-1" />
           尺码说明
