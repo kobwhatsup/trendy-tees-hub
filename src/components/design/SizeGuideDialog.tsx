@@ -100,6 +100,13 @@ export const SizeGuideDialog = () => {
           <p className="text-sm text-muted-foreground mt-4">
             温馨提示：由于测量工具和方法不同，1-3CM误差属于正常情况，谢谢合作
           </p>
+          <div className="mt-4">
+            <img 
+              src="/lovable-uploads/77ea334f-43ce-4238-9d15-69db11343756.png" 
+              alt="尺码示意图"
+              className="max-w-full h-auto"
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
