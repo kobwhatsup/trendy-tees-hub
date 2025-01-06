@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import "https://deno.land/x/xhr@0.1.0/mod.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,7 +41,7 @@ serve(async (req) => {
         n: 1,
         size: "1024x1024",
         quality: "standard",
-        response_format: "b64_json", // 改为直接返回base64编码的图像数据
+        response_format: "b64_json",
         style: "natural"
       })
     });
@@ -61,13 +62,13 @@ serve(async (req) => {
     // 创建Supabase客户端
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
     // 生成唯一的文件名
     const fileName = `${crypto.randomUUID()}.png`;
     
     // 上传到Supabase存储
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from('design-images')
       .upload(fileName, imageBlob, {
         contentType: 'image/png',
@@ -80,7 +81,7 @@ serve(async (req) => {
     }
 
     // 获取公开访问URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('design-images')
       .getPublicUrl(fileName);
 
