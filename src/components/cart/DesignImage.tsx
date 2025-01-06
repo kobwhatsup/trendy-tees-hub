@@ -21,9 +21,10 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
   }
 
   const validImageUrl = getValidImageUrl(imageUrl);
-  console.log('处理后的图片URL:', {
-    original: imageUrl,
-    processed: validImageUrl
+  console.log('图片处理:', {
+    标题: title,
+    原始URL: imageUrl,
+    处理后URL: validImageUrl
   });
 
   return (
@@ -36,8 +37,9 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
           className="w-full aspect-square object-contain rounded-lg"
           onError={(e) => {
             console.error('图片加载失败:', {
-              url: validImageUrl,
-              error: e
+              标题: title,
+              URL: validImageUrl,
+              错误: e
             });
             setHasError(true);
           }}
