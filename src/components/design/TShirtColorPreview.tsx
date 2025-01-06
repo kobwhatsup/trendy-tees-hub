@@ -27,28 +27,17 @@ export const TShirtColorPreview = ({
     const pos = position === "front" ? "front" : "back";
     const color = tshirtColor.toLowerCase();
     
-    return `/${gender}${style}${pos}${color}.jpeg`;
+    return `/public/${gender}${style}${pos}${color}.jpeg`;
   };
 
   useEffect(() => {
-    const capturePreview = async () => {
-      if (previewRef.current && onPreviewUpdate) {
-        try {
-          const canvas = await html2canvas(previewRef.current, {
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: null
-          });
-          const imageUrl = canvas.toDataURL('image/png');
-          onPreviewUpdate(imageUrl);
-        } catch (error) {
-          console.error('Error capturing preview:', error);
-        }
-      }
-    };
-
-    capturePreview();
-  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position, onPreviewUpdate]);
+    if (previewRef.current && designImage && onPreviewUpdate) {
+      html2canvas(previewRef.current).then(canvas => {
+        const imageUrl = canvas.toDataURL('image/png');
+        onPreviewUpdate(imageUrl);
+      });
+    }
+  }, [designImage, tshirtStyle, tshirtColor, tshirtGender, position]);
 
   return (
     <div ref={previewRef} className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
@@ -56,7 +45,6 @@ export const TShirtColorPreview = ({
         src={getTshirtImage()}
         alt={`${position} view`}
         className="w-full h-full object-contain"
-        crossOrigin="anonymous"
       />
       {designImage && (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -67,7 +55,6 @@ export const TShirtColorPreview = ({
             style={{
               filter: tshirtColor === 'black' ? 'invert(1)' : 'none'
             }}
-            crossOrigin="anonymous"
           />
         </div>
       )}
