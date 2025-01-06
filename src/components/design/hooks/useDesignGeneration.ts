@@ -8,6 +8,37 @@ export const useDesignGeneration = () => {
   const [frontDesignImage, setFrontDesignImage] = useState("");
   const [backDesignImage, setBackDesignImage] = useState("");
 
+  const saveImageToStorage = async (imageUrl: string, position: string) => {
+    try {
+      // 从OpenAI URL获取图片数据
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      // 生成唯一文件名
+      const fileName = `${crypto.randomUUID()}-${position}.png`;
+      
+      // 上传到Supabase存储
+      const { data, error } = await supabase.storage
+        .from('design-images')
+        .upload(fileName, blob, {
+          contentType: 'image/png',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      // 获取公开访问URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('design-images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('保存图片失败:', error);
+      throw error;
+    }
+  };
+
   const generateDesign = async (prompt: string, position: "front" | "back") => {
     if (!prompt.trim()) {
       toast({
@@ -20,7 +51,6 @@ export const useDesignGeneration = () => {
 
     setIsGenerating(true);
     try {
-      // 将用户输入的提示词与设计规范结合
       const fullPrompt = `${prompt}\n\n${DESIGN_GUIDELINES}`;
       
       const response = await supabase.functions.invoke('generate-tshirt-design', {
@@ -28,7 +58,6 @@ export const useDesignGeneration = () => {
       });
 
       if (response.error) {
-        console.error('生成失败:', response.error);
         throw new Error(response.error.message || '生成设计时出现错误');
       }
 
@@ -36,11 +65,17 @@ export const useDesignGeneration = () => {
         throw new Error('未能获取到设计图片');
       }
 
+      // 保存图片到存储
+      const persistentImageUrl = await saveImageToStorage(
+        response.data.imageUrl,
+        position
+      );
+
       // 更新状态
       if (position === "front") {
-        setFrontDesignImage(response.data.imageUrl);
+        setFrontDesignImage(persistentImageUrl);
       } else {
-        setBackDesignImage(response.data.imageUrl);
+        setBackDesignImage(persistentImageUrl);
       }
       
       toast({
