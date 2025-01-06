@@ -46,7 +46,10 @@ export const ConfirmDesign = ({
         return;
       }
 
-      // 保存设计方案
+      // 生成唯一的图片标识符
+      const imageId = crypto.randomUUID();
+
+      // 保存设计方案，包含所有图片URL
       const { error: draftError } = await supabase
         .from('design_drafts')
         .insert({
@@ -55,13 +58,14 @@ export const ConfirmDesign = ({
           design_back: backDesignImage,
           preview_front: frontPreviewImage,
           preview_back: backPreviewImage,
+          title: `设计方案-${imageId}`,
         })
         .select()
         .single();
 
       if (draftError) throw draftError;
 
-      // 添加到购物车
+      // 添加到购物车，确保保存所有图片URL
       const { error: cartError } = await supabase
         .from('cart_items')
         .insert({
