@@ -8,7 +8,6 @@ interface ConfirmDesignProps {
   tshirtStyle: string;
   tshirtColor: string;
   tshirtGender: string;
-  tshirtSize: string;
   frontDesignImage?: string;
   backDesignImage?: string;
   frontPreviewImage?: string;
@@ -19,7 +18,6 @@ export const ConfirmDesign = ({
   tshirtStyle, 
   tshirtColor, 
   tshirtGender,
-  tshirtSize,
   frontDesignImage,
   backDesignImage,
   frontPreviewImage,
@@ -72,7 +70,6 @@ export const ConfirmDesign = ({
           tshirt_style: tshirtStyle,
           tshirt_color: tshirtColor,
           tshirt_gender: tshirtGender,
-          tshirt_size: tshirtSize,
         })
         .select()
         .single();
