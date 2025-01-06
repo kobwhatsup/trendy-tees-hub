@@ -7,6 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SizeGuideDialog } from "./SizeGuideDialog";
 
 interface TShirtStyleSelectorProps {
   style: string;
@@ -90,7 +91,10 @@ export const TShirtStyleSelector = ({
 
           {/* 尺码选择 */}
           <div className="flex flex-col space-y-2">
-            <span className="text-sm font-medium text-muted-foreground text-center">尺码:</span>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">尺码:</span>
+              <SizeGuideDialog />
+            </div>
             <div className="grid grid-rows-2 grid-cols-3 gap-2">
               {sizes.map((sizeOption) => (
                 <Button
