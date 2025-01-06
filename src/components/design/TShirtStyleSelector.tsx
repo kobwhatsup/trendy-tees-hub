@@ -14,10 +14,12 @@ interface TShirtStyleSelectorProps {
   color: string;
   gender: string;
   size: string;
+  material: string;
   onStyleChange: (value: string) => void;
   onColorChange: (value: string) => void;
   onGenderChange: (value: string) => void;
   onSizeChange: (value: string) => void;
+  onMaterialChange: (value: string) => void;
 }
 
 export const TShirtStyleSelector = ({
@@ -25,10 +27,12 @@ export const TShirtStyleSelector = ({
   color,
   gender,
   size,
+  material,
   onStyleChange,
   onColorChange,
   onGenderChange,
   onSizeChange,
+  onMaterialChange,
 }: TShirtStyleSelectorProps) => {
   const isMobile = useIsMobile();
   
@@ -42,7 +46,7 @@ export const TShirtStyleSelector = ({
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* 性别选择 */}
           <div className="flex flex-col space-y-2">
             <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
@@ -85,6 +89,21 @@ export const TShirtStyleSelector = ({
                 className="w-full"
               >
                 长袖
+              </Button>
+            </div>
+          </div>
+
+          {/* 材质选择 */}
+          <div className="flex flex-col space-y-2">
+            <span className="text-sm font-medium text-muted-foreground text-center">材质:</span>
+            <div className="flex flex-col gap-2">
+              <Button
+                size="sm"
+                variant={material === "cotton" ? "default" : "outline"}
+                onClick={() => onMaterialChange("cotton")}
+                className="w-full"
+              >
+                纯棉标准款
               </Button>
             </div>
           </div>

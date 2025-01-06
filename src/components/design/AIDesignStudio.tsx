@@ -13,6 +13,7 @@ export const AIDesignStudio = () => {
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
   const [tshirtSize, setTshirtSize] = useState("M");
+  const [tshirtMaterial, setTshirtMaterial] = useState("cotton"); // 新增材质状态
 
   const {
     isGenerating,
@@ -78,10 +79,12 @@ export const AIDesignStudio = () => {
                 color={tshirtColor}
                 gender={tshirtGender}
                 size={tshirtSize}
+                material={tshirtMaterial}
                 onStyleChange={setTshirtStyle}
                 onColorChange={setTshirtColor}
                 onGenderChange={setTshirtGender}
                 onSizeChange={setTshirtSize}
+                onMaterialChange={setTshirtMaterial}
               />
             </div>
           </section>
