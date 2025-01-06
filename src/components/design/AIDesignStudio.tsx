@@ -12,6 +12,7 @@ export const AIDesignStudio = () => {
   const [tshirtStyle, setTshirtStyle] = useState("short");
   const [tshirtColor, setTshirtColor] = useState("white");
   const [tshirtGender, setTshirtGender] = useState("male");
+  const [tshirtSize, setTshirtSize] = useState("M"); // 添加尺码状态
 
   const {
     isGenerating,
@@ -76,9 +77,11 @@ export const AIDesignStudio = () => {
                 style={tshirtStyle}
                 color={tshirtColor}
                 gender={tshirtGender}
+                size={tshirtSize}
                 onStyleChange={setTshirtStyle}
                 onColorChange={setTshirtColor}
                 onGenderChange={setTshirtGender}
+                onSizeChange={setTshirtSize}
               />
             </div>
           </section>
@@ -122,6 +125,7 @@ export const AIDesignStudio = () => {
                 tshirtStyle={tshirtStyle}
                 tshirtColor={tshirtColor}
                 tshirtGender={tshirtGender}
+                tshirtSize={tshirtSize}
                 frontDesignImage={frontDesignImage}
                 backDesignImage={backDesignImage}
               />
