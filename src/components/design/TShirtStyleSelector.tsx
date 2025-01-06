@@ -2,7 +2,6 @@ import React from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,26 +43,32 @@ export const TShirtStyleSelector = ({
   const sizes = ["S", "M", "L", "XL", "2XL", "3XL"];
 
   return (
-    <Card>
+    <Card className="shadow-lg">
       <CardContent className="pt-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {/* 性别选择 */}
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-3">
             <span className="text-sm font-medium text-muted-foreground text-center">款式性别:</span>
             <div className="flex flex-col gap-2">
               <Button
-                size="sm"
+                size="lg"
                 variant={gender === "male" ? "default" : "outline"}
                 onClick={() => onGenderChange("male")}
-                className="w-full"
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  gender === "male" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
               >
                 男款
               </Button>
               <Button
-                size="sm"
+                size="lg"
                 variant={gender === "female" ? "default" : "outline"}
                 onClick={() => onGenderChange("female")}
-                className="w-full"
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  gender === "female" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
               >
                 女款
               </Button>
@@ -71,22 +76,28 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 袖长选择 */}
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-3">
             <span className="text-sm font-medium text-muted-foreground text-center">袖长:</span>
             <div className="flex flex-col gap-2">
               <Button
-                size="sm"
+                size="lg"
                 variant={style === "short" ? "default" : "outline"}
                 onClick={() => onStyleChange("short")}
-                className="w-full"
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  style === "short" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
               >
                 短袖
               </Button>
               <Button
-                size="sm"
+                size="lg"
                 variant={style === "long" ? "default" : "outline"}
                 onClick={() => onStyleChange("long")}
-                className="w-full"
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  style === "long" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
               >
                 长袖
               </Button>
@@ -94,14 +105,17 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 材质选择 */}
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-3">
             <span className="text-sm font-medium text-muted-foreground text-center">材质:</span>
             <div className="flex flex-col gap-2">
               <Button
-                size="sm"
+                size="lg"
                 variant={material === "cotton" ? "default" : "outline"}
                 onClick={() => onMaterialChange("cotton")}
-                className="w-full"
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  material === "cotton" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
               >
                 纯棉标准款
               </Button>
@@ -109,19 +123,22 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 尺码选择 */}
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-3">
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">尺码:</span>
               <SizeGuideDialog />
             </div>
-            <div className="grid grid-rows-2 grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {sizes.map((sizeOption) => (
                 <Button
                   key={sizeOption}
-                  size="sm"
+                  size="lg"
                   variant={size === sizeOption ? "default" : "outline"}
                   onClick={() => onSizeChange(sizeOption)}
-                  className="w-full"
+                  className={cn(
+                    "w-full rounded-md transition-all",
+                    size === sizeOption ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                  )}
                 >
                   {sizeOption}
                 </Button>
@@ -130,21 +147,20 @@ export const TShirtStyleSelector = ({
           </div>
 
           {/* 颜色选择 */}
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-3">
             <span className="text-sm font-medium text-muted-foreground text-center">颜色:</span>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col items-center gap-3">
               {colors.map((colorOption) => (
                 <button
                   key={colorOption.value}
                   onClick={() => onColorChange(colorOption.value)}
                   className={cn(
-                    "h-9 rounded-md transition-all flex items-center justify-center",
+                    "h-12 w-20 rounded-md transition-all flex items-center justify-center",
                     colorOption.class,
                     color === colorOption.value
-                      ? "ring-2 ring-primary ring-offset-2"
+                      ? "ring-2 ring-[#0EA5E9] ring-offset-2"
                       : "hover:opacity-90"
                   )}
-                  style={{ width: '64px', margin: '0 auto' }}
                   title={colorOption.label}
                 >
                   {color === colorOption.value && (
