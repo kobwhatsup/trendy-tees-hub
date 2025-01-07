@@ -28,14 +28,16 @@ export const CartSummary = ({ itemCount, onCheckout }: CartSummaryProps) => {
             </div>
           </div>
         </div>
-        <Button 
-          size="lg"
-          onClick={onCheckout}
-          disabled={itemCount === 0}
-          className="px-8"
-        >
-          立即结算
-        </Button>
+        <div className="p-[1px] rounded-md bg-gradient-to-r from-blue-400 to-red-400">
+          <Button 
+            size="lg"
+            onClick={onCheckout}
+            disabled={itemCount === 0}
+            className="px-8 bg-white hover:bg-white/90 text-foreground"
+          >
+            立即结算
+          </Button>
+        </div>
       </div>
     </div>
   );
