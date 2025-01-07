@@ -74,7 +74,7 @@ export const CartItem = ({
 
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
-      <div className="flex gap-6 p-6 bg-white rounded-lg">
+      <div className="flex gap-8 p-8 bg-white rounded-lg">
         <DesignPreview 
           design_front={design_front}
           design_back={design_back}
