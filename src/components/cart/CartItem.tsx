@@ -30,7 +30,7 @@ interface CartItemProps {
   price?: number;
 }
 
-export const CartItem = ({
+export const CartItem = ({ 
   id,
   design_front,
   design_back,

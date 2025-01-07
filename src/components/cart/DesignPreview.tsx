@@ -52,7 +52,7 @@ export const DesignPreview = ({
       {design_front && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">正面设计</h3>
-          <div className="w-32 h-32">
+          <div className="w-32 h-32 bg-gray-50 rounded-lg p-2">
             <DesignImage 
               imageUrl={design_front} 
               title="" 
@@ -63,7 +63,7 @@ export const DesignPreview = ({
       {preview_front && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
-          <div className="w-32 h-32">
+          <div className="w-32 h-32 bg-gray-50 rounded-lg p-2">
             <TShirtPreview
               color={tshirt_color}
               style={tshirt_style}
@@ -77,7 +77,7 @@ export const DesignPreview = ({
       {design_back && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">背面设计</h3>
-          <div className="w-32 h-32">
+          <div className="w-32 h-32 bg-gray-50 rounded-lg p-2">
             <DesignImage 
               imageUrl={design_back} 
               title="" 
@@ -88,7 +88,7 @@ export const DesignPreview = ({
       {preview_back && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">背面效果</h3>
-          <div className="w-32 h-32">
+          <div className="w-32 h-32 bg-gray-50 rounded-lg p-2">
             <TShirtPreview
               color={tshirt_color}
               style={tshirt_style}

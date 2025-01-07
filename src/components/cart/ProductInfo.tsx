@@ -33,26 +33,32 @@ export const ProductInfo = ({
   };
 
   return (
-    <div className="bg-blue-50 p-4 rounded-lg">
-      <h3 className="font-medium">商品信息</h3>
-      <div className="space-y-1">
-        <p className="text-sm text-muted-foreground">
-          款式：{getGenderText(gender)}
+    <div className="bg-blue-50/50 p-4 rounded-lg shadow-sm">
+      <h3 className="font-medium text-lg mb-3">商品信息</h3>
+      <div className="space-y-2">
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>款式：</span>
+          <span className="font-medium">{getGenderText(gender)}</span>
         </p>
-        <p className="text-sm text-muted-foreground">
-          袖长：{getStyleText(style)}
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>袖长：</span>
+          <span className="font-medium">{getStyleText(style)}</span>
         </p>
-        <p className="text-sm text-muted-foreground">
-          材质：{material}
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>材质：</span>
+          <span className="font-medium">{material}</span>
         </p>
-        <p className="text-sm text-muted-foreground">
-          尺码：{size}
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>尺码：</span>
+          <span className="font-medium">{size}</span>
         </p>
-        <p className="text-sm text-muted-foreground">
-          颜色：{color}
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>颜色：</span>
+          <span className="font-medium">{color}</span>
         </p>
-        <p className="text-sm text-muted-foreground">
-          价格：¥{price}
+        <p className="text-sm text-gray-600 flex justify-between">
+          <span>价格：</span>
+          <span className="font-medium text-red-500">¥{price}</span>
         </p>
       </div>
       <div className="mt-4 pt-4 border-t">
