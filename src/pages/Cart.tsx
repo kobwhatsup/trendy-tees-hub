@@ -96,7 +96,10 @@ const Cart = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
         <div className="container mx-auto px-4">
           <CartSummary 
-            itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            items={cartItems.map(item => ({
+              quantity: item.quantity,
+              price: item.price || 199
+            }))}
             onCheckout={handleCheckout}
           />
         </div>

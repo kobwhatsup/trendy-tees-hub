@@ -1,13 +1,18 @@
 import { Button } from "@/components/ui/button";
 
+interface CartItem {
+  quantity: number;
+  price: number;
+}
+
 interface CartSummaryProps {
-  itemCount: number;
+  items: CartItem[];
   onCheckout: () => void;
 }
 
-export const CartSummary = ({ itemCount, onCheckout }: CartSummaryProps) => {
-  const price = 99; // 每件T恤的价格
-  const total = price * itemCount;
+export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
     <div className="py-4">
