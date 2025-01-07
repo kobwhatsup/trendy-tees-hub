@@ -108,53 +108,61 @@ export const CartItem = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-white rounded-lg shadow">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="flex gap-6 p-6 bg-white rounded-lg shadow">
+      <div className="grid grid-cols-4 gap-4 flex-1">
         {design_front && (
           <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center">正面设计</h3>
-            <DesignImage 
-              imageUrl={design_front} 
-              title="" 
-            />
+            <h3 className="font-medium mb-2 text-center text-sm">正面设计</h3>
+            <div className="w-32 h-32">
+              <DesignImage 
+                imageUrl={design_front} 
+                title="" 
+              />
+            </div>
           </div>
         )}
         {preview_front && (
           <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center">正面效果</h3>
-            <TShirtPreview
-              color={tshirt_color}
-              style={tshirt_style}
-              gender={tshirt_gender}
-              designImage={design_front}
-              settings={front_design_settings}
-            />
+            <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
+            <div className="w-32 h-32">
+              <TShirtPreview
+                color={tshirt_color}
+                style={tshirt_style}
+                gender={tshirt_gender}
+                designImage={design_front}
+                settings={front_design_settings}
+              />
+            </div>
           </div>
         )}
         {design_back && (
           <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center">背面设计</h3>
-            <DesignImage 
-              imageUrl={design_back} 
-              title="" 
-            />
+            <h3 className="font-medium mb-2 text-center text-sm">背面设计</h3>
+            <div className="w-32 h-32">
+              <DesignImage 
+                imageUrl={design_back} 
+                title="" 
+              />
+            </div>
           </div>
         )}
         {preview_back && (
           <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center">背面效果</h3>
-            <TShirtPreview
-              color={tshirt_color}
-              style={tshirt_style}
-              gender={tshirt_gender}
-              designImage={design_back}
-              settings={back_design_settings}
-            />
+            <h3 className="font-medium mb-2 text-center text-sm">背面效果</h3>
+            <div className="w-32 h-32">
+              <TShirtPreview
+                color={tshirt_color}
+                style={tshirt_style}
+                gender={tshirt_gender}
+                designImage={design_back}
+                settings={back_design_settings}
+              />
+            </div>
           </div>
         )}
       </div>
       
-      <div className="flex justify-between items-start gap-4">
+      <div className="flex flex-col justify-between min-w-[200px]">
         <ProductInfo 
           style={tshirt_style}
           gender={tshirt_gender}
