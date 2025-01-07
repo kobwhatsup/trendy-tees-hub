@@ -108,57 +108,53 @@ export const CartItem = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg shadow">
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="grid grid-cols-1 gap-4">
-          {design_front && (
-            <div className="flex flex-col items-center">
-              <h3 className="font-medium mb-2 text-center">正面设计</h3>
-              <DesignImage 
-                imageUrl={design_front} 
-                title="" 
-              />
-            </div>
-          )}
-          {design_back && (
-            <div className="flex flex-col items-center">
-              <h3 className="font-medium mb-2 text-center">背面设计</h3>
-              <DesignImage 
-                imageUrl={design_back} 
-                title="" 
-              />
-            </div>
-          )}
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          {preview_front && (
-            <div className="flex flex-col items-center">
-              <h3 className="font-medium mb-2 text-center">正面效果</h3>
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_front}
-                settings={front_design_settings}
-              />
-            </div>
-          )}
-          {preview_back && (
-            <div className="flex flex-col items-center">
-              <h3 className="font-medium mb-2 text-center">背面效果</h3>
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_back}
-                settings={back_design_settings}
-              />
-            </div>
-          )}
-        </div>
+    <div className="flex flex-col gap-6 p-6 bg-white rounded-lg shadow">
+      <div className="grid grid-cols-4 gap-4">
+        {design_front && (
+          <div className="flex flex-col items-center">
+            <h3 className="font-medium mb-2 text-center">正面设计</h3>
+            <DesignImage 
+              imageUrl={design_front} 
+              title="" 
+            />
+          </div>
+        )}
+        {preview_front && (
+          <div className="flex flex-col items-center">
+            <h3 className="font-medium mb-2 text-center">正面效果</h3>
+            <TShirtPreview
+              color={tshirt_color}
+              style={tshirt_style}
+              gender={tshirt_gender}
+              designImage={design_front}
+              settings={front_design_settings}
+            />
+          </div>
+        )}
+        {design_back && (
+          <div className="flex flex-col items-center">
+            <h3 className="font-medium mb-2 text-center">背面设计</h3>
+            <DesignImage 
+              imageUrl={design_back} 
+              title="" 
+            />
+          </div>
+        )}
+        {preview_back && (
+          <div className="flex flex-col items-center">
+            <h3 className="font-medium mb-2 text-center">背面效果</h3>
+            <TShirtPreview
+              color={tshirt_color}
+              style={tshirt_style}
+              gender={tshirt_gender}
+              designImage={design_back}
+              settings={back_design_settings}
+            />
+          </div>
+        )}
       </div>
       
-      <div className="flex-1 space-y-4">
+      <div className="flex justify-between items-start gap-4">
         <ProductInfo 
           style={tshirt_style}
           gender={tshirt_gender}
