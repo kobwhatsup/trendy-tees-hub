@@ -23,6 +23,7 @@ interface CartItemProps {
   tshirt_style: string;
   tshirt_color: string;
   tshirt_gender: string;
+  tshirt_size: string;
   quantity: number;
   onUpdate: () => void;
   front_design_settings?: DesignSettings;
@@ -38,6 +39,7 @@ export const CartItem = ({
   tshirt_style,
   tshirt_color,
   tshirt_gender,
+  tshirt_size,
   quantity,
   onUpdate,
   front_design_settings = {
@@ -157,6 +159,8 @@ export const CartItem = ({
           style={tshirt_style}
           gender={tshirt_gender}
           color={tshirt_color}
+          size={tshirt_size}
+          material="棉"
         />
         
         <QuantityControls 
