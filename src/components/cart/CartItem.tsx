@@ -106,27 +106,27 @@ export const CartItem = ({
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg shadow">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4">
           {design_front && (
-            <div>
+            <div className="flex flex-col items-center">
               <DesignImage 
                 imageUrl={design_front} 
-                title="正面" 
+                title="正面设计" 
               />
             </div>
           )}
           {design_back && (
-            <div>
+            <div className="flex flex-col items-center">
               <DesignImage 
                 imageUrl={design_back} 
-                title="背面" 
+                title="背面设计" 
               />
             </div>
           )}
         </div>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4">
           {preview_front && (
-            <div>
+            <div className="flex flex-col items-center">
               <h3 className="font-medium mb-2 text-center">正面效果</h3>
               <TShirtPreview
                 color={tshirt_color}
@@ -138,7 +138,7 @@ export const CartItem = ({
             </div>
           )}
           {preview_back && (
-            <div>
+            <div className="flex flex-col items-center">
               <h3 className="font-medium mb-2 text-center">背面效果</h3>
               <TShirtPreview
                 color={tshirt_color}
