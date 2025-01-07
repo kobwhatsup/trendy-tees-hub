@@ -1,5 +1,5 @@
 import React from "react";
-import { ConfirmDesign } from "../DesignConfirm";
+import { ConfirmDesign } from "../ConfirmDesign";
 
 interface ConfirmDesignStepProps {
   tshirtStyle: string;
