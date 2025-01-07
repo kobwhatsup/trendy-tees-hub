@@ -72,34 +72,34 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-32">
       <Navbar />
       <div className="container mx-auto px-4 py-8 mt-16">
         <h1 className="text-2xl font-bold mb-4">购物车</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            {cartItems.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-lg shadow">
-                <p className="text-muted-foreground">购物车是空的</p>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {cartItems.map((item) => (
-                  <CartItem 
-                    key={item.id}
-                    {...item}
-                    onUpdate={fetchCartItems}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-          <div>
-            <CartSummary 
-              itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-              onCheckout={handleCheckout}
-            />
-          </div>
+        <div className="w-full">
+          {cartItems.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-lg shadow">
+              <p className="text-muted-foreground">购物车是空的</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {cartItems.map((item) => (
+                <CartItem 
+                  key={item.id}
+                  {...item}
+                  onUpdate={fetchCartItems}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
+        <div className="container mx-auto px-4">
+          <CartSummary 
+            itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            onCheckout={handleCheckout}
+          />
         </div>
       </div>
     </div>
