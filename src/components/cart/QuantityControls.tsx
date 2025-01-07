@@ -26,18 +26,20 @@ export const QuantityControls = ({
         <span className="text-sm text-gray-600">数量:</span>
         <Button
           variant="outline"
-          size="icon"
+          size="sm"
+          className="h-7 w-7"
           onClick={() => handleQuantityChange(quantity - 1)}
         >
-          <Minus className="h-4 w-4" />
+          <Minus className="h-3 w-3" />
         </Button>
-        <span className="w-8 text-center">{quantity}</span>
+        <span className="w-6 text-center">{quantity}</span>
         <Button
           variant="outline"
-          size="icon"
+          size="sm"
+          className="h-7 w-7"
           onClick={() => handleQuantityChange(quantity + 1)}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3 w-3" />
         </Button>
       </div>
     </div>
