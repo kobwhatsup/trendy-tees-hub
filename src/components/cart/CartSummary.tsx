@@ -19,10 +19,6 @@ export const CartSummary = ({ itemCount, onCheckout }: CartSummaryProps) => {
               <span className="font-medium">{itemCount}件</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">单价</span>
-              <span className="font-medium">¥{price}</span>
-            </div>
-            <div className="flex items-center gap-2">
               <span className="text-muted-foreground">总计</span>
               <span className="font-medium text-lg">¥{total}</span>
             </div>
