@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductInfo } from "./ProductInfo";
 import { DesignPreview } from "./DesignPreview";
+import { useCartItemQuantity } from "@/hooks/useCartItemQuantity";
 
 interface DesignSettings {
   scale: number;
@@ -40,34 +40,14 @@ export const CartItem = ({
   tshirt_color,
   tshirt_gender,
   tshirt_size,
-  quantity,
+  quantity: initialQuantity,
   onUpdate,
   front_design_settings,
   back_design_settings,
   price = 199
 }: CartItemProps) => {
   const { toast } = useToast();
-
-  const updateQuantity = async (newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    try {
-      const { error } = await supabase
-        .from('cart_items')
-        .update({ quantity: newQuantity })
-        .eq('id', id);
-
-      if (error) throw error;
-      onUpdate();
-    } catch (error) {
-      console.error('更新数量失败:', error);
-      toast({
-        title: "更新失败",
-        description: "更新商品数量时出错，请稍后重试",
-        variant: "destructive",
-      });
-    }
-  };
+  const { quantity, updateQuantity } = useCartItemQuantity(id, initialQuantity, onUpdate);
 
   const removeItem = async () => {
     try {
