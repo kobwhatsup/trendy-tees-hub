@@ -1,9 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { DesignImage } from "./DesignImage";
 import { ProductInfo } from "./ProductInfo";
 import { QuantityControls } from "./QuantityControls";
-import { TShirtPreview } from "../design/TShirtPreview";
+import { DesignPreview } from "./DesignPreview";
 
 interface DesignSettings {
   scale: number;
@@ -43,22 +42,8 @@ export const CartItem = ({
   tshirt_size,
   quantity,
   onUpdate,
-  front_design_settings = {
-    scale: 0.8,
-    rotation: 0,
-    opacity: 1,
-    position: "front",
-    offsetX: 0,
-    offsetY: 30
-  },
-  back_design_settings = {
-    scale: 0.8,
-    rotation: 0,
-    opacity: 1,
-    position: "back",
-    offsetX: 0,
-    offsetY: 10
-  },
+  front_design_settings,
+  back_design_settings,
   price = 199
 }: CartItemProps) => {
   const { toast } = useToast();
@@ -109,58 +94,17 @@ export const CartItem = ({
 
   return (
     <div className="flex gap-6 p-6 bg-white rounded-lg shadow">
-      <div className="grid grid-cols-4 gap-4 flex-1">
-        {design_front && (
-          <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center text-sm">正面设计</h3>
-            <div className="w-32 h-32">
-              <DesignImage 
-                imageUrl={design_front} 
-                title="" 
-              />
-            </div>
-          </div>
-        )}
-        {preview_front && (
-          <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
-            <div className="w-32 h-32">
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_front}
-                settings={front_design_settings}
-              />
-            </div>
-          </div>
-        )}
-        {design_back && (
-          <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center text-sm">背面设计</h3>
-            <div className="w-32 h-32">
-              <DesignImage 
-                imageUrl={design_back} 
-                title="" 
-              />
-            </div>
-          </div>
-        )}
-        {preview_back && (
-          <div className="flex flex-col items-center">
-            <h3 className="font-medium mb-2 text-center text-sm">背面效果</h3>
-            <div className="w-32 h-32">
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_back}
-                settings={back_design_settings}
-              />
-            </div>
-          </div>
-        )}
-      </div>
+      <DesignPreview 
+        design_front={design_front}
+        design_back={design_back}
+        preview_front={preview_front}
+        preview_back={preview_back}
+        tshirt_style={tshirt_style}
+        tshirt_color={tshirt_color}
+        tshirt_gender={tshirt_gender}
+        front_design_settings={front_design_settings}
+        back_design_settings={back_design_settings}
+      />
       
       <div className="flex flex-col justify-between min-w-[200px]">
         <ProductInfo 
