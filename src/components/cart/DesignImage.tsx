@@ -1,15 +1,14 @@
 import { getValidImageUrl } from "@/utils/imageUrl";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface DesignImageProps {
   imageUrl: string | null;
   title: string;
+  disablePreview?: boolean;
 }
 
-export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
+export const DesignImage = ({ imageUrl, title, disablePreview = false }: DesignImageProps) => {
   const [hasError, setHasError] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
 
   if (!imageUrl) {
     return (
@@ -35,36 +34,22 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
     <div>
       <h3 className="font-medium mb-2 text-center">{title}</h3>
       {!hasError ? (
-        <>
-          <img 
-            src={validImageUrl} 
-            alt={title} 
-            className="w-full aspect-square object-contain rounded-lg cursor-zoom-in"
-            onError={(e) => {
-              console.error('图片加载失败:', {
-                标题: title,
-                URL: validImageUrl,
-                错误: e,
-                图片路径类型: imageUrl.startsWith('http') ? '完整URL' : 
-                            imageUrl.startsWith('data:image') ? 'base64' : 
-                            'storage路径'
-              });
-              setHasError(true);
-            }}
-            onClick={() => setShowPreview(true)}
-          />
-          <Dialog open={showPreview} onOpenChange={setShowPreview}>
-            <DialogContent className="max-w-[90vw] max-h-[90vh] w-auto h-auto p-4 overflow-hidden">
-              <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center">
-                <img 
-                  src={validImageUrl} 
-                  alt={title} 
-                  className="max-w-full max-h-[80vh] object-contain"
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
-        </>
+        <img 
+          src={validImageUrl} 
+          alt={title} 
+          className={`w-full aspect-square object-contain rounded-lg ${!disablePreview && 'cursor-zoom-in'}`}
+          onError={(e) => {
+            console.error('图片加载失败:', {
+              标题: title,
+              URL: validImageUrl,
+              错误: e,
+              图片路径类型: imageUrl.startsWith('http') ? '完整URL' : 
+                          imageUrl.startsWith('data:image') ? 'base64' : 
+                          'storage路径'
+            });
+            setHasError(true);
+          }}
+        />
       ) : (
         <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-lg">
           <p className="text-sm text-muted-foreground">图片加载失败</p>
