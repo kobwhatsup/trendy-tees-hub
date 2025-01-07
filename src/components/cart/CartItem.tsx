@@ -109,7 +109,7 @@ export const CartItem = ({
 
   return (
     <div className="flex gap-6 p-6 bg-white rounded-lg shadow">
-      <div className="grid grid-cols-4 gap-1.5 flex-1">
+      <div className="grid grid-cols-4 gap-0.5 flex-1">
         {design_front && (
           <div className="flex flex-col items-center">
             <h3 className="font-medium mb-2 text-center text-sm">正面设计</h3>
