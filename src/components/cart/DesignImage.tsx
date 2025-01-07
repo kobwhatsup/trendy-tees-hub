@@ -54,12 +54,12 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
             onClick={() => setShowPreview(true)}
           />
           <Dialog open={showPreview} onOpenChange={setShowPreview}>
-            <DialogContent className="max-w-3xl w-[90vw] h-[85vh] p-6">
-              <div className="w-full h-full flex items-center justify-center">
+            <DialogContent className="max-w-[90vw] max-h-[90vh] w-auto h-auto p-4 overflow-hidden">
+              <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center">
                 <img 
                   src={validImageUrl} 
                   alt={title} 
-                  className="max-w-full max-h-full object-contain"
+                  className="max-w-full max-h-[80vh] object-contain"
                 />
               </div>
             </DialogContent>
