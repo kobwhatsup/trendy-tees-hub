@@ -110,24 +110,18 @@ export const CartItem = ({
           {design_front && (
             <div>
               <h3 className="font-medium mb-2 text-center">正面设计</h3>
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_front}
-                settings={front_design_settings}
+              <DesignImage 
+                imageUrl={design_front} 
+                title="正面设计" 
               />
             </div>
           )}
           {design_back && (
             <div>
               <h3 className="font-medium mb-2 text-center">背面设计</h3>
-              <TShirtPreview
-                color={tshirt_color}
-                style={tshirt_style}
-                gender={tshirt_gender}
-                designImage={design_back}
-                settings={back_design_settings}
+              <DesignImage 
+                imageUrl={design_back} 
+                title="背面设计" 
               />
             </div>
           )}
