@@ -7,6 +7,7 @@ import { TShirtEffectStep } from "./steps/TShirtEffectStep";
 import { ConfirmDesignStep } from "./steps/ConfirmDesignStep";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import type { Json } from "@/integrations/supabase/types";
 
 interface DesignSettings {
   scale: number;
@@ -91,8 +92,8 @@ export const AIDesignStudio = () => {
           tshirt_material: tshirtMaterial,
           tshirt_size: tshirtSize,
           tshirt_color: tshirtColor,
-          front_design_settings: frontDesignSettings,
-          back_design_settings: backDesignSettings,
+          front_design_settings: frontDesignSettings as Json,
+          back_design_settings: backDesignSettings as Json,
           preview_front: frontPreviewImage,
           preview_back: backPreviewImage,
           title: `设计方案-${new Date().toISOString()}`,
