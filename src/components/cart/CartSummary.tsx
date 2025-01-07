@@ -11,17 +11,15 @@ export const CartSummary = ({ itemCount, onCheckout }: CartSummaryProps) => {
 
   return (
     <div className="py-4">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">商品数量</span>
-              <span className="font-medium">{itemCount}件</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">总计</span>
-              <span className="font-medium text-lg">¥{total}</span>
-            </div>
+      <div className="flex items-center justify-end gap-8">
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">商品数量</span>
+            <span className="font-medium">{itemCount}件</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">总计</span>
+            <span className="font-medium text-lg">¥{total}</span>
           </div>
         </div>
         <Button 
