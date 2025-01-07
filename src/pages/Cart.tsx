@@ -50,7 +50,6 @@ const Cart = () => {
   }, []);
 
   const handleCheckout = async () => {
-    // TODO: 实现结算功能
     toast({
       title: "功能开发中",
       description: "支付功能即将上线",
@@ -61,7 +60,7 @@ const Cart = () => {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="container mx-auto px-4 py-4 mt-16">
           <h1 className="text-2xl font-bold mb-4">购物车</h1>
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -72,17 +71,17 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen pb-32">
+    <div className="min-h-screen pb-24">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container mx-auto px-4 py-4 mt-16">
         <h1 className="text-2xl font-bold mb-4">购物车</h1>
         <div className="w-full">
           {cartItems.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg shadow">
+            <div className="text-center py-8 bg-white rounded-lg shadow">
               <p className="text-muted-foreground">购物车是空的</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {cartItems.map((item) => (
                 <CartItem 
                   key={item.id}

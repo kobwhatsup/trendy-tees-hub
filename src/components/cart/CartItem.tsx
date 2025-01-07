@@ -74,7 +74,7 @@ export const CartItem = ({
 
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
-      <div className="flex gap-8 p-8 bg-white rounded-lg">
+      <div className="flex gap-4 p-4 bg-white rounded-lg">
         <DesignPreview 
           design_front={design_front}
           design_back={design_back}
@@ -87,7 +87,7 @@ export const CartItem = ({
           back_design_settings={back_design_settings}
         />
         
-        <div className="flex flex-col justify-between min-w-[200px]">
+        <div className="flex flex-col min-w-[200px]">
           <ProductInfo 
             style={tshirt_style}
             gender={tshirt_gender}

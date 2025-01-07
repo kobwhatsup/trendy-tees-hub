@@ -33,9 +33,9 @@ export const ProductInfo = ({
   };
 
   return (
-    <div className="bg-blue-50/50 p-4 rounded-lg shadow-sm">
-      <h3 className="font-medium text-lg mb-3">商品信息</h3>
-      <div className="space-y-2">
+    <div className="bg-blue-50/50 p-3 rounded-lg shadow-sm">
+      <h3 className="font-medium text-lg">商品信息</h3>
+      <div className="space-y-1.5 mt-2">
         <p className="text-sm text-gray-600 flex justify-between">
           <span>款式：</span>
           <span className="font-medium">{getGenderText(gender)}</span>
@@ -61,34 +61,32 @@ export const ProductInfo = ({
           <span className="font-medium text-red-500">¥{price}</span>
         </p>
       </div>
-      <div className="mt-4 pt-4 border-t">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">数量:</span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 w-7"
-              onClick={() => {
-                if (quantity <= 1) {
-                  onRemove();
-                } else {
-                  onUpdateQuantity(quantity - 1);
-                }
-              }}
-            >
-              <Minus className="h-3 w-3" />
-            </Button>
-            <span className="w-6 text-center">{quantity}</span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 w-7"
-              onClick={() => onUpdateQuantity(quantity + 1)}
-            >
-              <Plus className="h-3 w-3" />
-            </Button>
-          </div>
+      <div className="mt-3 pt-3 border-t">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">数量:</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 w-7"
+            onClick={() => {
+              if (quantity <= 1) {
+                onRemove();
+              } else {
+                onUpdateQuantity(quantity - 1);
+              }
+            }}
+          >
+            <Minus className="h-3 w-3" />
+          </Button>
+          <span className="w-6 text-center">{quantity}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 w-7"
+            onClick={() => onUpdateQuantity(quantity + 1)}
+          >
+            <Plus className="h-3 w-3" />
+          </Button>
         </div>
       </div>
     </div>
