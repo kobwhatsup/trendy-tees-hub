@@ -31,8 +31,8 @@ export const PreviewDialog = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-full cursor-zoom-in">
-          <div className="relative w-full aspect-[3/4] bg-white rounded-lg shadow-md overflow-hidden">
+        <button className="w-full h-full cursor-zoom-in">
+          <div className="relative w-full h-full bg-white rounded-lg overflow-hidden">
             <TShirtImage 
               color={color}
               style={style}

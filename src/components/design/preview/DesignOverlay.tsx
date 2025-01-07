@@ -22,7 +22,7 @@ export const DesignOverlay = ({ designImage, settings }: DesignOverlayProps) => 
       <img
         src={designImage}
         alt="T恤设计"
-        className="max-w-full max-h-full object-contain transition-all duration-200"
+        className="w-full h-full object-contain transition-all duration-200"
         style={{
           transform: `scale(${settings.scale}) rotate(${settings.rotation}deg)`,
           opacity: settings.opacity,
