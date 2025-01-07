@@ -25,8 +25,8 @@ export const ProductInfo = ({
 
   return (
     <div>
-      <h3 className="font-medium text-center mb-3">商品信息</h3>
-      <div className="space-y-1 bg-muted/50 rounded-lg p-3">
+      <h3 className="font-medium">商品信息</h3>
+      <div className="space-y-1">
         <p className="text-sm text-muted-foreground">
           款式：{getGenderText(gender)}
         </p>
