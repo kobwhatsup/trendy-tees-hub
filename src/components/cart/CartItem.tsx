@@ -2,8 +2,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductInfo } from "./ProductInfo";
 import { DesignPreview } from "./DesignPreview";
-import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
 
 interface DesignSettings {
   scale: number;
@@ -94,31 +92,33 @@ export const CartItem = ({
   };
 
   return (
-    <div className="flex gap-6 p-6 bg-white rounded-lg shadow">
-      <DesignPreview 
-        design_front={design_front}
-        design_back={design_back}
-        preview_front={preview_front}
-        preview_back={preview_back}
-        tshirt_style={tshirt_style}
-        tshirt_color={tshirt_color}
-        tshirt_gender={tshirt_gender}
-        front_design_settings={front_design_settings}
-        back_design_settings={back_design_settings}
-      />
-      
-      <div className="flex flex-col justify-between min-w-[200px]">
-        <ProductInfo 
-          style={tshirt_style}
-          gender={tshirt_gender}
-          color={tshirt_color}
-          size={tshirt_size}
-          material="棉"
-          price={price}
-          quantity={quantity}
-          onUpdateQuantity={updateQuantity}
-          onRemove={removeItem}
+    <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
+      <div className="flex gap-6 p-6 bg-white rounded-lg">
+        <DesignPreview 
+          design_front={design_front}
+          design_back={design_back}
+          preview_front={preview_front}
+          preview_back={preview_back}
+          tshirt_style={tshirt_style}
+          tshirt_color={tshirt_color}
+          tshirt_gender={tshirt_gender}
+          front_design_settings={front_design_settings}
+          back_design_settings={back_design_settings}
         />
+        
+        <div className="flex flex-col justify-between min-w-[200px]">
+          <ProductInfo 
+            style={tshirt_style}
+            gender={tshirt_gender}
+            color={tshirt_color}
+            size={tshirt_size}
+            material="棉"
+            price={price}
+            quantity={quantity}
+            onUpdateQuantity={updateQuantity}
+            onRemove={removeItem}
+          />
+        </div>
       </div>
     </div>
   );
