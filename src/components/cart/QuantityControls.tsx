@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trash2, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 
 interface QuantityControlsProps {
   quantity: number;
@@ -12,13 +12,22 @@ export const QuantityControls = ({
   onUpdateQuantity, 
   onRemove 
 }: QuantityControlsProps) => {
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity <= 0) {
+      onRemove();
+    } else {
+      onUpdateQuantity(newQuantity);
+    }
+  };
+
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
+        <span className="text-sm text-gray-600">数量:</span>
         <Button
           variant="outline"
           size="icon"
-          onClick={() => onUpdateQuantity(quantity - 1)}
+          onClick={() => handleQuantityChange(quantity - 1)}
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -26,18 +35,11 @@ export const QuantityControls = ({
         <Button
           variant="outline"
           size="icon"
-          onClick={() => onUpdateQuantity(quantity + 1)}
+          onClick={() => handleQuantityChange(quantity + 1)}
         >
           <Plus className="h-4 w-4" />
         </Button>
       </div>
-      <Button
-        variant="destructive"
-        size="icon"
-        onClick={onRemove}
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
     </div>
   );
 };
