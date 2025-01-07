@@ -109,19 +109,17 @@ export const CartItem = ({
         <div className="space-y-4">
           {design_front && (
             <div>
-              <h3 className="font-medium mb-2 text-center">正面设计</h3>
               <DesignImage 
                 imageUrl={design_front} 
-                title="正面设计" 
+                title="正面" 
               />
             </div>
           )}
           {design_back && (
             <div>
-              <h3 className="font-medium mb-2 text-center">背面设计</h3>
               <DesignImage 
                 imageUrl={design_back} 
-                title="背面设计" 
+                title="背面" 
               />
             </div>
           )}
