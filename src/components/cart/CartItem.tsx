@@ -107,26 +107,29 @@ export const CartItem = ({
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg shadow">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-4">
-          <div className="space-y-4">
-            <h3 className="font-medium mb-2 text-center">设计图案</h3>
-            {design_front && (
+          {design_front && (
+            <div>
+              <h3 className="font-medium mb-2 text-center">正面设计</h3>
               <DesignImage 
                 imageUrl={design_front} 
-                title="正面" 
+                title="正面设计" 
               />
-            )}
-            {design_back && (
+            </div>
+          )}
+          {design_back && (
+            <div>
+              <h3 className="font-medium mb-2 text-center">背面设计</h3>
               <DesignImage 
                 imageUrl={design_back} 
-                title="背面" 
+                title="背面设计" 
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
         <div className="space-y-4">
-          <div className="space-y-4">
-            <h3 className="font-medium mb-2 text-center">效果预览</h3>
-            {preview_front && (
+          {preview_front && (
+            <div>
+              <h3 className="font-medium mb-2 text-center">正面效果</h3>
               <TShirtPreview
                 color={tshirt_color}
                 style={tshirt_style}
@@ -134,8 +137,11 @@ export const CartItem = ({
                 designImage={design_front}
                 settings={front_design_settings}
               />
-            )}
-            {preview_back && (
+            </div>
+          )}
+          {preview_back && (
+            <div>
+              <h3 className="font-medium mb-2 text-center">背面效果</h3>
               <TShirtPreview
                 color={tshirt_color}
                 style={tshirt_style}
@@ -143,8 +149,8 @@ export const CartItem = ({
                 designImage={design_back}
                 settings={back_design_settings}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
       
