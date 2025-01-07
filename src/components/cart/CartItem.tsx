@@ -28,6 +28,7 @@ interface CartItemProps {
   onUpdate: () => void;
   front_design_settings?: DesignSettings;
   back_design_settings?: DesignSettings;
+  price?: number;
 }
 
 export const CartItem = ({
@@ -57,7 +58,8 @@ export const CartItem = ({
     position: "back",
     offsetX: 0,
     offsetY: 10
-  }
+  },
+  price = 199
 }: CartItemProps) => {
   const { toast } = useToast();
 
@@ -111,17 +113,19 @@ export const CartItem = ({
         <div className="grid grid-cols-1 gap-4">
           {design_front && (
             <div className="flex flex-col items-center">
+              <h3 className="font-medium mb-2 text-center">正面设计</h3>
               <DesignImage 
                 imageUrl={design_front} 
-                title="正面设计" 
+                title="" 
               />
             </div>
           )}
           {design_back && (
             <div className="flex flex-col items-center">
+              <h3 className="font-medium mb-2 text-center">背面设计</h3>
               <DesignImage 
                 imageUrl={design_back} 
-                title="背面设计" 
+                title="" 
               />
             </div>
           )}
@@ -161,6 +165,7 @@ export const CartItem = ({
           color={tshirt_color}
           size={tshirt_size}
           material="棉"
+          price={price}
         />
         
         <QuantityControls 

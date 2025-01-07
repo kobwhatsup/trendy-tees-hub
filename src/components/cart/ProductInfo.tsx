@@ -4,9 +4,17 @@ interface ProductInfoProps {
   color: string;
   size?: string;
   material?: string;
+  price?: number;
 }
 
-export const ProductInfo = ({ style, gender, color, size = 'M', material = '棉' }: ProductInfoProps) => {
+export const ProductInfo = ({ 
+  style, 
+  gender, 
+  color, 
+  size = 'M', 
+  material = '棉',
+  price = 199
+}: ProductInfoProps) => {
   const getGenderText = (gender: string) => {
     return gender === 'male' ? '男款' : '女款';
   };
@@ -33,6 +41,9 @@ export const ProductInfo = ({ style, gender, color, size = 'M', material = '棉'
         </p>
         <p className="text-sm text-muted-foreground">
           颜色：{color}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          价格：¥{price}
         </p>
       </div>
     </div>

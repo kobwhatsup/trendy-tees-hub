@@ -14,7 +14,9 @@ interface CartItemType {
   tshirt_style: string;
   tshirt_color: string;
   tshirt_gender: string;
+  tshirt_size: string;
   quantity: number;
+  price?: number;
 }
 
 const Cart = () => {
