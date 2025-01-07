@@ -32,7 +32,7 @@ export const CartSummary = ({ itemCount, onCheckout }: CartSummaryProps) => {
           size="lg"
           onClick={onCheckout}
           disabled={itemCount === 0}
-          className="px-8"
+          className="px-8 bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600"
         >
           立即结算
         </Button>
