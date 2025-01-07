@@ -1,5 +1,6 @@
 import { getValidImageUrl } from "@/utils/imageUrl";
 import { useState } from "react";
+import { PreviewDialog } from "../design/preview/PreviewDialog";
 
 interface DesignImageProps {
   imageUrl: string | null;
@@ -33,20 +34,18 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
     <div>
       <h3 className="font-medium mb-2 text-center">{title}</h3>
       {!hasError ? (
-        <img 
-          src={validImageUrl} 
-          alt={title} 
-          className="w-full aspect-square object-contain rounded-lg"
-          onError={(e) => {
-            console.error('图片加载失败:', {
-              标题: title,
-              URL: validImageUrl,
-              错误: e,
-              图片路径类型: imageUrl.startsWith('http') ? '完整URL' : 
-                          imageUrl.startsWith('data:image') ? 'base64' : 
-                          'storage路径'
-            });
-            setHasError(true);
+        <PreviewDialog
+          color="white"
+          style="short"
+          gender="male"
+          designImage={validImageUrl}
+          settings={{
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            position: "front",
+            offsetX: 0,
+            offsetY: 0
           }}
         />
       ) : (
