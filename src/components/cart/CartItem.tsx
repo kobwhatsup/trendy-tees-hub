@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProductInfo } from "./ProductInfo";
 import { DesignPreview } from "./DesignPreview";
 import { useCartItemQuantity } from "@/hooks/useCartItemQuantity";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DesignSettings {
   scale: number;
@@ -49,7 +48,6 @@ export const CartItem = ({
 }: CartItemProps) => {
   const { toast } = useToast();
   const { quantity, updateQuantity } = useCartItemQuantity(id, initialQuantity, onUpdate);
-  const isMobile = useIsMobile();
 
   const removeItem = async () => {
     try {
@@ -76,22 +74,20 @@ export const CartItem = ({
 
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
-      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-4 p-4 bg-white rounded-lg`}>
-        <div className={`${isMobile ? 'w-full' : 'w-2/3'}`}>
-          <DesignPreview 
-            design_front={design_front}
-            design_back={design_back}
-            preview_front={preview_front}
-            preview_back={preview_back}
-            tshirt_style={tshirt_style}
-            tshirt_color={tshirt_color}
-            tshirt_gender={tshirt_gender}
-            front_design_settings={front_design_settings}
-            back_design_settings={back_design_settings}
-          />
-        </div>
+      <div className="flex gap-4 p-4 bg-white rounded-lg">
+        <DesignPreview 
+          design_front={design_front}
+          design_back={design_back}
+          preview_front={preview_front}
+          preview_back={preview_back}
+          tshirt_style={tshirt_style}
+          tshirt_color={tshirt_color}
+          tshirt_gender={tshirt_gender}
+          front_design_settings={front_design_settings}
+          back_design_settings={back_design_settings}
+        />
         
-        <div className={`${isMobile ? 'w-full' : 'w-1/3'}`}>
+        <div className="flex flex-col min-w-[200px]">
           <ProductInfo 
             style={tshirt_style}
             gender={tshirt_gender}

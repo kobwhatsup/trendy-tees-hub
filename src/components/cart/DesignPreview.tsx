@@ -1,6 +1,5 @@
 import { DesignImage } from "./DesignImage";
 import { TShirtPreview } from "../design/TShirtPreview";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DesignSettings {
   scale: number;
@@ -48,14 +47,12 @@ export const DesignPreview = ({
     offsetY: 10
   }
 }: DesignPreviewProps) => {
-  const isMobile = useIsMobile();
-
   return (
-    <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-4'} gap-2`}>
+    <div className="grid grid-cols-4 gap-4 flex-1">
       {design_front && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">正面设计</h3>
-          <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-48 h-48 bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
             <DesignImage 
               imageUrl={design_front} 
               title="" 
@@ -66,7 +63,7 @@ export const DesignPreview = ({
       {preview_front && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
-          <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-48 h-48 bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
             <TShirtPreview
               color={tshirt_color}
               style={tshirt_style}
@@ -80,7 +77,7 @@ export const DesignPreview = ({
       {design_back && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">背面设计</h3>
-          <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-48 h-48 bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
             <DesignImage 
               imageUrl={design_back} 
               title="" 
@@ -91,7 +88,7 @@ export const DesignPreview = ({
       {preview_back && (
         <div className="flex flex-col items-center">
           <h3 className="font-medium mb-2 text-center text-sm">背面效果</h3>
-          <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+          <div className="w-48 h-48 bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
             <TShirtPreview
               color={tshirt_color}
               style={tshirt_style}

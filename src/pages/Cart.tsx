@@ -4,7 +4,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CartItem } from "@/components/cart/CartItem";
 import { CartSummary } from "@/components/cart/CartSummary";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CartItemType {
   id: string;
@@ -24,7 +23,6 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
   const fetchCartItems = async () => {
     try {
@@ -73,7 +71,7 @@ const Cart = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isMobile ? 'pb-32' : 'pb-24'}`}>
+    <div className="min-h-screen pb-24">
       <Navbar />
       <div className="container mx-auto px-4 py-4 mt-16">
         <h1 className="text-2xl font-bold mb-4">购物车</h1>
@@ -95,7 +93,7 @@ const Cart = () => {
           )}
         </div>
       </div>
-      <div className={`fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg ${isMobile ? 'p-4' : ''}`}>
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
         <div className="container mx-auto px-4">
           <CartSummary 
             items={cartItems.map(item => ({
