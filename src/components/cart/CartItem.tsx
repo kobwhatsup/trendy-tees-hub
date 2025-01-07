@@ -1,8 +1,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductInfo } from "./ProductInfo";
-import { QuantityControls } from "./QuantityControls";
 import { DesignPreview } from "./DesignPreview";
+import { Button } from "@/components/ui/button";
+import { Minus, Plus } from "lucide-react";
 
 interface DesignSettings {
   scale: number;
@@ -114,9 +115,6 @@ export const CartItem = ({
           size={tshirt_size}
           material="棉"
           price={price}
-        />
-        
-        <QuantityControls 
           quantity={quantity}
           onUpdateQuantity={updateQuantity}
           onRemove={removeItem}
