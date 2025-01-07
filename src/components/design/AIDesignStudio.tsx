@@ -79,6 +79,25 @@ export const AIDesignStudio = () => {
         return;
       }
 
+      // 将 DesignSettings 转换为 Json 类型
+      const frontSettingsJson = {
+        scale: frontDesignSettings.scale,
+        rotation: frontDesignSettings.rotation,
+        opacity: frontDesignSettings.opacity,
+        position: frontDesignSettings.position,
+        offsetX: frontDesignSettings.offsetX,
+        offsetY: frontDesignSettings.offsetY
+      } as unknown as Json;
+
+      const backSettingsJson = {
+        scale: backDesignSettings.scale,
+        rotation: backDesignSettings.rotation,
+        opacity: backDesignSettings.opacity,
+        position: backDesignSettings.position,
+        offsetX: backDesignSettings.offsetX,
+        offsetY: backDesignSettings.offsetY
+      } as unknown as Json;
+
       const { error } = await supabase
         .from('design_projects')
         .insert({
@@ -92,8 +111,8 @@ export const AIDesignStudio = () => {
           tshirt_material: tshirtMaterial,
           tshirt_size: tshirtSize,
           tshirt_color: tshirtColor,
-          front_design_settings: frontDesignSettings as Json,
-          back_design_settings: backDesignSettings as Json,
+          front_design_settings: frontSettingsJson,
+          back_design_settings: backSettingsJson,
           preview_front: frontPreviewImage,
           preview_back: backPreviewImage,
           title: `设计方案-${new Date().toISOString()}`,
