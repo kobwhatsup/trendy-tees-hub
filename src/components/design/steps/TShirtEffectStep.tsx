@@ -1,6 +1,15 @@
 import React from "react";
 import { TShirtColorPreview } from "../TShirtColorPreview";
 
+interface DesignSettings {
+  scale: number;
+  rotation: number;
+  opacity: number;
+  position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
+}
+
 interface TShirtEffectStepProps {
   frontDesignImage: string;
   backDesignImage: string;
@@ -9,6 +18,8 @@ interface TShirtEffectStepProps {
   tshirtGender: string;
   onFrontPreviewCapture: (url: string) => void;
   onBackPreviewCapture: (url: string) => void;
+  onFrontSettingsChange?: (settings: DesignSettings) => void;
+  onBackSettingsChange?: (settings: DesignSettings) => void;
 }
 
 export const TShirtEffectStep = ({
@@ -18,7 +29,9 @@ export const TShirtEffectStep = ({
   tshirtColor,
   tshirtGender,
   onFrontPreviewCapture,
-  onBackPreviewCapture
+  onBackPreviewCapture,
+  onFrontSettingsChange,
+  onBackSettingsChange
 }: TShirtEffectStepProps) => {
   return (
     <section className="flex flex-col items-center">
@@ -35,6 +48,7 @@ export const TShirtEffectStep = ({
             tshirtGender={tshirtGender}
             position="front"
             onPreviewCapture={onFrontPreviewCapture}
+            onSettingsChange={onFrontSettingsChange}
           />
         </div>
         <div>
@@ -46,6 +60,7 @@ export const TShirtEffectStep = ({
             tshirtGender={tshirtGender}
             position="back"
             onPreviewCapture={onBackPreviewCapture}
+            onSettingsChange={onBackSettingsChange}
           />
         </div>
       </div>

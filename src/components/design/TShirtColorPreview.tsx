@@ -16,6 +16,7 @@ interface TShirtColorPreviewProps {
   tshirtGender: string;
   position?: "front" | "back";
   onPreviewCapture?: (previewUrl: string) => void;
+  onSettingsChange?: (settings: DesignSettings) => void;
 }
 
 interface DesignSettings {
@@ -33,7 +34,8 @@ export const TShirtColorPreview = ({
   tshirtColor,
   tshirtGender,
   position = "front",
-  onPreviewCapture
+  onPreviewCapture,
+  onSettingsChange
 }: TShirtColorPreviewProps) => {
   const [settings, setSettings] = useState<DesignSettings>({
     scale: 0.8,
@@ -47,10 +49,12 @@ export const TShirtColorPreview = ({
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleSettingChange = (key: keyof DesignSettings, value: number | string) => {
-    setSettings(prev => ({
-      ...prev,
+    const newSettings = {
+      ...settings,
       [key]: value
-    }));
+    };
+    setSettings(newSettings);
+    onSettingsChange?.(newSettings);
   };
 
   useEffect(() => {
@@ -69,7 +73,6 @@ export const TShirtColorPreview = ({
         }
       };
       
-      // 当设计图或设置发生变化时捕获预览
       if (designImage) {
         capturePreview();
       }

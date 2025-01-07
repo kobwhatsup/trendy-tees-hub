@@ -1,5 +1,5 @@
 import React from "react";
-import { ConfirmDesign } from "../ConfirmDesign";
+import { ConfirmDesign } from "../DesignConfirm";
 
 interface ConfirmDesignStepProps {
   tshirtStyle: string;
@@ -10,6 +10,7 @@ interface ConfirmDesignStepProps {
   backDesignImage?: string;
   frontPreviewImage?: string;
   backPreviewImage?: string;
+  onSave: () => void;
 }
 
 export const ConfirmDesignStep = (props: ConfirmDesignStepProps) => {
@@ -18,9 +19,7 @@ export const ConfirmDesignStep = (props: ConfirmDesignStepProps) => {
       <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
         第五步 确认设计
       </h2>
-      <div className="w-full">
-        <ConfirmDesign {...props} />
-      </div>
+      <ConfirmDesign {...props} />
     </section>
   );
 };

@@ -120,6 +120,75 @@ export type Database = {
         }
         Relationships: []
       }
+      design_projects: {
+        Row: {
+          back_design_settings: Json | null
+          created_at: string
+          description: string | null
+          design_back: string | null
+          design_front: string | null
+          front_design_settings: Json | null
+          id: string
+          is_public: boolean | null
+          preview_back: string | null
+          preview_front: string | null
+          prompt_back: string | null
+          prompt_front: string | null
+          title: string | null
+          tshirt_color: string
+          tshirt_gender: string
+          tshirt_material: string
+          tshirt_size: string
+          tshirt_style: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          back_design_settings?: Json | null
+          created_at?: string
+          description?: string | null
+          design_back?: string | null
+          design_front?: string | null
+          front_design_settings?: Json | null
+          id?: string
+          is_public?: boolean | null
+          preview_back?: string | null
+          preview_front?: string | null
+          prompt_back?: string | null
+          prompt_front?: string | null
+          title?: string | null
+          tshirt_color: string
+          tshirt_gender: string
+          tshirt_material: string
+          tshirt_size: string
+          tshirt_style: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          back_design_settings?: Json | null
+          created_at?: string
+          description?: string | null
+          design_back?: string | null
+          design_front?: string | null
+          front_design_settings?: Json | null
+          id?: string
+          is_public?: boolean | null
+          preview_back?: string | null
+          preview_front?: string | null
+          prompt_back?: string | null
+          prompt_front?: string | null
+          title?: string | null
+          tshirt_color?: string
+          tshirt_gender?: string
+          tshirt_material?: string
+          tshirt_size?: string
+          tshirt_style?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       product_categories: {
         Row: {
           category_id: string

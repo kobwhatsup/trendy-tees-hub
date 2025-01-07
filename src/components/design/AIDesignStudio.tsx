@@ -5,8 +5,20 @@ import { DesignPreviewStep } from "./steps/DesignPreviewStep";
 import { TShirtStyleStep } from "./steps/TShirtStyleStep";
 import { TShirtEffectStep } from "./steps/TShirtEffectStep";
 import { ConfirmDesignStep } from "./steps/ConfirmDesignStep";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+
+interface DesignSettings {
+  scale: number;
+  rotation: number;
+  opacity: number;
+  position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
+}
 
 export const AIDesignStudio = () => {
+  const { toast } = useToast();
   const [frontPrompt, setFrontPrompt] = useState("");
   const [backPrompt, setBackPrompt] = useState("");
   const [tshirtStyle, setTshirtStyle] = useState("short");
@@ -16,6 +28,22 @@ export const AIDesignStudio = () => {
   const [tshirtMaterial, setTshirtMaterial] = useState("cotton");
   const [frontPreviewImage, setFrontPreviewImage] = useState<string>();
   const [backPreviewImage, setBackPreviewImage] = useState<string>();
+  const [frontDesignSettings, setFrontDesignSettings] = useState<DesignSettings>({
+    scale: 0.8,
+    rotation: 0,
+    opacity: 1,
+    position: "front",
+    offsetX: 0,
+    offsetY: 30
+  });
+  const [backDesignSettings, setBackDesignSettings] = useState<DesignSettings>({
+    scale: 0.8,
+    rotation: 0,
+    opacity: 1,
+    position: "back",
+    offsetX: 0,
+    offsetY: 10
+  });
 
   const {
     isGenerating,
@@ -27,6 +55,64 @@ export const AIDesignStudio = () => {
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
     generateDesign(prompt, position);
+  };
+
+  const handleSettingsChange = (position: "front" | "back", settings: DesignSettings) => {
+    if (position === "front") {
+      setFrontDesignSettings(settings);
+    } else {
+      setBackDesignSettings(settings);
+    }
+  };
+
+  const saveDesignProject = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "请先登录",
+          description: "保存设计方案需要先登录账号",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('design_projects')
+        .insert({
+          user_id: user.id,
+          prompt_front: frontPrompt,
+          prompt_back: backPrompt,
+          design_front: frontDesignImage,
+          design_back: backDesignImage,
+          tshirt_gender: tshirtGender,
+          tshirt_style: tshirtStyle,
+          tshirt_material: tshirtMaterial,
+          tshirt_size: tshirtSize,
+          tshirt_color: tshirtColor,
+          front_design_settings: frontDesignSettings,
+          back_design_settings: backDesignSettings,
+          preview_front: frontPreviewImage,
+          preview_back: backPreviewImage,
+          title: `设计方案-${new Date().toISOString()}`,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "保存成功",
+        description: "设计方案已保存",
+      });
+
+    } catch (error) {
+      console.error('保存设计方案失败:', error);
+      toast({
+        title: "保存失败",
+        description: "保存设计方案时出现错误，请重试",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -77,6 +163,8 @@ export const AIDesignStudio = () => {
             tshirtGender={tshirtGender}
             onFrontPreviewCapture={setFrontPreviewImage}
             onBackPreviewCapture={setBackPreviewImage}
+            onFrontSettingsChange={(settings) => handleSettingsChange("front", settings)}
+            onBackSettingsChange={(settings) => handleSettingsChange("back", settings)}
           />
 
           <ConfirmDesignStep
@@ -88,6 +176,7 @@ export const AIDesignStudio = () => {
             backDesignImage={backDesignImage}
             frontPreviewImage={frontPreviewImage}
             backPreviewImage={backPreviewImage}
+            onSave={saveDesignProject}
           />
         </div>
       </div>
