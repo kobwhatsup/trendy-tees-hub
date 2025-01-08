@@ -68,7 +68,6 @@ export const TShirtColorPreview = ({
             scale: 2,
             logging: true,
             onclone: (clonedDoc) => {
-              // 确保克隆的DOM中的图片已完全加载
               const images = clonedDoc.getElementsByTagName('img');
               console.log(`需要加载的图片数量: ${images.length}`);
               
@@ -122,9 +121,9 @@ export const TShirtColorPreview = ({
         }
       };
       
-      // 添加一个小延迟以确保图片完全加载
-      console.log(`准备捕获${position}面预览图，等待500ms...`);
-      const timer = setTimeout(capturePreview, 500);
+      // 添加一个更长的延迟以确保图片完全加载
+      console.log(`准备捕获${position}面预览图，等待1000ms...`);
+      const timer = setTimeout(capturePreview, 1000);
       return () => clearTimeout(timer);
     }
   }, [designImage, settings, onPreviewCapture, position]);

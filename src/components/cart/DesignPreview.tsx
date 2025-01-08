@@ -1,4 +1,5 @@
 import { DesignImage } from "./DesignImage";
+import { getValidImageUrl } from "@/utils/imageUrl";
 
 interface DesignSettings {
   scale: number;
@@ -17,8 +18,6 @@ interface DesignPreviewProps {
   tshirt_style: string;
   tshirt_color: string;
   tshirt_gender: string;
-  front_design_settings?: DesignSettings;
-  back_design_settings?: DesignSettings;
 }
 
 export const DesignPreview = ({
@@ -43,7 +42,7 @@ export const DesignPreview = ({
           <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
           <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
             <img 
-              src={preview_front} 
+              src={getValidImageUrl(preview_front)} 
               alt="正面效果"
               className="w-full h-full object-contain"
             />
@@ -64,7 +63,7 @@ export const DesignPreview = ({
           <h3 className="font-medium mb-2 text-center text-sm">背面效果</h3>
           <div className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
             <img 
-              src={preview_back} 
+              src={getValidImageUrl(preview_back)} 
               alt="背面效果"
               className="w-full h-full object-contain"
             />
