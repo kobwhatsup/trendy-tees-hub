@@ -1,25 +1,16 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { queryClient } from "@/lib/react-query";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Design from "./pages/Design";
 import Cart from "./pages/Cart";
 import MyDesigns from "./pages/MyDesigns";
-
-// 将 queryClient 实例移到组件外部
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 // 路由保护组件
 const ProtectedRoute = ({ children }) => {
