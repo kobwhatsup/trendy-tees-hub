@@ -5,15 +5,6 @@ import { DesignPreview } from "./DesignPreview";
 import { useCartItemQuantity } from "@/hooks/useCartItemQuantity";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface DesignSettings {
-  scale: number;
-  rotation: number;
-  opacity: number;
-  position: "front" | "back";
-  offsetX: number;
-  offsetY: number;
-}
-
 interface CartItemProps {
   id: string;
   design_front: string | null;
@@ -26,8 +17,6 @@ interface CartItemProps {
   tshirt_size: string;
   quantity: number;
   onUpdate: () => void;
-  front_design_settings?: DesignSettings;
-  back_design_settings?: DesignSettings;
   price?: number;
 }
 
@@ -43,8 +32,6 @@ export const CartItem = ({
   tshirt_size,
   quantity: initialQuantity,
   onUpdate,
-  front_design_settings,
-  back_design_settings,
   price = 199
 }: CartItemProps) => {
   const { toast } = useToast();
@@ -85,8 +72,6 @@ export const CartItem = ({
           tshirt_style={tshirt_style}
           tshirt_color={tshirt_color}
           tshirt_gender={tshirt_gender}
-          front_design_settings={front_design_settings}
-          back_design_settings={back_design_settings}
         />
         
         <div className={`flex flex-col ${isMobile ? 'mt-4' : 'min-w-[200px]'}`}>
