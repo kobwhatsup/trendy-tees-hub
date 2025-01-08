@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Trash } from "lucide-react";
+import { DesignPreviewGrid } from "./DesignPreviewGrid";
+import { DesignActions } from "./DesignActions";
 
 export const DesignCard = ({ design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -67,85 +63,23 @@ export const DesignCard = ({ design }) => {
     }
   };
 
-  const PreviewImage = ({ imageUrl, title }) => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div className="aspect-square relative cursor-zoom-in">
-          <img 
-            src={imageUrl} 
-            alt={title} 
-            className="w-full h-full object-contain"
-          />
-        </div>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-        <div className="aspect-square relative">
-          <img 
-            src={imageUrl} 
-            alt={title} 
-            className="w-full h-full object-contain"
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-
   return (
     <Card className="overflow-hidden">
       <CardHeader className="p-4">
-        <div className="grid grid-cols-2 gap-4">
-          <PreviewImage imageUrl={design.design_front} title="正面设计图" />
-          <PreviewImage imageUrl={design.design_back} title="背面设计图" />
-          <PreviewImage imageUrl={design.preview_front} title="正面效果图" />
-          <PreviewImage imageUrl={design.preview_back} title="背面效果图" />
-        </div>
+        <DesignPreviewGrid design={design} />
       </CardHeader>
       <CardContent className="p-4">
-        <div className="flex justify-between items-center mb-2">
-          <p className="text-sm text-muted-foreground">
-            创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
-          </p>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id={`share-${design.id}`}
-              checked={design.is_public}
-              onCheckedChange={handleShareToggle}
-              disabled={isUpdating}
-              className="data-[state=checked]:bg-green-500"
-            />
-            <Label htmlFor={`share-${design.id}`}>分享</Label>
-          </div>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
+        </p>
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex justify-between">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm">
-              <Trash className="mr-2 h-4 w-4" />
-              删除设计
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>确认删除</AlertDialogTitle>
-              <AlertDialogDescription>
-                此操作将永久删除该设计，无法恢复。确定要继续吗？
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteDesign}>
-                确认删除
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <Button onClick={() => window.location.href = '/cart'}>
-          加入购物车
-        </Button>
+      <CardFooter className="p-4 pt-0">
+        <DesignActions 
+          isPublic={design.is_public}
+          isUpdating={isUpdating}
+          onShareToggle={handleShareToggle}
+          onDelete={handleDeleteDesign}
+        />
       </CardFooter>
     </Card>
   );
