@@ -5,9 +5,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 interface DesignImageProps {
   imageUrl: string | null;
   title: string;
+  className?: string;
 }
 
-export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
+export const DesignImage = ({ imageUrl, title, className = "w-full aspect-square" }: DesignImageProps) => {
   const [hasError, setHasError] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
@@ -15,7 +16,7 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
     return (
       <div>
         <h3 className="font-medium mb-2 text-center">{title}</h3>
-        <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-lg">
+        <div className={`flex items-center justify-center bg-muted rounded-lg ${className}`}>
           <p className="text-sm text-muted-foreground">暂无图片</p>
         </div>
       </div>
@@ -23,13 +24,6 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
   }
 
   const validImageUrl = getValidImageUrl(imageUrl);
-  console.log('图片处理:', {
-    标题: title,
-    原始URL: imageUrl,
-    处理后URL: validImageUrl,
-    是否为完整URL: imageUrl.startsWith('http'),
-    是否为base64: imageUrl.startsWith('data:image')
-  });
 
   return (
     <div>
@@ -39,18 +33,8 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
           <img 
             src={validImageUrl} 
             alt={title} 
-            className="w-full aspect-square object-contain rounded-lg cursor-zoom-in"
-            onError={(e) => {
-              console.error('图片加载失败:', {
-                标题: title,
-                URL: validImageUrl,
-                错误: e,
-                图片路径类型: imageUrl.startsWith('http') ? '完整URL' : 
-                            imageUrl.startsWith('data:image') ? 'base64' : 
-                            'storage路径'
-              });
-              setHasError(true);
-            }}
+            className={`object-contain rounded-lg cursor-zoom-in ${className}`}
+            onError={() => setHasError(true)}
             onClick={() => setShowPreview(true)}
           />
           <Dialog open={showPreview} onOpenChange={setShowPreview}>
@@ -66,7 +50,7 @@ export const DesignImage = ({ imageUrl, title }: DesignImageProps) => {
           </Dialog>
         </>
       ) : (
-        <div className="w-full aspect-square flex items-center justify-center bg-muted rounded-lg">
+        <div className={`flex items-center justify-center bg-muted rounded-lg ${className}`}>
           <p className="text-sm text-muted-foreground">图片加载失败</p>
         </div>
       )}
