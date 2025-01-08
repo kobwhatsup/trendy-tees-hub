@@ -2,6 +2,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { DeleteDesignDialog } from "./DeleteDesignDialog";
+import { ShoppingCart, Share2 } from "lucide-react";
 
 interface DesignActionsProps {
   isPublic: boolean;
@@ -26,9 +27,13 @@ export const DesignActions = ({
           disabled={isUpdating}
           className="data-[state=checked]:bg-green-500"
         />
-        <Label>分享</Label>
+        <Label className="flex items-center gap-1">
+          <Share2 className="h-4 w-4" />
+          分享
+        </Label>
       </div>
       <Button onClick={() => window.location.href = '/cart'}>
+        <ShoppingCart className="mr-2 h-4 w-4" />
         加入购物车
       </Button>
     </div>
