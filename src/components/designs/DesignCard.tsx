@@ -8,9 +8,9 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
-import { DesignImage } from "@/components/cart/DesignImage";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Eye } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Trash } from "lucide-react";
 
 export const DesignCard = ({ design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -43,14 +43,64 @@ export const DesignCard = ({ design }) => {
     }
   };
 
+  const handleDeleteDesign = async () => {
+    try {
+      const { error } = await supabase
+        .from('design_drafts')
+        .delete()
+        .eq('id', design.id);
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ['my-designs'] });
+      toast({
+        title: "设计已删除",
+        description: "您的设计已成功删除",
+      });
+    } catch (error) {
+      console.error('删除设计失败:', error);
+      toast({
+        title: "删除失败",
+        description: "删除设计时出现错误，请稍后重试",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const PreviewImage = ({ imageUrl, title }) => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="aspect-square relative cursor-zoom-in">
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <div className="aspect-square relative">
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="p-4">
         <div className="grid grid-cols-2 gap-4">
-          <DesignImage imageUrl={design.design_front} title="正面设计图" />
-          <DesignImage imageUrl={design.design_back} title="背面设计图" />
-          <DesignImage imageUrl={design.preview_front} title="正面效果图" />
-          <DesignImage imageUrl={design.preview_back} title="背面效果图" />
+          <PreviewImage imageUrl={design.design_front} title="正面设计图" />
+          <PreviewImage imageUrl={design.design_back} title="背面设计图" />
+          <PreviewImage imageUrl={design.preview_front} title="正面效果图" />
+          <PreviewImage imageUrl={design.preview_back} title="背面效果图" />
         </div>
       </CardHeader>
       <CardContent className="p-4">
@@ -64,61 +114,35 @@ export const DesignCard = ({ design }) => {
               checked={design.is_public}
               onCheckedChange={handleShareToggle}
               disabled={isUpdating}
+              className="data-[state=checked]:bg-green-500"
             />
             <Label htmlFor={`share-${design.id}`}>分享</Label>
           </div>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">
-              <Eye className="mr-2 h-4 w-4" />
-              查看设计
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm">
+              <Trash className="mr-2 h-4 w-4" />
+              删除设计
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle>设计详情</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-6 mt-4">
-              <div className="space-y-4">
-                <h3 className="font-medium">正面设计</h3>
-                <div className="aspect-square relative">
-                  <img 
-                    src={design.design_front} 
-                    alt="正面设计图" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="aspect-square relative">
-                  <img 
-                    src={design.preview_front} 
-                    alt="正面效果图" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-medium">背面设计</h3>
-                <div className="aspect-square relative">
-                  <img 
-                    src={design.design_back} 
-                    alt="背面设计图" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="aspect-square relative">
-                  <img 
-                    src={design.preview_back} 
-                    alt="背面效果图" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>确认删除</AlertDialogTitle>
+              <AlertDialogDescription>
+                此操作将永久删除该设计，无法恢复。确定要继续吗？
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>取消</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteDesign}>
+                确认删除
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <Button onClick={() => window.location.href = '/cart'}>
           加入购物车
         </Button>
