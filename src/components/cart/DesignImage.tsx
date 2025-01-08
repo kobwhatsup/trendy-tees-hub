@@ -1,6 +1,7 @@
 import { getValidImageUrl } from "@/utils/imageUrl";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DesignImageProps {
   imageUrl: string | null;
@@ -11,6 +12,7 @@ interface DesignImageProps {
 export const DesignImage = ({ imageUrl, title, className = "w-full aspect-square" }: DesignImageProps) => {
   const [hasError, setHasError] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const isMobile = useIsMobile();
 
   if (!imageUrl) {
     return (
@@ -38,12 +40,18 @@ export const DesignImage = ({ imageUrl, title, className = "w-full aspect-square
             onClick={() => setShowPreview(true)}
           />
           <Dialog open={showPreview} onOpenChange={setShowPreview}>
-            <DialogContent className="max-w-[90vw] max-h-[90vh] w-auto h-auto p-4 overflow-hidden">
-              <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center">
+            <DialogContent className={`
+              ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] max-h-[90vh] w-auto h-auto p-4'}
+              overflow-hidden
+            `}>
+              <div className="relative w-full h-full flex items-center justify-center">
                 <img 
                   src={validImageUrl} 
                   alt={title} 
-                  className="max-w-full max-h-[80vh] object-contain"
+                  className={`
+                    max-w-full object-contain
+                    ${isMobile ? 'max-h-[100vh]' : 'max-h-[80vh]'}
+                  `}
                 />
               </div>
             </DialogContent>
