@@ -57,9 +57,14 @@ export const SaveDesignButton = ({
         tshirtSize,
       });
 
-      if ((window as Window).showAddToCartAnimation) {
-        (window as Window).showAddToCartAnimation();
+      // 触发购物车动画
+      if ((window as any).showAddToCartAnimation) {
+        (window as any).showAddToCartAnimation();
       }
+
+      // 触发一个自定义事件，通知购物车组件更新数量
+      const event = new CustomEvent('cart-updated');
+      window.dispatchEvent(event);
 
       toast({
         title: "添加成功",

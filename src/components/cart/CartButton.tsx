@@ -9,23 +9,28 @@ export const CartButton = () => {
   const [itemCount, setItemCount] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   
+  const fetchCartItems = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: cartItems } = await supabase
+        .from('cart_items')
+        .select('quantity')
+        .eq('user_id', user.id);
+      
+      const totalQuantity = cartItems?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+      setItemCount(totalQuantity);
+    }
+  };
+
   // 监听购物车数量变化
   useEffect(() => {
-    const fetchCartItems = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: cartItems } = await supabase
-          .from('cart_items')
-          .select('quantity')
-          .eq('user_id', user.id);
-        
-        // 计算总数量
-        const totalQuantity = cartItems?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-        setItemCount(totalQuantity);
-      }
-    };
-
     fetchCartItems();
+
+    // 监听自定义事件
+    const handleCartUpdate = () => {
+      fetchCartItems();
+    };
+    window.addEventListener('cart-updated', handleCartUpdate);
 
     // 订阅购物车变化
     const channel = supabase
@@ -44,6 +49,7 @@ export const CartButton = () => {
       .subscribe();
 
     return () => {
+      window.removeEventListener('cart-updated', handleCartUpdate);
       channel.unsubscribe();
     };
   }, []);
