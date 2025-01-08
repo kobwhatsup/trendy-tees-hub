@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      borderColor: {
+        border: "hsl(var(--border))",
+      },
       keyframes: {
         "save-to-designs": {
           "0%": { 
