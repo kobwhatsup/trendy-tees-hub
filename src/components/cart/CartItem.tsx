@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProductInfo } from "./ProductInfo";
 import { DesignPreview } from "./DesignPreview";
 import { useCartItemQuantity } from "@/hooks/useCartItemQuantity";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DesignSettings {
   scale: number;
@@ -48,6 +49,7 @@ export const CartItem = ({
 }: CartItemProps) => {
   const { toast } = useToast();
   const { quantity, updateQuantity } = useCartItemQuantity(id, initialQuantity, onUpdate);
+  const isMobile = useIsMobile();
 
   const removeItem = async () => {
     try {
@@ -74,7 +76,7 @@ export const CartItem = ({
 
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
-      <div className="flex gap-4 p-4 bg-white rounded-lg">
+      <div className={`flex ${isMobile ? 'flex-col' : 'gap-4'} p-4 bg-white rounded-lg`}>
         <DesignPreview 
           design_front={design_front}
           design_back={design_back}
@@ -87,7 +89,7 @@ export const CartItem = ({
           back_design_settings={back_design_settings}
         />
         
-        <div className="flex flex-col min-w-[200px]">
+        <div className={`flex flex-col ${isMobile ? 'mt-4' : 'min-w-[200px]'}`}>
           <ProductInfo 
             style={tshirt_style}
             gender={tshirt_gender}
