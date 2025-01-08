@@ -37,7 +37,7 @@ export default {
             opacity: "1"
           },
           "100%": { 
-            transform: "translate(calc(50vw - 100px), 0)",
+            transform: "translate(calc(-50vw + 200px), -50vh)",
             opacity: "0"
           }
         },
@@ -47,7 +47,7 @@ export default {
             opacity: "1"
           },
           "100%": { 
-            transform: "translate(calc(100vw - 50px), 0)",
+            transform: "translate(calc(50vw - 50px), -50vh)",
             opacity: "0"
           }
         }
