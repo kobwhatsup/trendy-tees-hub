@@ -28,10 +28,12 @@ export const SaveDesignButton = ({
 }: SaveDesignButtonProps) => {
   const { toast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
+  const [status, setStatus] = useState("");
 
   const handleAddToCart = async () => {
     if (isAdding) return;
     setIsAdding(true);
+    setStatus("正在验证登录状态...");
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -45,6 +47,7 @@ export const SaveDesignButton = ({
         return;
       }
 
+      setStatus("正在处理预览图...");
       await saveDesignToDatabase({
         userId: user.id,
         frontDesignImage,
@@ -73,7 +76,7 @@ export const SaveDesignButton = ({
 
       toast({
         title: "保存成功",
-        description: "设计方案已保存",
+        description: "设计方案已保存并添加到购物车",
       });
     } catch (error) {
       console.error('添加到购物车失败:', error);
@@ -84,6 +87,7 @@ export const SaveDesignButton = ({
       });
     } finally {
       setIsAdding(false);
+      setStatus("");
     }
   };
 
@@ -96,7 +100,7 @@ export const SaveDesignButton = ({
       {isAdding ? (
         <>
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-          正在添加到购物车...
+          {status || "正在处理..."}
         </>
       ) : (
         <>
