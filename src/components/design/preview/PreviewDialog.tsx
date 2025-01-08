@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { TShirtImage } from "./TShirtImage";
@@ -52,7 +51,7 @@ export const PreviewDialog = ({
         </button>
       </DialogTrigger>
       <DialogContent className={`${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-3xl w-[90vw] h-[85vh] p-6'}`}>
-        <DialogTitle className="sr-only">T恤预览</DialogTitle>
+        <VisuallyHidden>T恤预览</VisuallyHidden>
         <div className="w-full h-full flex items-center justify-center">
           <div className="relative w-full h-full">
             <div className="relative w-full h-full bg-white rounded-lg shadow-md overflow-hidden">

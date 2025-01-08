@@ -58,24 +58,55 @@ export const TShirtColorPreview = ({
   };
 
   useEffect(() => {
-    if (previewRef.current && onPreviewCapture) {
+    if (previewRef.current && onPreviewCapture && designImage) {
       const capturePreview = async () => {
         try {
+          console.log('开始捕获预览图...');
           const canvas = await html2canvas(previewRef.current!, {
             useCORS: true,
             backgroundColor: null,
             scale: 2,
+            logging: true,
+            onclone: (clonedDoc) => {
+              // 确保克隆的DOM中的图片已完全加载
+              const images = clonedDoc.getElementsByTagName('img');
+              return new Promise((resolve) => {
+                let loadedImages = 0;
+                const totalImages = images.length;
+                
+                if (totalImages === 0) resolve(clonedDoc);
+                
+                Array.from(images).forEach(img => {
+                  if (img.complete) {
+                    loadedImages++;
+                    if (loadedImages === totalImages) resolve(clonedDoc);
+                  } else {
+                    img.onload = () => {
+                      loadedImages++;
+                      if (loadedImages === totalImages) resolve(clonedDoc);
+                    };
+                    img.onerror = () => {
+                      loadedImages++;
+                      if (loadedImages === totalImages) resolve(clonedDoc);
+                    };
+                  }
+                });
+              });
+            }
           });
+          
+          console.log('预览图捕获成功，转换为base64...');
           const previewUrl = canvas.toDataURL('image/png');
           onPreviewCapture(previewUrl);
+          console.log('预览图已成功发送到父组件');
         } catch (error) {
-          console.error('预览图片捕获失败:', error);
+          console.error('预览图捕获失败:', error);
         }
       };
       
-      if (designImage) {
-        capturePreview();
-      }
+      // 添加一个小延迟以确保图片完全加载
+      const timer = setTimeout(capturePreview, 500);
+      return () => clearTimeout(timer);
     }
   }, [designImage, settings, onPreviewCapture]);
 
@@ -92,7 +123,7 @@ export const TShirtColorPreview = ({
             settings={settings}
             onSettingChange={handleSettingChange}
           />
-          <div ref={previewRef}>
+          <div ref={previewRef} className="relative bg-white rounded-lg overflow-hidden">
             <TShirtPreview 
               color={tshirtColor} 
               designImage={designImage} 
