@@ -62,13 +62,18 @@ export const SaveDesignButton = ({
         (window as any).showAddToCartAnimation();
       }
 
+      // 触发保存动画
+      if ((window as any).showSaveAnimation) {
+        (window as any).showSaveAnimation();
+      }
+
       // 触发一个自定义事件，通知购物车组件更新数量
       const event = new CustomEvent('cart-updated');
       window.dispatchEvent(event);
 
       toast({
-        title: "添加成功",
-        description: "设计已添加到购物车",
+        title: "保存成功",
+        description: "设计方案已保存",
       });
     } catch (error) {
       console.error('添加到购物车失败:', error);

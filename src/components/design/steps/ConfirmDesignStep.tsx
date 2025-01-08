@@ -1,5 +1,6 @@
 import React from "react";
-import { ConfirmDesign } from "../ConfirmDesign";
+import { SaveDesignButton } from "../confirm/SaveDesignButton";
+import { SaveAnimation } from "../confirm/SaveAnimation";
 
 interface ConfirmDesignStepProps {
   tshirtStyle: string;
@@ -19,7 +20,8 @@ export const ConfirmDesignStep = (props: ConfirmDesignStepProps) => {
       <h2 className="text-2xl font-semibold mb-4 w-full text-center py-2 bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white">
         第五步 确认设计
       </h2>
-      <ConfirmDesign {...props} />
+      <SaveDesignButton {...props} />
+      <SaveAnimation />
     </section>
   );
 };
