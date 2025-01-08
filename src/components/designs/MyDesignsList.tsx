@@ -3,20 +3,61 @@ import { supabase } from "@/integrations/supabase/client";
 import { DesignCard } from "./DesignCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export const MyDesignsList = () => {
-  const { data: designs, isLoading } = useQuery({
+  const { toast } = useToast();
+  
+  const { data: designs, isLoading, error } = useQuery({
     queryKey: ['my-designs'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      console.log('开始获取设计列表...');
+      
+      // 首先检查用户登录状态
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError) {
+        console.error('获取用户信息失败:', authError);
+        throw new Error('请先登录后查看设计');
+      }
+
+      if (!user) {
+        console.log('用户未登录');
+        throw new Error('请先登录后查看设计');
+      }
+
+      // 获取设计列表
+      const { data, error: fetchError } = await supabase
         .from('design_drafts')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (fetchError) {
+        console.error('获取设计列表失败:', fetchError);
+        throw fetchError;
+      }
+
+      console.log('成功获取设计列表:', data);
       return data;
-    }
+    },
+    retry: 1,
   });
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {error instanceof Error ? error.message : '获取设计列表失败，请稍后重试'}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
