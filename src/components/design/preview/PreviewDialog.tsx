@@ -51,7 +51,7 @@ export const PreviewDialog = ({
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className={`${isMobile ? 'max-w-[98vw] w-full h-[90vh] p-2' : 'max-w-3xl w-[90vw] h-[85vh] p-6'}`}>
+      <DialogContent className={`${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-3xl w-[90vw] h-[85vh] p-6'}`}>
         <DialogTitle className="sr-only">T恤预览</DialogTitle>
         <div className="w-full h-full flex items-center justify-center">
           <div className="relative w-full h-full">
