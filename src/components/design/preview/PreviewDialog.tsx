@@ -1,10 +1,13 @@
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { TShirtImage } from "./TShirtImage";
 import { DesignOverlay } from "./DesignOverlay";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface PreviewDialogProps {
   color: string;
@@ -28,6 +31,8 @@ export const PreviewDialog = ({
   designImage, 
   settings 
 }: PreviewDialogProps) => {
+  const isMobile = useIsMobile();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -46,7 +51,8 @@ export const PreviewDialog = ({
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl w-[90vw] h-[85vh] p-6">
+      <DialogContent className={`${isMobile ? 'max-w-[95vw] h-[80vh] p-2' : 'max-w-3xl w-[90vw] h-[85vh] p-6'}`}>
+        <DialogTitle className="sr-only">T恤预览</DialogTitle>
         <div className="w-full h-full flex items-center justify-center">
           <div className="relative w-full h-full">
             <div className="relative w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
