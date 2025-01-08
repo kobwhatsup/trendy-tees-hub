@@ -61,7 +61,7 @@ export const TShirtColorPreview = ({
     if (previewRef.current && onPreviewCapture && designImage) {
       const capturePreview = async () => {
         try {
-          console.log('开始捕获预览图...');
+          console.log(`开始捕获${position}面预览图...`);
           const canvas = await html2canvas(previewRef.current!, {
             useCORS: true,
             backgroundColor: null,
@@ -70,24 +70,41 @@ export const TShirtColorPreview = ({
             onclone: (clonedDoc) => {
               // 确保克隆的DOM中的图片已完全加载
               const images = clonedDoc.getElementsByTagName('img');
+              console.log(`需要加载的图片数量: ${images.length}`);
+              
               return new Promise((resolve) => {
                 let loadedImages = 0;
                 const totalImages = images.length;
                 
-                if (totalImages === 0) resolve(clonedDoc);
+                if (totalImages === 0) {
+                  console.log('没有需要加载的图片，直接继续');
+                  resolve(clonedDoc);
+                }
                 
-                Array.from(images).forEach(img => {
+                Array.from(images).forEach((img, index) => {
                   if (img.complete) {
                     loadedImages++;
-                    if (loadedImages === totalImages) resolve(clonedDoc);
+                    console.log(`图片 ${index + 1}/${totalImages} 已加载完成`);
+                    if (loadedImages === totalImages) {
+                      console.log('所有图片加载完成');
+                      resolve(clonedDoc);
+                    }
                   } else {
                     img.onload = () => {
                       loadedImages++;
-                      if (loadedImages === totalImages) resolve(clonedDoc);
+                      console.log(`图片 ${index + 1}/${totalImages} 加载完成`);
+                      if (loadedImages === totalImages) {
+                        console.log('所有图片加载完成');
+                        resolve(clonedDoc);
+                      }
                     };
                     img.onerror = () => {
                       loadedImages++;
-                      if (loadedImages === totalImages) resolve(clonedDoc);
+                      console.error(`图片 ${index + 1}/${totalImages} 加载失败`);
+                      if (loadedImages === totalImages) {
+                        console.log('所有图片处理完成（包含失败的）');
+                        resolve(clonedDoc);
+                      }
                     };
                   }
                 });
@@ -95,20 +112,22 @@ export const TShirtColorPreview = ({
             }
           });
           
-          console.log('预览图捕获成功，转换为base64...');
+          console.log(`${position}面预览图捕获成功，转换为base64...`);
           const previewUrl = canvas.toDataURL('image/png');
+          console.log(`${position}面预览图base64转换完成，长度: ${previewUrl.length}`);
           onPreviewCapture(previewUrl);
-          console.log('预览图已成功发送到父组件');
+          console.log(`${position}面预览图已成功发送到父组件`);
         } catch (error) {
-          console.error('预览图捕获失败:', error);
+          console.error(`${position}面预览图捕获失败:`, error);
         }
       };
       
       // 添加一个小延迟以确保图片完全加载
+      console.log(`准备捕获${position}面预览图，等待500ms...`);
       const timer = setTimeout(capturePreview, 500);
       return () => clearTimeout(timer);
     }
-  }, [designImage, settings, onPreviewCapture]);
+  }, [designImage, settings, onPreviewCapture, position]);
 
   return (
     <Card>
