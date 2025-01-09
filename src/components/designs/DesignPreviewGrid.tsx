@@ -1,36 +1,44 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { getValidImageUrl } from "@/utils/imageUrl";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PreviewImageProps {
   imageUrl: string;
   title: string;
 }
 
-const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => (
-  <Dialog>
-    <DialogTrigger asChild>
-      <div className="aspect-square relative cursor-zoom-in">
-        <img 
-          src={getValidImageUrl(imageUrl)} 
-          alt={title} 
-          className="w-full h-full object-contain"
-        />
-      </div>
-    </DialogTrigger>
-    <DialogContent className="max-w-4xl">
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-      </DialogHeader>
-      <div className="aspect-square relative">
-        <img 
-          src={getValidImageUrl(imageUrl)} 
-          alt={title} 
-          className="w-full h-full object-contain"
-        />
-      </div>
-    </DialogContent>
-  </Dialog>
-);
+const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="aspect-square relative cursor-zoom-in">
+          <img 
+            src={getValidImageUrl(imageUrl)} 
+            alt={title} 
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </DialogTrigger>
+      <DialogContent className={`
+        ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-4xl w-[90vw] h-[85vh] p-4'}
+        overflow-hidden
+      `}>
+        <DialogHeader className="absolute top-2 left-4 right-4 z-10">
+          <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
+        </DialogHeader>
+        <div className="w-full h-full flex items-center justify-center pt-12">
+          <img 
+            src={getValidImageUrl(imageUrl)} 
+            alt={title} 
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 interface DesignPreviewGridProps {
   design: {
