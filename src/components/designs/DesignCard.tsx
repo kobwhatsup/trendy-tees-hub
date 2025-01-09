@@ -82,23 +82,25 @@ export const DesignCard = ({ design }: { design: Design }) => {
   };
 
   return (
-    <Card className="overflow-hidden relative">
-      <CardHeader className="p-4">
-        <DesignPreviewGrid design={design} />
-      </CardHeader>
-      <CardContent className="p-4">
-        <p className="text-sm text-muted-foreground">
-          创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
-        </p>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <DesignActions 
-          isPublic={design.is_public}
-          isUpdating={isUpdating}
-          onShareToggle={handleShareToggle}
-          onDelete={handleDeleteDesign}
-        />
-      </CardFooter>
-    </Card>
+    <div className="p-[1px] rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#ea384c]">
+      <Card className="overflow-hidden">
+        <CardHeader className="p-4">
+          <DesignPreviewGrid design={design} />
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-sm text-muted-foreground">
+            创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
+          </p>
+        </CardContent>
+        <CardFooter className="p-4 pt-0">
+          <DesignActions 
+            isPublic={design.is_public}
+            isUpdating={isUpdating}
+            onShareToggle={handleShareToggle}
+            onDelete={handleDeleteDesign}
+          />
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
