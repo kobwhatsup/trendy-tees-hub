@@ -23,17 +23,19 @@ const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => {
       </DialogTrigger>
       <DialogContent className={`
         ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-4xl w-[90vw] h-[85vh] p-4'}
-        overflow-hidden
+        overflow-hidden relative
       `}>
-        <DialogHeader className="absolute top-2 left-4 right-4 z-50">
-          <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
-        </DialogHeader>
-        <div className="w-full h-full flex items-center justify-center pt-12">
-          <img 
-            src={getValidImageUrl(imageUrl)} 
-            alt={title} 
-            className="max-w-full max-h-full object-contain"
-          />
+        <div className="absolute inset-0 z-0">
+          <DialogHeader className="relative z-50 top-2 left-4 right-14">
+            <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
+          </DialogHeader>
+          <div className="w-full h-full flex items-center justify-center pt-12">
+            <img 
+              src={getValidImageUrl(imageUrl)} 
+              alt={title} 
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
