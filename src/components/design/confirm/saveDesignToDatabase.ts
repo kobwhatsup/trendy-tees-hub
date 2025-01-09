@@ -90,7 +90,7 @@ export const saveDesignToDatabase = async ({
     console.log('所有预览图上传完成');
   }
 
-  // 保存设计方案
+  // 保存设计方案，默认设置 is_public 为 true
   console.log('开始保存设计方案到数据库');
   const { error: draftError } = await supabase
     .from('design_drafts')
@@ -101,6 +101,7 @@ export const saveDesignToDatabase = async ({
       preview_front: frontPreviewPath,
       preview_back: backPreviewPath,
       title: `设计方案-${imageId}`,
+      is_public: true // 设置默认为分享状态
     })
     .select()
     .single();
