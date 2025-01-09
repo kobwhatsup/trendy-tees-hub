@@ -15,8 +15,8 @@ export const TShirtImage = ({
     if (gender === 'male') {
       if (style === 'short') {
         return position === 'front' 
-          ? (color === 'white' ? '/01manshortfrontwhite.jpeg' : '/09manshortfrontblack.jpeg')  // 男士短袖正面
-          : (color === 'white' ? '/02manshortbackwhite.jpeg' : '/10manshortbackblack.jpg');  // 男士短袖背面
+          ? '/09manshortfrontblack.jpeg'  // 男士短袖正面黑色
+          : '/10manshortbackblack.jpg';   // 男士短袖背面黑色
       } else {
         return position === 'front'
           ? (color === 'white' ? '/03manlongfrontwhite.jpeg' : '/11manlongfrontblack.jpg')   // 男士长袖正面
