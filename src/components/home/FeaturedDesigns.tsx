@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
 
-export const FeaturedProducts = () => {
+export const FeaturedDesigns = () => {
   const navigate = useNavigate();
   
   const { data: featuredDesigns } = useQuery({
