@@ -4,9 +4,12 @@ import { zhCN } from "date-fns/locale";
 import { DesignPreviewGrid } from "./DesignPreviewGrid";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Design {
   id: string;
+  user_id: string;
   created_at: string;
   design_front: string;
   design_back: string;
@@ -18,6 +21,20 @@ interface Design {
 }
 
 export const PublicDesignCard = ({ design }: { design: Design }) => {
+  const { data: profile } = useQuery({
+    queryKey: ['profile', design.user_id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', design.user_id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#ea384c]">
       <Card className="overflow-hidden">
@@ -26,9 +43,14 @@ export const PublicDesignCard = ({ design }: { design: Design }) => {
         </CardHeader>
         <CardContent className="p-4">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
+              </p>
+              <p className="text-sm font-medium text-primary">
+                设计师：{profile?.username || '未知用户'}
+              </p>
+            </div>
             <div className="grid grid-cols-3 gap-2 text-sm">
               <div>
                 <p className="text-muted-foreground">浏览次数</p>
