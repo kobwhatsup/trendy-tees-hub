@@ -34,12 +34,12 @@ export const DesignsPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text">
+    <div className="container mx-auto px-4 py-8 mt-20">
+      <div className="text-center mb-12 max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-[#0EA5E9] via-[#ea384c] to-[#0EA5E9] text-transparent bg-clip-text">
           设计作品展示
         </h1>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-muted-foreground px-4">
           探索来自社区的精彩T恤设计作品，从中获取灵感，或者直接使用这些设计来制作你的T恤。
         </p>
       </div>
