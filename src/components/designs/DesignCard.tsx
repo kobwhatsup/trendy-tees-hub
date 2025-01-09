@@ -82,7 +82,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden relative">
       <CardHeader className="p-4">
         <DesignPreviewGrid design={design} />
       </CardHeader>
