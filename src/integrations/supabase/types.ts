@@ -82,6 +82,7 @@ export type Database = {
           design_back: string | null
           design_front: string | null
           id: string
+          is_deleted: boolean | null
           is_public: boolean | null
           preview_back: string | null
           preview_front: string | null
@@ -96,6 +97,7 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          is_deleted?: boolean | null
           is_public?: boolean | null
           preview_back?: string | null
           preview_front?: string | null
@@ -110,6 +112,7 @@ export type Database = {
           design_back?: string | null
           design_front?: string | null
           id?: string
+          is_deleted?: boolean | null
           is_public?: boolean | null
           preview_back?: string | null
           preview_front?: string | null

@@ -41,9 +41,10 @@ export const DesignCard = ({ design }) => {
 
   const handleDeleteDesign = async () => {
     try {
+      // 更新设计为已删除状态，而不是实际删除记录
       const { error } = await supabase
         .from('design_drafts')
-        .delete()
+        .update({ is_deleted: true })
         .eq('id', design.id);
 
       if (error) throw error;
@@ -51,7 +52,7 @@ export const DesignCard = ({ design }) => {
       queryClient.invalidateQueries({ queryKey: ['my-designs'] });
       toast({
         title: "设计已删除",
-        description: "您的设计已成功删除",
+        description: "设计已从列表中移除",
       });
     } catch (error) {
       console.error('删除设计失败:', error);

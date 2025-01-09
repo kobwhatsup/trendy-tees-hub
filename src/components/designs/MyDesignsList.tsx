@@ -48,11 +48,12 @@ export const MyDesignsList = () => {
         throw new Error('请先登录后查看设计');
       }
 
-      // 获取设计列表
+      // 获取设计列表，只获取未删除的设计
       const { data, error: fetchError } = await supabase
         .from('design_drafts')
         .select('*')
         .eq('user_id', session.user.id)
+        .eq('is_deleted', false)  // 只获取未删除的设计
         .order('created_at', { ascending: false });
       
       if (fetchError) {
