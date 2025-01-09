@@ -1,17 +1,19 @@
+import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Categories } from "@/components/home/Categories";
-import { AIDesigner } from "@/components/home/AIDesigner";
-import { FeaturedDesigns } from "@/components/home/FeaturedDesigns";
 import { BrandStory } from "@/components/home/BrandStory";
+import { AIDesignStudio } from "@/components/design/AIDesignStudio";
 
-export default function Index() {
+const Index = () => {
   return (
-    <main>
+    <div className="min-h-screen">
+      <Navbar />
       <HeroSection />
+      <AIDesignStudio />
       <Categories />
-      <AIDesigner />
-      <FeaturedDesigns />
       <BrandStory />
-    </main>
+    </div>
   );
-}
+};
+
+export default Index;
