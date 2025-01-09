@@ -13,7 +13,6 @@ export const MyDesignsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // 检查用户登录状态
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
@@ -33,9 +32,6 @@ export const MyDesignsList = () => {
   const { data: designs, isLoading, error } = useQuery({
     queryKey: ['my-designs'],
     queryFn: async () => {
-      console.log('开始获取设计列表...');
-      
-      // 获取当前会话
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -48,12 +44,11 @@ export const MyDesignsList = () => {
         throw new Error('请先登录后查看设计');
       }
 
-      // 获取设计列表，只获取未删除的设计
       const { data, error: fetchError } = await supabase
         .from('design_drafts')
         .select('*')
         .eq('user_id', session.user.id)
-        .eq('is_deleted', false)  // 只获取未删除的设计
+        .eq('is_deleted', false)
         .order('created_at', { ascending: false });
       
       if (fetchError) {
@@ -61,11 +56,10 @@ export const MyDesignsList = () => {
         throw fetchError;
       }
 
-      console.log('成功获取设计列表:', data);
-      return data;
+      return data || [];
     },
-    retry: 1,
-    refetchOnWindowFocus: false,
+    staleTime: 0, // 禁用缓存，每次都重新获取
+    refetchOnWindowFocus: true, // 窗口获得焦点时重新获取数据
   });
 
   if (error) {

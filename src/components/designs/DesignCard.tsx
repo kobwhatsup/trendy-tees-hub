@@ -22,7 +22,13 @@ export const DesignCard = ({ design }) => {
 
       if (error) throw error;
 
-      queryClient.invalidateQueries({ queryKey: ['my-designs'] });
+      // 立即更新缓存中的数据
+      queryClient.setQueryData(['my-designs'], (oldData) => {
+        return oldData.map(d => 
+          d.id === design.id ? { ...d, is_public: !design.is_public } : d
+        );
+      });
+
       toast({
         title: design.is_public ? "设计已设为私密" : "设计已公开分享",
         description: design.is_public ? "其他用户将无法看到此设计" : "其他用户现在可以看到并使用此设计",
@@ -41,7 +47,6 @@ export const DesignCard = ({ design }) => {
 
   const handleDeleteDesign = async () => {
     try {
-      // 更新设计为已删除状态，而不是实际删除记录
       const { error } = await supabase
         .from('design_drafts')
         .update({ is_deleted: true })
@@ -49,7 +54,11 @@ export const DesignCard = ({ design }) => {
 
       if (error) throw error;
 
-      queryClient.invalidateQueries({ queryKey: ['my-designs'] });
+      // 立即更新缓存中的数据，移除已删除的设计
+      queryClient.setQueryData(['my-designs'], (oldData) => {
+        return oldData.filter(d => d.id !== design.id);
+      });
+
       toast({
         title: "设计已删除",
         description: "设计已从列表中移除",
