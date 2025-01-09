@@ -13,11 +13,10 @@ interface AuthSheetProps {
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   useEffect(() => {
-    // 监听认证状态变化
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        // 清除本地存储的认证信息
         window?.localStorage?.removeItem('supabase.auth.token');
+        window?.localStorage?.clear(); // 清除所有本地存储
       } else if (event === 'SIGNED_IN') {
         if (!session?.access_token || !session?.refresh_token) {
           toast({
@@ -27,6 +26,12 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           });
           return;
         }
+        
+        // 确保更新本地存储中的token
+        window?.localStorage?.setItem('supabase.auth.token', JSON.stringify({
+          access_token: session.access_token,
+          refresh_token: session.refresh_token
+        }));
       }
     });
 

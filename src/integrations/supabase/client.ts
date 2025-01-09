@@ -12,8 +12,11 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      storage: window?.localStorage, // 确保使用localStorage存储session
-      storageKey: 'supabase.auth.token', // 指定存储key
-    }
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      storageKey: 'supabase.auth.token',
+    },
+    headers: {
+      'Content-Type': 'application/json',
+    },
   }
 );
