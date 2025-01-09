@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { getValidImageUrl } from "@/utils/imageUrl";
 
 interface PreviewImageProps {
   imageUrl: string;
@@ -10,7 +11,7 @@ const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => (
     <DialogTrigger asChild>
       <div className="aspect-square relative cursor-zoom-in">
         <img 
-          src={imageUrl} 
+          src={getValidImageUrl(imageUrl)} 
           alt={title} 
           className="w-full h-full object-contain"
         />
@@ -22,7 +23,7 @@ const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => (
       </DialogHeader>
       <div className="aspect-square relative">
         <img 
-          src={imageUrl} 
+          src={getValidImageUrl(imageUrl)} 
           alt={title} 
           className="w-full h-full object-contain"
         />

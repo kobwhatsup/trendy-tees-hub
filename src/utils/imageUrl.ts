@@ -14,6 +14,11 @@ export const getValidImageUrl = (url: string | null) => {
   // 获取Supabase URL
   const supabaseUrl = "https://gfraqpwyfxmpzdllsfoc.supabase.co";
   
-  // 如果是storage路径，添加完整的Supabase存储URL
+  // 如果是preview-images路径开头，添加完整的Supabase存储URL
+  if (url.startsWith('preview-images/')) {
+    return `${supabaseUrl}/storage/v1/object/public/design-images/${url}`;
+  }
+  
+  // 其他storage路径，添加完整的Supabase存储URL
   return `${supabaseUrl}/storage/v1/object/public/design-images/${url}`;
 };
