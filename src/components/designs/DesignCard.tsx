@@ -67,6 +67,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       if (error) throw error;
 
+      // 立即从查询缓存中移除该设计
       queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
         return oldData.filter(d => d.id !== design.id);
       });
