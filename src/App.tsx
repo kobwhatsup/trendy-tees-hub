@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
-import { Index } from "@/pages/Index";
-import { Design } from "@/pages/Design";
-import { Cart } from "@/pages/Cart";
-import { Products } from "@/pages/Products";
-import { MyDesigns } from "@/pages/MyDesigns";
+import Index from "@/pages/Index";
+import Design from "@/pages/Design";
+import Cart from "@/pages/Cart";
+import Products from "@/pages/Products";
+import MyDesigns from "@/pages/MyDesigns";
 import { DesignsPage } from "@/pages/Designs";
 
 function App() {
