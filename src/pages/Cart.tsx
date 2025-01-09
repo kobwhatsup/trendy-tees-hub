@@ -22,6 +22,7 @@ interface CartItemType {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -51,7 +52,26 @@ const Cart = () => {
     fetchCartItems();
   }, []);
 
+  const handleItemSelect = (id: string, selected: boolean) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(id);
+      } else {
+        newSet.delete(id);
+      }
+      return newSet;
+    });
+  };
+
   const handleCheckout = async () => {
+    if (selectedItems.size === 0) {
+      toast({
+        title: "请选择商品",
+        description: "请至少选择一件商品进行结算",
+      });
+      return;
+    }
     toast({
       title: "功能开发中",
       description: "支付功能即将上线",
@@ -72,6 +92,8 @@ const Cart = () => {
     );
   }
 
+  const selectedCartItems = cartItems.filter(item => selectedItems.has(item.id));
+
   return (
     <div className="min-h-screen pb-24">
       <Navbar />
@@ -88,6 +110,8 @@ const Cart = () => {
                 <CartItem 
                   key={item.id}
                   {...item}
+                  selected={selectedItems.has(item.id)}
+                  onSelect={handleItemSelect}
                   onUpdate={fetchCartItems}
                 />
               ))}
@@ -98,7 +122,7 @@ const Cart = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
         <div className={`container mx-auto ${isMobile ? 'px-2' : 'px-4'}`}>
           <CartSummary 
-            items={cartItems.map(item => ({
+            items={selectedCartItems.map(item => ({
               quantity: item.quantity,
               price: item.price || 199
             }))}
