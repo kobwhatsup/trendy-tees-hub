@@ -8,7 +8,17 @@ import { zhCN } from "date-fns/locale";
 import { DesignPreviewGrid } from "./DesignPreviewGrid";
 import { DesignActions } from "./DesignActions";
 
-export const DesignCard = ({ design }) => {
+interface Design {
+  id: string;
+  is_public: boolean;
+  created_at: string;
+  design_front: string;
+  design_back: string;
+  preview_front: string;
+  preview_back: string;
+}
+
+export const DesignCard = ({ design }: { design: Design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const queryClient = useQueryClient();
 
@@ -22,8 +32,7 @@ export const DesignCard = ({ design }) => {
 
       if (error) throw error;
 
-      // 立即更新缓存中的数据
-      queryClient.setQueryData(['my-designs'], (oldData) => {
+      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
         return oldData.map(d => 
           d.id === design.id ? { ...d, is_public: !design.is_public } : d
         );
@@ -54,8 +63,7 @@ export const DesignCard = ({ design }) => {
 
       if (error) throw error;
 
-      // 立即更新缓存中的数据，移除已删除的设计
-      queryClient.setQueryData(['my-designs'], (oldData) => {
+      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
         return oldData.filter(d => d.id !== design.id);
       });
 

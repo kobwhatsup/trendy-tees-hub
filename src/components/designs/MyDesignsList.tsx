@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { DesignCard } from "./DesignCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ErrorAlert } from "./ErrorAlert";
+import { DesignsLoadingSkeleton } from "./DesignsLoadingSkeleton";
+import { DesignsGrid } from "./DesignsGrid";
 
 export const MyDesignsList = () => {
   const { toast } = useToast();
@@ -58,19 +57,16 @@ export const MyDesignsList = () => {
 
       return data || [];
     },
-    staleTime: 0, // 禁用缓存，每次都重新获取
-    refetchOnWindowFocus: true, // 窗口获得焦点时重新获取数据
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8 mt-16">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            {error instanceof Error ? error.message : '获取设计列表失败，请稍后重试'}
-          </AlertDescription>
-        </Alert>
+        <ErrorAlert 
+          message={error instanceof Error ? error.message : '获取设计列表失败，请稍后重试'} 
+        />
       </div>
     );
   }
@@ -78,11 +74,7 @@ export const MyDesignsList = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 mt-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-[300px] w-full" />
-          ))}
-        </div>
+        <DesignsLoadingSkeleton />
       </div>
     );
   }
@@ -104,18 +96,10 @@ export const MyDesignsList = () => {
           <TabsTrigger value="public">已分享</TabsTrigger>
         </TabsList>
         <TabsContent value="all">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {designs?.map((design) => (
-              <DesignCard key={design.id} design={design} />
-            ))}
-          </div>
+          <DesignsGrid designs={designs || []} />
         </TabsContent>
         <TabsContent value="public">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {designs?.filter(d => d.is_public).map((design) => (
-              <DesignCard key={design.id} design={design} />
-            ))}
-          </div>
+          <DesignsGrid designs={designs || []} filterPublic />
         </TabsContent>
       </Tabs>
     </div>
