@@ -16,6 +16,8 @@ interface Design {
   design_back: string;
   preview_front: string;
   preview_back: string;
+  reward_percentage: number;
+  total_earnings: number;
 }
 
 export const DesignCard = ({ design }: { design: Design }) => {
@@ -40,7 +42,9 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       toast({
         title: design.is_public ? "设计已设为私密" : "设计已公开分享",
-        description: design.is_public ? "其他用户将无法看到此设计" : "其他用户现在可以看到并使用此设计",
+        description: design.is_public 
+          ? "其他用户将无法看到此设计" 
+          : `其他用户现在可以看到并使用此设计。当他们购买使用你的设计的T恤时，你将获得${design.reward_percentage}%的收益作为奖励`,
       });
     } catch (error) {
       console.error('更新设计状态失败:', error);
@@ -88,9 +92,16 @@ export const DesignCard = ({ design }: { design: Design }) => {
           <DesignPreviewGrid design={design} />
         </CardHeader>
         <CardContent className="p-4">
-          <p className="text-sm text-muted-foreground">
-            创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
+            </p>
+            {design.total_earnings > 0 && (
+              <p className="text-sm font-medium text-green-600">
+                已获得收益: ¥{design.total_earnings.toFixed(2)}
+              </p>
+            )}
+          </div>
         </CardContent>
         <CardFooter className="p-4 pt-0">
           <DesignActions 

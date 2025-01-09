@@ -88,7 +88,9 @@ export type Database = {
           preview_front: string | null
           prompt_back: string | null
           prompt_front: string | null
+          reward_percentage: number | null
           title: string | null
+          total_earnings: number | null
           user_id: string
         }
         Insert: {
@@ -103,7 +105,9 @@ export type Database = {
           preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
+          reward_percentage?: number | null
           title?: string | null
+          total_earnings?: number | null
           user_id: string
         }
         Update: {
@@ -118,7 +122,9 @@ export type Database = {
           preview_front?: string | null
           prompt_back?: string | null
           prompt_front?: string | null
+          reward_percentage?: number | null
           title?: string | null
+          total_earnings?: number | null
           user_id?: string
         }
         Relationships: []
@@ -191,6 +197,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      design_purchases: {
+        Row: {
+          buyer_id: string | null
+          created_at: string | null
+          design_id: string | null
+          designer_id: string | null
+          id: string
+          purchase_amount: number
+          reward_amount: number
+        }
+        Insert: {
+          buyer_id?: string | null
+          created_at?: string | null
+          design_id?: string | null
+          designer_id?: string | null
+          id?: string
+          purchase_amount: number
+          reward_amount: number
+        }
+        Update: {
+          buyer_id?: string | null
+          created_at?: string | null
+          design_id?: string | null
+          designer_id?: string | null
+          id?: string
+          purchase_amount?: number
+          reward_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "design_purchases_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "design_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_categories: {
         Row: {

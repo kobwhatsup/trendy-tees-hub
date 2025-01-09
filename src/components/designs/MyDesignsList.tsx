@@ -66,7 +66,7 @@ export const MyDesignsList = () => {
         
         // 如果不存在相同的正面设计，则添加到结果数组中
         if (!exists) {
-          acc.push({ ...current, is_public: true });
+          acc.push(current);
         }
         
         return acc;
@@ -103,7 +103,7 @@ export const MyDesignsList = () => {
           我的设计
         </h1>
         <p className="text-lg text-muted-foreground">
-          管理和分享你的T恤设计作品
+          管理和分享你的T恤设计作品。如果你分享设计作品，你的设计作品会出现在浏览作品板块里，供其他用户进行查看或使用。如果有其他用户喜欢你的设计出来的T恤并进行购买，你将获得T恤收入的10%作为奖励。
         </p>
       </div>
 
