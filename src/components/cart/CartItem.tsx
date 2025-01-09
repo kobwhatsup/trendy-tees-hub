@@ -4,7 +4,6 @@ import { ProductInfo } from "./ProductInfo";
 import { DesignPreview } from "./DesignPreview";
 import { useCartItemQuantity } from "@/hooks/useCartItemQuantity";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface CartItemProps {
   id: string;
@@ -19,8 +18,6 @@ interface CartItemProps {
   quantity: number;
   onUpdate: () => void;
   price?: number;
-  selected: boolean;
-  onSelect: (id: string, selected: boolean) => void;
 }
 
 export const CartItem = ({ 
@@ -35,9 +32,7 @@ export const CartItem = ({
   tshirt_size,
   quantity: initialQuantity,
   onUpdate,
-  price = 199,
-  selected,
-  onSelect
+  price = 199
 }: CartItemProps) => {
   const { toast } = useToast();
   const { quantity, updateQuantity } = useCartItemQuantity(id, initialQuantity, onUpdate);
@@ -69,22 +64,15 @@ export const CartItem = ({
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-blue-400 to-red-400">
       <div className={`flex ${isMobile ? 'flex-col' : 'gap-4'} p-4 bg-white rounded-lg`}>
-        <div className="flex items-start gap-4">
-          <Checkbox 
-            checked={selected}
-            onCheckedChange={(checked) => onSelect(id, checked as boolean)}
-            className="mt-2"
-          />
-          <DesignPreview 
-            design_front={design_front}
-            design_back={design_back}
-            preview_front={preview_front}
-            preview_back={preview_back}
-            tshirt_style={tshirt_style}
-            tshirt_color={tshirt_color}
-            tshirt_gender={tshirt_gender}
-          />
-        </div>
+        <DesignPreview 
+          design_front={design_front}
+          design_back={design_back}
+          preview_front={preview_front}
+          preview_back={preview_back}
+          tshirt_style={tshirt_style}
+          tshirt_color={tshirt_color}
+          tshirt_gender={tshirt_gender}
+        />
         
         <div className={`flex flex-col ${isMobile ? 'mt-4' : 'min-w-[200px]'}`}>
           <ProductInfo 
