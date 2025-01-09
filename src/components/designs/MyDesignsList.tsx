@@ -73,7 +73,22 @@ export const MyDesignsList = () => {
         });
       }
 
-      return data?.map(design => ({ ...design, is_public: true })) || [];
+      // 对设计列表进行去重处理
+      const uniqueDesigns = data?.reduce((acc: any[], current) => {
+        // 检查是否已经存在相同的正面设计
+        const exists = acc.some(item => 
+          item.design_front === current.design_front
+        );
+        
+        // 如果不存在相同的正面设计，则添加到结果数组中
+        if (!exists) {
+          acc.push({ ...current, is_public: true });
+        }
+        
+        return acc;
+      }, []) || [];
+
+      return uniqueDesigns;
     },
     staleTime: 0,
     refetchOnWindowFocus: true,
