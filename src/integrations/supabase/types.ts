@@ -89,9 +89,12 @@ export type Database = {
           prompt_back: string | null
           prompt_front: string | null
           reward_percentage: number | null
+          sales_amount: number | null
           title: string | null
           total_earnings: number | null
+          use_count: number | null
           user_id: string
+          view_count: number | null
         }
         Insert: {
           created_at?: string
@@ -106,9 +109,12 @@ export type Database = {
           prompt_back?: string | null
           prompt_front?: string | null
           reward_percentage?: number | null
+          sales_amount?: number | null
           title?: string | null
           total_earnings?: number | null
+          use_count?: number | null
           user_id: string
+          view_count?: number | null
         }
         Update: {
           created_at?: string
@@ -123,9 +129,12 @@ export type Database = {
           prompt_back?: string | null
           prompt_front?: string | null
           reward_percentage?: number | null
+          sales_amount?: number | null
           title?: string | null
           total_earnings?: number | null
+          use_count?: number | null
           user_id?: string
+          view_count?: number | null
         }
         Relationships: []
       }

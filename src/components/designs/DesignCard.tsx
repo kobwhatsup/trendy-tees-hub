@@ -18,6 +18,9 @@ interface Design {
   preview_back: string;
   reward_percentage: number;
   total_earnings: number;
+  view_count: number;
+  use_count: number;
+  sales_amount: number;
 }
 
 export const DesignCard = ({ design }: { design: Design }) => {
@@ -67,7 +70,6 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       if (error) throw error;
 
-      // 立即从查询缓存中移除该设计
       queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
         return oldData.filter(d => d.id !== design.id);
       });
@@ -97,11 +99,24 @@ export const DesignCard = ({ design }: { design: Design }) => {
             <p className="text-sm text-muted-foreground">
               创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
             </p>
-            {design.total_earnings > 0 && (
-              <p className="text-sm font-medium text-green-600">
-                已获得收益: ¥{design.total_earnings.toFixed(2)}
-              </p>
-            )}
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <p className="text-muted-foreground">浏览次数</p>
+                <p className="font-medium">{design.view_count || 0}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">使用次数</p>
+                <p className="font-medium">{design.use_count || 0}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">销售收入</p>
+                <p className="font-medium">¥{design.sales_amount?.toFixed(2) || '0.00'}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">获得奖励</p>
+                <p className="font-medium text-green-600">¥{design.total_earnings?.toFixed(2) || '0.00'}</p>
+              </div>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-0">
