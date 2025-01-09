@@ -38,7 +38,6 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
                 onClick={() => navigate(item.path)}
                 className="flex items-center"
               >
-                {item.icon}
                 {item.title}
               </DropdownMenuItem>
             ))}
@@ -58,7 +57,6 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
             onClick={() => navigate(item.path)}
             className="flex items-center"
           >
-            {item.icon}
             {item.title}
           </Button>
         ))}
