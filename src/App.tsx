@@ -1,91 +1,32 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navbar } from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import Index from "./pages/Index";
-import Products from "./pages/Products";
-import Design from "./pages/Design";
-import Cart from "./pages/Cart";
-import MyDesigns from "./pages/MyDesigns";
+import { Index } from "@/pages/Index";
+import { Design } from "@/pages/Design";
+import { Cart } from "@/pages/Cart";
+import { Products } from "@/pages/Products";
+import { MyDesigns } from "@/pages/MyDesigns";
+import { DesignsPage } from "@/pages/Designs";
 
-// 将 queryClient 实例移到组件外部
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
-// 路由保护组件
-const ProtectedRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // 检查用户是否已登录
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
-      setLoading(false);
-    };
-
-    checkUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  if (loading) {
-    return null; // 或者显示加载指示器
-  }
-
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route 
-            path="/design" 
-            element={
-              <ProtectedRoute>
-                <Design />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/my-designs" 
-            element={
-              <ProtectedRoute>
-                <MyDesigns />
-              </ProtectedRoute>
-            } 
-          />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Router>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/design" element={<Design />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/my-designs" element={<MyDesigns />} />
+            <Route path="/designs" element={<DesignsPage />} />
+          </Routes>
+        </main>
+        <Toaster />
+      </div>
+    </Router>
+  );
+}
 
 export default App;
