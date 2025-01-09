@@ -23,9 +23,9 @@ const PreviewImage = ({ imageUrl, title }: PreviewImageProps) => {
       </DialogTrigger>
       <DialogContent className={`
         ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-4xl w-[90vw] h-[85vh] p-4'}
-        overflow-hidden
+        overflow-hidden relative
       `}>
-        <DialogHeader className="absolute top-2 left-4 right-4 z-10">
+        <DialogHeader className="absolute top-2 left-4 right-14 z-10">
           <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
         </DialogHeader>
         <div className="w-full h-full flex items-center justify-center pt-12">
