@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { DeleteDesignDialog } from "./DeleteDesignDialog";
 import { Share2, ShoppingCart } from "lucide-react";
+import { useEffect } from "react";
 
 interface DesignActionsProps {
   isPublic: boolean;
@@ -12,11 +13,18 @@ interface DesignActionsProps {
 }
 
 export const DesignActions = ({ 
-  isPublic, 
+  isPublic = true, // 设置默认值为 true
   isUpdating, 
   onShareToggle, 
   onDelete 
 }: DesignActionsProps) => {
+  // 组件加载时，如果设计未分享，则自动开启分享
+  useEffect(() => {
+    if (!isPublic && !isUpdating) {
+      onShareToggle();
+    }
+  }, []);
+
   return (
     <div className="flex flex-col space-y-4 w-full">
       <Button 
