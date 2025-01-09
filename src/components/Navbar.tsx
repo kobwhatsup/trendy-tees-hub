@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { AuthSheet } from "./auth/AuthSheet";
 import { UserMenu } from "./auth/UserMenu";
-import { Menu } from "lucide-react";
+import { Menu, Images } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
@@ -65,6 +65,7 @@ export const Navbar = () => {
   const navItems = [
     { title: "首页", path: "/" },
     { title: "AI设计师", path: "/design" },
+    { title: "所有设计", path: "/designs", icon: <Images className="h-4 w-4 mr-2" /> },
     { title: "浏览作品", path: "/products" },
     { title: "我的设计", path: "/my-designs" },
   ];
@@ -94,7 +95,9 @@ export const Navbar = () => {
                     key={item.path}
                     variant="ghost" 
                     onClick={() => navigate(item.path)}
+                    className="flex items-center"
                   >
+                    {item.icon}
                     {item.title}
                   </Button>
                 ))}
@@ -116,7 +119,9 @@ export const Navbar = () => {
                     <DropdownMenuItem 
                       key={item.path}
                       onClick={() => navigate(item.path)}
+                      className="flex items-center"
                     >
+                      {item.icon}
                       {item.title}
                     </DropdownMenuItem>
                   ))}
