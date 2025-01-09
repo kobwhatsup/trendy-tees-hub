@@ -49,7 +49,7 @@ export const MyDesignsList = () => {
         .from('design_drafts')
         .select('*')
         .eq('user_id', session.user.id)
-        .eq('is_deleted', false)  // 只获取未删除的设计
+        .eq('is_deleted', false)  // 明确指定只获取未删除的设计
         .order('created_at', { ascending: false });
       
       if (fetchError) {
@@ -74,8 +74,8 @@ export const MyDesignsList = () => {
 
       return uniqueDesigns;
     },
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: 0, // 确保每次都重新获取最新数据
+    refetchOnWindowFocus: true, // 当窗口重新获得焦点时重新获取数据
   });
 
   if (error) {
@@ -116,7 +116,7 @@ export const MyDesignsList = () => {
           <DesignsGrid designs={designs || []} />
         </TabsContent>
         <TabsContent value="public">
-          <DesignsGrid designs={designs || []} filterPublic />
+          <DesignsGrid designs={designs?.filter(d => d.is_public) || []} />
         </TabsContent>
       </Tabs>
     </div>
