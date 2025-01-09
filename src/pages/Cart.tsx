@@ -22,6 +22,7 @@ interface CartItemType {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -52,9 +53,28 @@ const Cart = () => {
   }, []);
 
   const handleCheckout = async () => {
+    if (selectedItems.size === 0) {
+      toast({
+        title: "请选择商品",
+        description: "请至少选择一件商品进行结算",
+      });
+      return;
+    }
     toast({
       title: "功能开发中",
       description: "支付功能即将上线",
+    });
+  };
+
+  const handleSelect = (id: string, selected: boolean) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(id);
+      } else {
+        newSet.delete(id);
+      }
+      return newSet;
     });
   };
 
@@ -88,6 +108,8 @@ const Cart = () => {
                 <CartItem 
                   key={item.id}
                   {...item}
+                  selected={selectedItems.has(item.id)}
+                  onSelect={handleSelect}
                   onUpdate={fetchCartItems}
                 />
               ))}
@@ -100,7 +122,8 @@ const Cart = () => {
           <CartSummary 
             items={cartItems.map(item => ({
               quantity: item.quantity,
-              price: item.price || 199
+              price: item.price || 199,
+              selected: selectedItems.has(item.id)
             }))}
             onCheckout={handleCheckout}
           />

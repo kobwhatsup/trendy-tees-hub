@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface CartItem {
   quantity: number;
   price: number;
+  selected: boolean;
 }
 
 interface CartSummaryProps {
@@ -12,8 +13,9 @@ interface CartSummaryProps {
 }
 
 export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const selectedItems = items.filter(item => item.selected);
+  const itemCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+  const total = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const isMobile = useIsMobile();
 
   return (
