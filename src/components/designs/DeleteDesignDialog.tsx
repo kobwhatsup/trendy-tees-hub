@@ -32,7 +32,7 @@ export const DeleteDesignDialog = ({ onDelete }: DeleteDesignDialogProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>确认删除</AlertDialogTitle>
           <AlertDialogDescription>
-            此操作将永久删除该设计，无法恢复。确定要继续吗？
+            此操作将永久删除该设计，无法恢复。是否确认删除？
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
