@@ -1,21 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { AuthSheet } from "./auth/AuthSheet";
 import { UserMenu } from "./auth/UserMenu";
-import { Menu, Images } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { NavItems } from "./navigation/NavItems";
 
 export const Navbar = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,14 +54,6 @@ export const Navbar = () => {
     };
   }, []);
 
-  const navItems = [
-    { title: "首页", path: "/" },
-    { title: "AI设计师", path: "/design" },
-    { title: "所有设计", path: "/designs", icon: <Images className="h-4 w-4 mr-2" /> },
-    { title: "浏览作品", path: "/products" },
-    { title: "我的设计", path: "/my-designs" },
-  ];
-
   if (isLoading) {
     return null;
   }
@@ -86,49 +70,8 @@ export const Navbar = () => {
             AI DESIGN TEE
           </a>
 
-          {/* Navigation Links - Desktop */}
-          {!isMobile && (
-            <div className="flex-1 flex justify-center">
-              <div className="flex items-center space-x-8">
-                {navItems.map((item) => (
-                  <Button 
-                    key={item.path}
-                    variant="ghost" 
-                    onClick={() => navigate(item.path)}
-                    className="flex items-center"
-                  >
-                    {item.icon}
-                    {item.title}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Mobile Menu */}
-          {isMobile && (
-            <div className="flex-1 flex justify-end mr-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {navItems.map((item) => (
-                    <DropdownMenuItem 
-                      key={item.path}
-                      onClick={() => navigate(item.path)}
-                      className="flex items-center"
-                    >
-                      {item.icon}
-                      {item.title}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
+          {/* Navigation Items */}
+          <NavItems isMobile={isMobile} />
 
           {/* User Menu */}
           <div className="flex items-center">
