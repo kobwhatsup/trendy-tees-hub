@@ -20,14 +20,7 @@ export const DesignActions = ({
   return (
     <div className="flex flex-col space-y-3 w-full">
       <div className="grid grid-cols-2 gap-2">
-        <Button 
-          variant="destructive" 
-          onClick={onDelete}
-          className="w-full"
-        >
-          <Trash2 className="h-4 w-4 mr-2" />
-          删除设计
-        </Button>
+        <DeleteDesignDialog onDelete={onDelete} />
         <Button 
           onClick={() => window.location.href = '/cart'}
           className="w-full"
