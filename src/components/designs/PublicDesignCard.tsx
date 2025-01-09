@@ -6,21 +6,13 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { DesignType } from "@/types/design";
 
-interface Design {
-  id: string;
-  user_id: string;
-  created_at: string;
-  design_front: string;
-  design_back: string;
-  preview_front: string;
-  preview_back: string;
-  view_count: number;
-  use_count: number;
-  sales_amount: number;
+interface PublicDesignCardProps {
+  design: DesignType;
 }
 
-export const PublicDesignCard = ({ design }: { design: Design }) => {
+export const PublicDesignCard = ({ design }: PublicDesignCardProps) => {
   const { data: profile } = useQuery({
     queryKey: ['profile', design.user_id],
     queryFn: async () => {
