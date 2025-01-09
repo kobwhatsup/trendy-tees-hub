@@ -6,24 +6,44 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const MyDesignsList = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
+  // 检查用户登录状态
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error || !session) {
+        toast({
+          variant: "destructive",
+          title: "需要登录",
+          description: "请先登录后查看设计",
+        });
+        navigate("/");
+      }
+    };
+    
+    checkAuth();
+  }, [navigate, toast]);
+
   const { data: designs, isLoading, error } = useQuery({
     queryKey: ['my-designs'],
     queryFn: async () => {
       console.log('开始获取设计列表...');
       
-      // 首先检查用户登录状态
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      // 获取当前会话
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (authError) {
-        console.error('获取用户信息失败:', authError);
-        throw new Error('请先登录后查看设计');
+      if (sessionError) {
+        console.error('获取会话信息失败:', sessionError);
+        throw new Error('会话已过期，请重新登录');
       }
 
-      if (!user) {
+      if (!session) {
         console.log('用户未登录');
         throw new Error('请先登录后查看设计');
       }
@@ -32,7 +52,7 @@ export const MyDesignsList = () => {
       const { data, error: fetchError } = await supabase
         .from('design_drafts')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
       
       if (fetchError) {
@@ -44,6 +64,7 @@ export const MyDesignsList = () => {
       return data;
     },
     retry: 1,
+    refetchOnWindowFocus: false,
   });
 
   if (error) {
