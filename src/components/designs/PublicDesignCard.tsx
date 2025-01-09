@@ -24,13 +24,12 @@ export const PublicDesignCard = ({ design }: { design: Design }) => {
   const { data: profile } = useQuery({
     queryKey: ['profile', design.user_id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('username')
         .eq('id', design.user_id)
-        .single();
+        .maybeSingle();
       
-      if (error) throw error;
       return data;
     },
   });
