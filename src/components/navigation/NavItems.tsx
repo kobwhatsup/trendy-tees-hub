@@ -24,6 +24,8 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
   const location = useLocation();
 
   const isActive = (path: string) => {
+    // 首页路由不显示高亮
+    if (path === "/") return false;
     return location.pathname === path;
   };
 
