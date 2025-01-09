@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,23 @@ interface NavItemsProps {
 
 export const NavItems = ({ isMobile }: NavItemsProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const getButtonClassName = (path: string) => {
+    return isActive(path) 
+      ? "bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white hover:from-[#0EA5E9] hover:to-[#ea384c]"
+      : "hover:bg-accent hover:text-accent-foreground";
+  };
+
+  const getDropdownItemClassName = (path: string) => {
+    return isActive(path)
+      ? "bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] text-white cursor-pointer"
+      : "cursor-pointer";
+  };
 
   if (isMobile) {
     return (
@@ -36,7 +53,7 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
               <DropdownMenuItem 
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="flex items-center"
+                className={getDropdownItemClassName(item.path)}
               >
                 {item.title}
               </DropdownMenuItem>
@@ -55,7 +72,7 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
             key={item.path}
             variant="ghost" 
             onClick={() => navigate(item.path)}
-            className="flex items-center"
+            className={getButtonClassName(item.path)}
           >
             {item.title}
           </Button>
