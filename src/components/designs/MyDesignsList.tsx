@@ -57,22 +57,6 @@ export const MyDesignsList = () => {
         throw fetchError;
       }
 
-      // 自动开启所有未分享设计的分享状态
-      const updatePromises = data?.filter(design => !design.is_public).map(design => 
-        supabase
-          .from('design_drafts')
-          .update({ is_public: true })
-          .eq('id', design.id)
-      );
-
-      if (updatePromises?.length) {
-        await Promise.all(updatePromises);
-        toast({
-          title: "分享状态已更新",
-          description: "所有设计已设置为分享状态",
-        });
-      }
-
       // 对设计列表进行去重处理
       const uniqueDesigns = data?.reduce((acc: any[], current) => {
         // 检查是否已经存在相同的正面设计
