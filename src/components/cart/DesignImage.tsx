@@ -48,7 +48,7 @@ export const DesignImage = ({ imageUrl, title, className = "w-full aspect-square
                 <img 
                   src={validImageUrl} 
                   alt={title} 
-                  className="max-w-full max-h-full w-auto h-auto object-contain"
+                  className="max-w-[70%] max-h-[70%] w-auto h-auto object-contain"
                 />
               </div>
             </DialogContent>
