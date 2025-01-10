@@ -15,8 +15,11 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        window?.localStorage?.removeItem('supabase.auth.token');
-        window?.localStorage?.clear(); // 清除所有本地存储
+        // 只在用户主动登出时清除token
+        if (window?.localStorage?.getItem('supabase.auth.token')) {
+          window?.localStorage?.removeItem('supabase.auth.token');
+          window?.localStorage?.clear();
+        }
       } else if (event === 'SIGNED_IN') {
         if (!session?.access_token || !session?.refresh_token) {
           toast({
@@ -27,18 +30,21 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           return;
         }
         
-        // 确保更新本地存储中的token
+        // 更新本地存储中的token
         window?.localStorage?.setItem('supabase.auth.token', JSON.stringify({
           access_token: session.access_token,
           refresh_token: session.refresh_token
         }));
+
+        // 登录成功后关闭登录窗口
+        onOpenChange(false);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [onOpenChange]);
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
