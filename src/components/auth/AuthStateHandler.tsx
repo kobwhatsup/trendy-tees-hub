@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getAuthErrorMessage } from "@/utils/authErrors";
+import { AuthError } from "@supabase/supabase-js";
 
 interface AuthStateHandlerProps {
   children: React.ReactNode;
@@ -23,11 +24,6 @@ export const AuthStateHandler = ({ children }: AuthStateHandlerProps) => {
             title: "已退出登录",
             description: "期待您的再次访问！",
           });
-        } else if (event === "USER_DELETED") {
-          toast({
-            title: "账号已删除",
-            description: "您的账号已被成功删除。",
-          });
         } else if (event === "PASSWORD_RECOVERY") {
           toast({
             title: "密码重置邮件已发送",
@@ -40,18 +36,22 @@ export const AuthStateHandler = ({ children }: AuthStateHandlerProps) => {
           });
         } else if (event === "TOKEN_REFRESHED") {
           // 静默处理 token 刷新
-        } else if (event === "ERROR") {
-          toast({
-            variant: "destructive",
-            title: "错误",
-            description: getAuthErrorMessage(session?.error?.message),
-          });
         }
       }
     );
 
+    // 监听认证错误
+    const { data: { subscription: errorSubscription } } = supabase.auth.onError((error: AuthError) => {
+      toast({
+        variant: "destructive",
+        title: "错误",
+        description: getAuthErrorMessage(error.message),
+      });
+    });
+
     return () => {
       subscription.unsubscribe();
+      errorSubscription.unsubscribe();
     };
   }, [toast]);
 
