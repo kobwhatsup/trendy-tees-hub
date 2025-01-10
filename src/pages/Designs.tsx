@@ -16,13 +16,7 @@ export const DesignsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      
-      // 使用 Map 来去重，基于设计的唯一标识
-      const uniqueDesigns = Array.from(
-        new Map(data.map(item => [item.id, item])).values()
-      );
-      
-      return uniqueDesigns;
+      return data;
     },
   });
 

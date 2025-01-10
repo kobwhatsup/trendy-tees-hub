@@ -12,8 +12,8 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      storage: window.localStorage,
-      storageKey: 'sb-gfraqpwyfxmpzdllsfoc-auth-token',
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      storageKey: 'supabase.auth.token',
     }
   }
 );
