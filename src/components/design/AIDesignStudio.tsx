@@ -1,50 +1,38 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useDesignGeneration } from "./hooks/useDesignGeneration";
+import { useDesignState } from "./hooks/useDesignState";
+import { useSaveDesign } from "./hooks/useSaveDesign";
 import { DesignDescription } from "./steps/DesignDescription";
 import { DesignPreviewStep } from "./steps/DesignPreviewStep";
 import { TShirtStyleStep } from "./steps/TShirtStyleStep";
 import { TShirtEffectStep } from "./steps/TShirtEffectStep";
 import { ConfirmDesignStep } from "./steps/ConfirmDesignStep";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import type { Json } from "@/integrations/supabase/types";
-
-interface DesignSettings {
-  scale: number;
-  rotation: number;
-  opacity: number;
-  position: "front" | "back";
-  offsetX: number;
-  offsetY: number;
-}
 
 export const AIDesignStudio = () => {
-  const { toast } = useToast();
-  const [frontPrompt, setFrontPrompt] = useState("");
-  const [backPrompt, setBackPrompt] = useState("");
-  const [tshirtStyle, setTshirtStyle] = useState("short");
-  const [tshirtColor, setTshirtColor] = useState("white");
-  const [tshirtGender, setTshirtGender] = useState("male");
-  const [tshirtSize, setTshirtSize] = useState("M");
-  const [tshirtMaterial, setTshirtMaterial] = useState("cotton");
-  const [frontPreviewImage, setFrontPreviewImage] = useState<string>();
-  const [backPreviewImage, setBackPreviewImage] = useState<string>();
-  const [frontDesignSettings, setFrontDesignSettings] = useState<DesignSettings>({
-    scale: 0.8,
-    rotation: 0,
-    opacity: 1,
-    position: "front",
-    offsetX: 0,
-    offsetY: 30
-  });
-  const [backDesignSettings, setBackDesignSettings] = useState<DesignSettings>({
-    scale: 0.8,
-    rotation: 0,
-    opacity: 1,
-    position: "back",
-    offsetX: 0,
-    offsetY: 10
-  });
+  const {
+    frontPrompt,
+    setFrontPrompt,
+    backPrompt,
+    setBackPrompt,
+    tshirtStyle,
+    setTshirtStyle,
+    tshirtColor,
+    setTshirtColor,
+    tshirtGender,
+    setTshirtGender,
+    tshirtSize,
+    setTshirtSize,
+    tshirtMaterial,
+    setTshirtMaterial,
+    frontPreviewImage,
+    setFrontPreviewImage,
+    backPreviewImage,
+    setBackPreviewImage,
+    frontDesignSettings,
+    setFrontDesignSettings,
+    backDesignSettings,
+    setBackDesignSettings
+  } = useDesignState();
 
   const {
     isGenerating,
@@ -54,6 +42,8 @@ export const AIDesignStudio = () => {
     setFrontDesignImage,
     setBackDesignImage
   } = useDesignGeneration();
+
+  const { saveDesignProject } = useSaveDesign();
 
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
@@ -73,73 +63,22 @@ export const AIDesignStudio = () => {
     }
   };
 
-  const saveDesignProject = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "请先登录",
-          description: "保存设计方案需要先登录账号",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // 将 DesignSettings 转换为 Json 类型
-      const frontSettingsJson = {
-        scale: frontDesignSettings.scale,
-        rotation: frontDesignSettings.rotation,
-        opacity: frontDesignSettings.opacity,
-        position: frontDesignSettings.position,
-        offsetX: frontDesignSettings.offsetX,
-        offsetY: frontDesignSettings.offsetY
-      } as unknown as Json;
-
-      const backSettingsJson = {
-        scale: backDesignSettings.scale,
-        rotation: backDesignSettings.rotation,
-        opacity: backDesignSettings.opacity,
-        position: backDesignSettings.position,
-        offsetX: backDesignSettings.offsetX,
-        offsetY: backDesignSettings.offsetY
-      } as unknown as Json;
-
-      const { error } = await supabase
-        .from('design_projects')
-        .insert({
-          user_id: user.id,
-          prompt_front: frontPrompt,
-          prompt_back: backPrompt,
-          design_front: frontDesignImage,
-          design_back: backDesignImage,
-          tshirt_gender: tshirtGender,
-          tshirt_style: tshirtStyle,
-          tshirt_material: tshirtMaterial,
-          tshirt_size: tshirtSize,
-          tshirt_color: tshirtColor,
-          front_design_settings: frontSettingsJson,
-          back_design_settings: backSettingsJson,
-          preview_front: frontPreviewImage,
-          preview_back: backPreviewImage,
-          title: `设计方案-${new Date().toISOString()}`,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "保存成功",
-        description: "设计方案已保存",
-      });
-
-    } catch (error) {
-      console.error('保存设计方案失败:', error);
-      toast({
-        title: "保存失败",
-        description: "保存设计方案时出现错误，请重试",
-        variant: "destructive",
-      });
-    }
+  const handleSaveDesign = () => {
+    saveDesignProject({
+      frontPrompt,
+      backPrompt,
+      frontDesignImage,
+      backDesignImage,
+      tshirtGender,
+      tshirtStyle,
+      tshirtMaterial,
+      tshirtSize,
+      tshirtColor,
+      frontDesignSettings,
+      backDesignSettings,
+      frontPreviewImage,
+      backPreviewImage
+    });
   };
 
   return (
@@ -204,7 +143,7 @@ export const AIDesignStudio = () => {
             backDesignImage={backDesignImage}
             frontPreviewImage={frontPreviewImage}
             backPreviewImage={backPreviewImage}
-            onSave={saveDesignProject}
+            onSave={handleSaveDesign}
           />
         </div>
       </div>
