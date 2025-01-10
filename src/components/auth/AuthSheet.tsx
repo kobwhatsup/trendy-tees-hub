@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -6,42 +6,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { LogIn } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { AuthForm } from "./AuthForm";
 import { AuthStateHandler } from "./AuthStateHandler";
+import { Dispatch, SetStateAction } from "react";
 
-export const AuthSheet = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface AuthSheetProps {
+  isOpen: boolean;
+  onOpenChange: Dispatch<SetStateAction<boolean>>;
+}
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setIsOpen(false);
-      }
-    };
-
-    checkSession();
-  }, []);
-
+export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          <LogIn className="h-4 w-4 mr-2" />
-          登录
-        </Button>
+        <Button>登录</Button>
       </SheetTrigger>
       <SheetContent>
-        <SheetHeader className="mb-4">
-          <SheetTitle>登录/注册</SheetTitle>
+        <SheetHeader>
+          <SheetTitle>登录或注册</SheetTitle>
         </SheetHeader>
-        <div className="space-y-4">
-          <AuthStateHandler />
+        <AuthStateHandler>
           <AuthForm />
-        </div>
+        </AuthStateHandler>
       </SheetContent>
     </Sheet>
   );
