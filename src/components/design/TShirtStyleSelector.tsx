@@ -117,7 +117,18 @@ export const TShirtStyleSelector = ({
                   material === "cotton" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
                 )}
               >
-                纯棉标准款
+                纯棉
+              </Button>
+              <Button
+                size="lg"
+                variant={material === "quick-dry" ? "default" : "outline"}
+                onClick={() => onMaterialChange("quick-dry")}
+                className={cn(
+                  "w-full rounded-md transition-all",
+                  material === "quick-dry" ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""
+                )}
+              >
+                速干
               </Button>
             </div>
           </div>
