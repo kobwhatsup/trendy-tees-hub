@@ -93,7 +93,7 @@ export const SaveDesignButton = ({
 
   return (
     <Button 
-      className="bg-[#3B82F6] hover:bg-[#2563EB] transition-colors shadow-lg px-8 py-4 h-auto text-lg rounded-full"
+      className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white shadow-lg px-8 py-4 h-auto text-lg rounded-full"
       onClick={handleAddToCart}
       disabled={isAdding}
     >
