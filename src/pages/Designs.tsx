@@ -13,11 +13,16 @@ export const DesignsPage = () => {
         .select('*')
         .eq('is_public', true)
         .eq('is_deleted', false)
-        .order('created_at', { ascending: false })
-        .distinct();
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      
+      // 使用 Set 来去重，基于设计的唯一标识
+      const uniqueDesigns = Array.from(
+        new Map(data.map(item => [item.id, item])).values()
+      );
+      
+      return uniqueDesigns;
     },
   });
 
