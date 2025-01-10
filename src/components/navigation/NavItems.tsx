@@ -7,11 +7,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export const navItems = [
   { title: "首页", path: "/" },
   { title: "AI设计师", path: "/design" },
-  { title: "所有设计", path: "/designs" },
+  { title: "所有设计", path: "/designs", disabled: true },
   { title: "我的设计", path: "/my-designs" },
 ];
 
@@ -41,6 +42,17 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
       : "cursor-pointer";
   };
 
+  const handleNavigation = (path: string, disabled?: boolean) => {
+    if (disabled) {
+      toast({
+        title: "即将推出",
+        description: "敬请期待",
+      });
+      return;
+    }
+    navigate(path);
+  };
+
   if (isMobile) {
     return (
       <div className="flex-1 flex justify-end mr-4">
@@ -54,7 +66,7 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
             {navItems.map((item) => (
               <DropdownMenuItem 
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleNavigation(item.path, item.disabled)}
                 className={getDropdownItemClassName(item.path)}
               >
                 {item.title}
@@ -73,7 +85,7 @@ export const NavItems = ({ isMobile }: NavItemsProps) => {
           <Button 
             key={item.path}
             variant="ghost" 
-            onClick={() => navigate(item.path)}
+            onClick={() => handleNavigation(item.path, item.disabled)}
             className={getButtonClassName(item.path)}
           >
             {item.title}
