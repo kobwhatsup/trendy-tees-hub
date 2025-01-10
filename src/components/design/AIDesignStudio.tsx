@@ -7,6 +7,7 @@ import { DesignPreviewStep } from "./steps/DesignPreviewStep";
 import { TShirtStyleStep } from "./steps/TShirtStyleStep";
 import { TShirtEffectStep } from "./steps/TShirtEffectStep";
 import { ConfirmDesignStep } from "./steps/ConfirmDesignStep";
+import type { DesignSettings } from "@/types/design";
 
 export const AIDesignStudio = () => {
   const {
