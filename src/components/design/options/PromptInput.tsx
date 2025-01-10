@@ -38,7 +38,7 @@ export const PromptInput = ({
         <div className="flex justify-center">
           <Button
             onClick={() => onGenerate("front")}
-            className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity shadow-lg px-8 py-4 h-auto text-lg rounded-full"
+            className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white shadow-lg px-8 py-4 h-auto text-lg rounded-full"
             disabled={isGenerating}
           >
             {isGenerating ? (
@@ -67,7 +67,7 @@ export const PromptInput = ({
         <div className="flex justify-center">
           <Button
             onClick={() => onGenerate("back")}
-            className="bg-gradient-to-r from-[#0EA5E9] to-[#ea384c] hover:opacity-90 transition-opacity shadow-lg px-8 py-4 h-auto text-lg rounded-full"
+            className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white shadow-lg px-8 py-4 h-auto text-lg rounded-full"
             disabled={isGenerating}
           >
             {isGenerating ? (
