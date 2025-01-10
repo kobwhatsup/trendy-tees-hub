@@ -8,6 +8,13 @@ import { zhCN } from "date-fns/locale";
 import { DesignPreviewGrid } from "./DesignPreviewGrid";
 import { DesignActions } from "./DesignActions";
 import { useNavigate } from "react-router-dom";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Design {
   id: string;
@@ -147,11 +154,35 @@ export const DesignCard = ({ design }: { design: Design }) => {
                 <p className="font-medium">{design.use_count || 0}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">销售收入</p>
+                <p className="text-muted-foreground flex items-center gap-1">
+                  销售收入
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>印有该设计图的T恤收入总额</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </p>
                 <p className="font-medium">¥{design.sales_amount?.toFixed(2) || '0.00'}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">获得奖励</p>
+                <p className="text-muted-foreground flex items-center gap-1">
+                  获得奖励
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>该设计图的T恤收入总额*10%，该奖励归您所有</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </p>
                 <p className="font-medium text-green-600">¥{design.total_earnings?.toFixed(2) || '0.00'}</p>
               </div>
             </div>
