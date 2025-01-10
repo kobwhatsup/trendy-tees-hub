@@ -1,50 +1,59 @@
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getAuthErrorMessage } from "@/utils/authErrors";
 
-export const AuthStateHandler = () => {
+interface AuthStateHandlerProps {
+  children: React.ReactNode;
+}
+
+export const AuthStateHandler = ({ children }: AuthStateHandlerProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        toast({
-          title: "登录成功",
-          description: "欢迎回来",
-        });
-      } else if (event === "SIGNED_OUT") {
-        toast({
-          title: "已退出登录",
-          description: "期待您的再次访问",
-        });
-      } else if (event === "PASSWORD_RECOVERY") {
-        toast({
-          title: "密码重置邮件已发送",
-          description: "请查看您的邮箱",
-        });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN") {
+          toast({
+            title: "登录成功",
+            description: "欢迎回来！",
+          });
+        } else if (event === "SIGNED_OUT") {
+          toast({
+            title: "已退出登录",
+            description: "期待您的再次访问！",
+          });
+        } else if (event === "USER_DELETED") {
+          toast({
+            title: "账号已删除",
+            description: "您的账号已被成功删除。",
+          });
+        } else if (event === "PASSWORD_RECOVERY") {
+          toast({
+            title: "密码重置邮件已发送",
+            description: "请查看您的邮箱。",
+          });
+        } else if (event === "USER_UPDATED") {
+          toast({
+            title: "账号已更新",
+            description: "您的账号信息已成功更新。",
+          });
+        } else if (event === "TOKEN_REFRESHED") {
+          // 静默处理 token 刷新
+        } else if (event === "ERROR") {
+          toast({
+            variant: "destructive",
+            title: "错误",
+            description: getAuthErrorMessage(session?.error?.message),
+          });
+        }
       }
-    });
+    );
 
     return () => {
       subscription.unsubscribe();
     };
   }, [toast]);
 
-  useEffect(() => {
-    const handleAuthError = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        toast({
-          title: "认证错误",
-          description: getAuthErrorMessage(error),
-          variant: "destructive",
-        });
-      }
-    };
-
-    handleAuthError();
-  }, [toast]);
-
-  return null;
+  return <>{children}</>;
 };
