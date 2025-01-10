@@ -37,21 +37,21 @@ export const AuthStateHandler = ({ children }: AuthStateHandlerProps) => {
         } else if (event === "TOKEN_REFRESHED") {
           // 静默处理 token 刷新
         }
+
+        // 如果有错误，显示错误信息
+        if (session?.error) {
+          const error = new AuthError(session.error.message);
+          toast({
+            variant: "destructive",
+            title: "错误",
+            description: getAuthErrorMessage(error),
+          });
+        }
       }
     );
 
-    // 监听认证错误
-    const { data: { subscription: errorSubscription } } = supabase.auth.onError((error: AuthError) => {
-      toast({
-        variant: "destructive",
-        title: "错误",
-        description: getAuthErrorMessage(error.message),
-      });
-    });
-
     return () => {
       subscription.unsubscribe();
-      errorSubscription.unsubscribe();
     };
   }, [toast]);
 
