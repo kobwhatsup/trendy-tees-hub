@@ -32,7 +32,7 @@ export const DesignActions = ({
         </Button>
         <Button
           onClick={onUseDesign}
-          className="w-full bg-gradient-to-r from-accent to-accent/80 hover:opacity-90 transition-all duration-300 shadow-md"
+          className="w-full bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] text-white hover:opacity-90 transition-all duration-300 shadow-md"
           size="lg"
         >
           <Paintbrush className="h-5 w-5 mr-2" />
