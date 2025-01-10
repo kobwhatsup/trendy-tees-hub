@@ -15,7 +15,7 @@ export const Categories = () => {
         "40支高支纱，织造细腻平整",
         "优异的透气性和吸湿性，穿着更加舒适"
       ],
-      image: "https://images.unsplash.com/photo-1581553673739-c4906b5d0de8?w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1594911772125-07fc7a2d8d9f?w=800&auto=format&fit=crop"
     },
     {
       id: 2,
