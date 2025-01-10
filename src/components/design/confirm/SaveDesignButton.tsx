@@ -1,9 +1,6 @@
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { saveDesignToDatabase } from "./saveDesignToDatabase";
+import { ShoppingCart, Loader2 } from "lucide-react";
+import { useAddToCart } from "../hooks/useAddToCart";
 
 interface SaveDesignButtonProps {
   tshirtStyle: string;
@@ -16,79 +13,29 @@ interface SaveDesignButtonProps {
   backPreviewImage?: string;
 }
 
-export const SaveDesignButton = ({ 
-  tshirtStyle, 
-  tshirtColor, 
+export const SaveDesignButton = ({
+  tshirtStyle,
+  tshirtColor,
   tshirtGender,
   tshirtSize,
   frontDesignImage,
   backDesignImage,
   frontPreviewImage,
-  backPreviewImage
+  backPreviewImage,
 }: SaveDesignButtonProps) => {
-  const { toast } = useToast();
-  const [isAdding, setIsAdding] = useState(false);
-  const [status, setStatus] = useState("");
+  const { addToCart, isAdding } = useAddToCart();
 
   const handleAddToCart = async () => {
-    if (isAdding) return;
-    setIsAdding(true);
-    setStatus("正在验证登录状态...");
-    
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "请先登录",
-          description: "添加商品到购物车需要先登录",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setStatus("正在处理预览图...");
-      await saveDesignToDatabase({
-        userId: user.id,
-        frontDesignImage,
-        backDesignImage,
-        frontPreviewImage,
-        backPreviewImage,
-        tshirtStyle,
-        tshirtColor,
-        tshirtGender,
-        tshirtSize,
-      });
-
-      // 触发购物车动画
-      if ((window as any).showAddToCartAnimation) {
-        (window as any).showAddToCartAnimation();
-      }
-
-      // 触发保存动画
-      if ((window as any).showSaveAnimation) {
-        (window as any).showSaveAnimation();
-      }
-
-      // 触发一个自定义事件，通知购物车组件更新数量
-      const event = new CustomEvent('cart-updated');
-      window.dispatchEvent(event);
-
-      toast({
-        title: "保存成功",
-        description: "设计方案已保存并添加到购物车",
-      });
-    } catch (error) {
-      console.error('添加到购物车失败:', error);
-      toast({
-        title: "添加失败",
-        description: error.message || "请稍后重试",
-        variant: "destructive",
-      });
-    } finally {
-      setIsAdding(false);
-      setStatus("");
-    }
+    await addToCart({
+      tshirtStyle,
+      tshirtColor,
+      tshirtGender,
+      tshirtSize,
+      frontDesignImage,
+      backDesignImage,
+      frontPreviewImage,
+      backPreviewImage,
+    });
   };
 
   return (
@@ -99,13 +46,13 @@ export const SaveDesignButton = ({
     >
       {isAdding ? (
         <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-          {status || "正在处理..."}
+          <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+          处理中...
         </>
       ) : (
         <>
-          <Check className="mr-2 h-5 w-5" />
-          确认设计并加入购物车
+          <ShoppingCart className="mr-2 h-6 w-6" />
+          确认设计并提交购物车
         </>
       )}
     </Button>
