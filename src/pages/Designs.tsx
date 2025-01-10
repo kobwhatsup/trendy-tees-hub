@@ -13,7 +13,8 @@ export const DesignsPage = () => {
         .select('*')
         .eq('is_public', true)
         .eq('is_deleted', false)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .distinct();
       
       if (error) throw error;
       return data;
