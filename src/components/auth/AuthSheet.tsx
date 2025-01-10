@@ -5,6 +5,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+import { AuthError } from "@supabase/supabase-js";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -15,7 +16,6 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        // 清除所有认证相关的存储
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
         if (!session?.access_token) {
@@ -34,6 +34,23 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           title: "登录成功",
           description: "欢迎回来！",
         });
+      } else if (event === 'USER_UPDATED') {
+        if (session?.user.email_confirmed_at) {
+          toast({
+            title: "邮箱验证成功",
+            description: "您现在可以登录了!",
+          });
+        }
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast({
+          title: "密码重置邮件已发送",
+          description: "请查看您的邮箱",
+        });
+      } else if (event === 'USER_DELETED') {
+        toast({
+          title: "账号已删除",
+          description: "您的账号已被成功删除",
+        });
       }
     });
 
@@ -41,6 +58,22 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
       subscription.unsubscribe();
     };
   }, [onOpenChange]);
+
+  const handleError = (error: AuthError) => {
+    let errorMessage = "登录失败，请重试";
+    
+    if (error.message.includes("Invalid login credentials")) {
+      errorMessage = "邮箱或密码错误，请重新输入";
+    } else if (error.message.includes("Email not confirmed")) {
+      errorMessage = "请先验证您的邮箱后再登录";
+    }
+
+    toast({
+      title: "错误",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -97,6 +130,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
             }}
             theme="default"
             providers={[]}
+            onError={handleError}
           />
         </div>
       </SheetContent>
