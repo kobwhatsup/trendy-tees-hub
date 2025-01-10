@@ -46,11 +46,6 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           title: "密码重置邮件已发送",
           description: "请查看您的邮箱",
         });
-      } else if (event === 'USER_DELETED') {
-        toast({
-          title: "账号已删除",
-          description: "您的账号已被成功删除",
-        });
       }
     });
 
@@ -130,7 +125,6 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
             }}
             theme="default"
             providers={[]}
-            onError={handleError}
           />
         </div>
       </SheetContent>
