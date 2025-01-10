@@ -37,16 +37,6 @@ export const AuthStateHandler = ({ children }: AuthStateHandlerProps) => {
         } else if (event === "TOKEN_REFRESHED") {
           // 静默处理 token 刷新
         }
-
-        // 如果有错误，显示错误信息
-        if (session?.error) {
-          const error = new AuthError(session.error.message);
-          toast({
-            variant: "destructive",
-            title: "错误",
-            description: getAuthErrorMessage(error),
-          });
-        }
       }
     );
 
