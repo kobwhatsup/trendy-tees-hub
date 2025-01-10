@@ -15,13 +15,10 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        // 只在用户主动登出时清除token
-        if (window?.localStorage?.getItem('supabase.auth.token')) {
-          window?.localStorage?.removeItem('supabase.auth.token');
-          window?.localStorage?.clear();
-        }
+        // 清除所有认证相关的存储
+        window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
-        if (!session?.access_token || !session?.refresh_token) {
+        if (!session?.access_token) {
           toast({
             title: "登录失败",
             description: "请重新尝试登录",
@@ -29,15 +26,14 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           });
           return;
         }
-        
-        // 更新本地存储中的token
-        window?.localStorage?.setItem('supabase.auth.token', JSON.stringify({
-          access_token: session.access_token,
-          refresh_token: session.refresh_token
-        }));
 
         // 登录成功后关闭登录窗口
         onOpenChange(false);
+        
+        toast({
+          title: "登录成功",
+          description: "欢迎回来！",
+        });
       }
     });
 
