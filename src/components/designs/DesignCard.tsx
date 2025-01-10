@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { DesignPreviewGrid } from "./DesignPreviewGrid";
 import { DesignActions } from "./DesignActions";
+import { useNavigate } from "react-router-dom";
 
 interface Design {
   id: string;
@@ -26,6 +27,7 @@ interface Design {
 export const DesignCard = ({ design }: { design: Design }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const handleShareToggle = async () => {
     try {
@@ -88,6 +90,42 @@ export const DesignCard = ({ design }: { design: Design }) => {
     }
   };
 
+  const handleUseDesign = () => {
+    // 将设计图信息存储到 localStorage
+    localStorage.setItem('reusedDesign', JSON.stringify({
+      design_front: design.design_front,
+      design_back: design.design_back
+    }));
+    
+    // 更新使用次数
+    updateUseCount();
+    
+    // 跳转到 AI 设计师页面
+    navigate('/design');
+  };
+
+  const updateUseCount = async () => {
+    try {
+      const { error } = await supabase
+        .from('design_drafts')
+        .update({ 
+          use_count: (design.use_count || 0) + 1 
+        })
+        .eq('id', design.id);
+
+      if (error) throw error;
+
+      // 更新本地缓存的数据
+      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
+        return oldData.map(d => 
+          d.id === design.id ? { ...d, use_count: (d.use_count || 0) + 1 } : d
+        );
+      });
+    } catch (error) {
+      console.error('更新使用次数失败:', error);
+    }
+  };
+
   return (
     <div className="p-[1px] rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#ea384c]">
       <Card className="overflow-hidden">
@@ -125,6 +163,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
             isUpdating={isUpdating}
             onShareToggle={handleShareToggle}
             onDelete={handleDeleteDesign}
+            onUseDesign={handleUseDesign}
           />
         </CardFooter>
       </Card>

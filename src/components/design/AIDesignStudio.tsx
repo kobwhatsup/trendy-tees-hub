@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useDesignGeneration } from "./hooks/useDesignGeneration";
 import { DesignDescription } from "./steps/DesignDescription";
 import { DesignPreviewStep } from "./steps/DesignPreviewStep";
@@ -50,13 +50,20 @@ export const AIDesignStudio = () => {
     isGenerating,
     frontDesignImage,
     backDesignImage,
-    generateDesign
+    generateDesign,
+    setFrontDesignImage,
+    setBackDesignImage
   } = useDesignGeneration();
 
   const handleGenerate = (position: "front" | "back") => {
     const prompt = position === "front" ? frontPrompt : backPrompt;
     generateDesign(prompt, position);
   };
+
+  const handleDesignImagesChange = useCallback((frontImage: string, backImage: string) => {
+    setFrontDesignImage(frontImage);
+    setBackDesignImage(backImage);
+  }, [setFrontDesignImage, setBackDesignImage]);
 
   const handleSettingsChange = (position: "front" | "back", settings: DesignSettings) => {
     if (position === "front") {
@@ -160,6 +167,7 @@ export const AIDesignStudio = () => {
           <DesignPreviewStep
             frontDesignImage={frontDesignImage}
             backDesignImage={backDesignImage}
+            onDesignImagesChange={handleDesignImagesChange}
           />
 
           <TShirtStyleStep
