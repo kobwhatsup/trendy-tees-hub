@@ -41,17 +41,14 @@ export const DesignImage = ({ imageUrl, title, className = "w-full aspect-square
           />
           <Dialog open={showPreview} onOpenChange={setShowPreview}>
             <DialogContent className={`
-              ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] max-h-[90vh] w-auto h-auto p-4'}
-              overflow-hidden
+              ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] h-[90vh] w-auto p-4'}
+              overflow-hidden flex items-center justify-center
             `}>
-              <div className="relative w-full h-full flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center p-4">
                 <img 
                   src={validImageUrl} 
                   alt={title} 
-                  className={`
-                    max-w-full object-contain
-                    ${isMobile ? 'max-h-[100vh]' : 'max-h-[80vh]'}
-                  `}
+                  className="max-w-full max-h-full w-auto h-auto object-contain"
                 />
               </div>
             </DialogContent>
