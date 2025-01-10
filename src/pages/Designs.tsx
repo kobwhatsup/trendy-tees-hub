@@ -17,7 +17,7 @@ export const DesignsPage = () => {
       
       if (error) throw error;
       
-      // 使用 Set 来去重，基于设计的唯一标识
+      // 使用 Map 来去重，基于设计的唯一标识
       const uniqueDesigns = Array.from(
         new Map(data.map(item => [item.id, item])).values()
       );
