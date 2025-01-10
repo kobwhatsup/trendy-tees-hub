@@ -21,6 +21,28 @@ export const useDesignGeneration = () => {
 
     setIsGenerating(true);
     try {
+      // 首先检查用户会话
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('获取会话失败:', sessionError);
+        toast({
+          title: "会话错误",
+          description: "请重新登录后再试",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!session) {
+        toast({
+          title: "请先登录",
+          description: "生成设计需要先登录账号",
+          variant: "destructive",
+        });
+        return;
+      }
+
       console.log('开始生成设计...');
       const fullPrompt = `${prompt}\n\n${DESIGN_GUIDELINES}`;
       
@@ -94,6 +116,8 @@ export const useDesignGeneration = () => {
     isGenerating,
     frontDesignImage,
     backDesignImage,
-    generateDesign
+    generateDesign,
+    setFrontDesignImage,
+    setBackDesignImage
   };
 };
