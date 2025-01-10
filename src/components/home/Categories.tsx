@@ -15,7 +15,7 @@ export const Categories = () => {
         "40支高支纱，织造细腻平整",
         "优异的透气性和吸湿性，穿着更加舒适"
       ],
-      image: "https://images.unsplash.com/photo-1599666433232-2b222eb02b8c?w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1581553673739-c4906b5d0de8?w=800&auto=format&fit=crop"
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ export const Categories = () => {
         "轻薄透气，运动时更加舒适",
         "耐磨耐用，不易变形，保持挺括"
       ],
-      image: "https://images.unsplash.com/photo-1544032527-042957c6f7ce?w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&auto=format&fit=crop"
     }
   ];
 
