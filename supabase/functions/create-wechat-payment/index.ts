@@ -34,16 +34,7 @@ serve(async (req) => {
 
     if (!mchid || !serialNo || !privateKey || !appId) {
       console.error('Missing WeChat Pay configuration');
-      return new Response(
-        JSON.stringify({ error: 'Missing WeChat Pay configuration' }), 
-        { 
-          status: 500,
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
-        }
-      );
+      throw new Error('Missing WeChat Pay configuration');
     }
 
     console.log('Creating payment request with config:', {
@@ -82,14 +73,14 @@ serve(async (req) => {
     console.log('Generating signature with string:', signStr);
 
     try {
-      // 处理私钥格式，移除头尾和换行符
-      const formattedPrivateKey = privateKey
-        .replace(/-----BEGIN PRIVATE KEY-----/, '')
-        .replace(/-----END PRIVATE KEY-----/, '')
-        .replace(/\n/g, '');
+      // 处理私钥格式，确保包含PEM头尾
+      let formattedPrivateKey = privateKey;
+      if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+        formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
+      }
 
-      // 将Base64格式的私钥转换为字节数组
-      const binaryKey = Uint8Array.from(atob(formattedPrivateKey), c => c.charCodeAt(0));
+      // 将私钥转换为二进制格式
+      const binaryKey = new TextEncoder().encode(formattedPrivateKey);
 
       // 使用私钥签名
       const key = await crypto.subtle.importKey(
@@ -129,22 +120,12 @@ serve(async (req) => {
       });
 
       const responseData = await response.json();
+      console.log('WeChat Pay API response:', responseData);
 
       if (!response.ok) {
         console.error('WeChat Pay API error:', responseData);
-        return new Response(
-          JSON.stringify({ error: `WeChat Pay API error: ${responseData.message || response.statusText}` }), 
-          { 
-            status: response.status,
-            headers: { 
-              ...corsHeaders,
-              'Content-Type': 'application/json' 
-            } 
-          }
-        );
+        throw new Error(`WeChat Pay API error: ${responseData.message || response.statusText}`);
       }
-
-      console.log('Payment result:', responseData);
 
       // 创建支付记录
       const { error: paymentError } = await supabaseClient
@@ -157,16 +138,7 @@ serve(async (req) => {
 
       if (paymentError) {
         console.error('Error creating payment record:', paymentError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create payment record' }), 
-          { 
-            status: 500,
-            headers: { 
-              ...corsHeaders,
-              'Content-Type': 'application/json' 
-            } 
-          }
-        );
+        throw new Error('Failed to create payment record');
       }
 
       // 返回支付二维码URL
@@ -182,16 +154,7 @@ serve(async (req) => {
 
     } catch (error) {
       console.error('Error processing payment request:', error);
-      return new Response(
-        JSON.stringify({ error: 'Failed to process payment request' }), 
-        { 
-          status: 500,
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
-        }
-      );
+      throw new Error('Failed to process payment request');
     }
 
   } catch (error) {
