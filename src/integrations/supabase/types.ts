@@ -529,6 +529,7 @@ export type Database = {
         | "delivered"
         | "refund_requested"
         | "refunded"
+        | "payment_timeout"
     }
     CompositeTypes: {
       [_ in never]: never
