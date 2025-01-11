@@ -33,7 +33,17 @@ serve(async (req) => {
     const appId = Deno.env.get('WECHAT_PAY_APP_ID');
 
     if (!mchid || !serialNo || !privateKey || !appId) {
-      throw new Error('Missing WeChat Pay configuration');
+      console.error('Missing WeChat Pay configuration');
+      return new Response(
+        JSON.stringify({ error: 'Missing WeChat Pay configuration' }), 
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
 
     console.log('Creating payment request with config:', {
@@ -71,107 +81,109 @@ serve(async (req) => {
     
     console.log('Generating signature with string:', signStr);
 
-    // 使用私钥签名
-    const key = await crypto.subtle.importKey(
-      "pkcs8",
-      new TextEncoder().encode(privateKey),
-      {
-        name: "RSASSA-PKCS1-v1_5",
-        hash: "SHA-256",
-      },
-      false,
-      ["sign"]
-    );
+    try {
+      // 使用私钥签名
+      const key = await crypto.subtle.importKey(
+        "pkcs8",
+        new TextEncoder().encode(privateKey),
+        {
+          name: "RSASSA-PKCS1-v1_5",
+          hash: "SHA-256",
+        },
+        false,
+        ["sign"]
+      );
 
-    const signature = await crypto.subtle.sign(
-      "RSASSA-PKCS1-v1_5",
-      key,
-      new TextEncoder().encode(signStr)
-    );
+      const signature = await crypto.subtle.sign(
+        "RSASSA-PKCS1-v1_5",
+        key,
+        new TextEncoder().encode(signStr)
+      );
 
-    const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
+      const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
 
-    // 构建认证头
-    const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${base64Signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
+      // 构建认证头
+      const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${base64Signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
 
-    console.log('Sending request to WeChat Pay API...');
-    
-    // 调用微信支付API
-    const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': authorization,
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('WeChat Pay API error:', errorData);
-      throw new Error(`WeChat Pay API error: ${response.statusText}`);
-    }
-
-    const paymentResult = await response.json();
-    console.log('Payment result:', paymentResult);
-
-    // 创建支付记录
-    const { error: paymentError } = await supabaseClient
-      .from('payment_records')
-      .insert({
-        order_id: orderId,
-        amount: amount / 100, // 转换回元
-        status: 'pending'
+      console.log('Sending request to WeChat Pay API...');
+      
+      // 调用微信支付API
+      const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': authorization,
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
+        },
+        body: JSON.stringify(requestBody),
       });
 
-    if (paymentError) {
-      console.error('Error creating payment record:', paymentError);
-      throw paymentError;
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error('WeChat Pay API error:', responseData);
+        return new Response(
+          JSON.stringify({ error: `WeChat Pay API error: ${responseData.message || response.statusText}` }), 
+          { 
+            status: response.status,
+            headers: { 
+              ...corsHeaders,
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
+      }
+
+      console.log('Payment result:', responseData);
+
+      // 创建支付记录
+      const { error: paymentError } = await supabaseClient
+        .from('payment_records')
+        .insert({
+          order_id: orderId,
+          amount: amount / 100, // 转换回元
+          status: 'pending'
+        });
+
+      if (paymentError) {
+        console.error('Error creating payment record:', paymentError);
+        return new Response(
+          JSON.stringify({ error: 'Failed to create payment record' }), 
+          { 
+            status: 500,
+            headers: { 
+              ...corsHeaders,
+              'Content-Type': 'application/json' 
+            } 
+          }
+        );
+      }
+
+      // 返回支付二维码URL
+      return new Response(
+        JSON.stringify({ code_url: responseData.code_url }),
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+
+    } catch (error) {
+      console.error('Error processing payment request:', error);
+      return new Response(
+        JSON.stringify({ error: 'Failed to process payment request' }), 
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
-
-    // 设置订单超时自动关闭（5分钟）
-    setTimeout(async () => {
-      const { data: order } = await supabaseClient
-        .from('orders')
-        .select('status')
-        .eq('id', orderId)
-        .single();
-
-      if (order?.status === 'pending_payment') {
-        // 关闭订单
-        await supabaseClient
-          .from('orders')
-          .update({ 
-            status: 'payment_timeout',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', orderId);
-
-        // 更新支付记录
-        await supabaseClient
-          .from('payment_records')
-          .update({ 
-            status: 'timeout',
-            updated_at: new Date().toISOString()
-          })
-          .eq('order_id', orderId);
-
-        console.log('Order timeout handled:', orderId);
-      }
-    }, 5 * 60 * 1000);
-
-    // 返回支付二维码URL
-    return new Response(
-      JSON.stringify({ code_url: paymentResult.code_url }),
-      { 
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
 
   } catch (error) {
     console.error('Error creating WeChat payment:', error);

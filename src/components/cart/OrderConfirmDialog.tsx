@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { CartItemType } from "@/types/cart";
 import { AddressType } from "./address/types";
+import { PaymentDialog } from "./order/PaymentDialog";
 
 interface OrderConfirmDialogProps {
   open: boolean;
@@ -18,9 +19,12 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showAddressDialog, setShowAddressDialog] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [address, setAddress] = useState("请添加收货地址");
   const [addressInfo, setAddressInfo] = useState<AddressType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [orderId, setOrderId] = useState<string>("");
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
@@ -87,13 +91,33 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       // 触发购物车更新事件
       window.dispatchEvent(new Event('cart-updated'));
 
-      // 跳转到订单页面
-      navigate('/orders');
-      
-      toast({
-        title: "订单创建成功",
-        description: "订单已生成，请尽快完成支付",
-      });
+      // 创建支付
+      try {
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-wechat-payment', {
+          body: {
+            orderId: order.id,
+            amount: Math.round(total * 100), // 转换为分
+            description: `订单支付 #${orderNumber}`
+          }
+        });
+
+        if (paymentError) throw paymentError;
+
+        setOrderId(order.id);
+        setQrCodeUrl(paymentData.code_url);
+        setShowPaymentDialog(true);
+        onOpenChange(false);
+
+      } catch (error) {
+        console.error('创建支付失败:', error);
+        // 支付创建失败时，导航到订单页面让用户重试
+        navigate('/orders');
+        toast({
+          title: "创建支付失败",
+          description: "订单已创建，请在订单页面重新发起支付",
+          variant: "destructive",
+        });
+      }
 
     } catch (error) {
       console.error('创建订单失败:', error);
@@ -118,7 +142,6 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
     setIsProcessing(true);
     await createOrder();
     setIsProcessing(false);
-    onOpenChange(false);
   };
 
   const handleAddressSelect = (addressData: AddressType) => {
@@ -162,7 +185,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">¥{item.price || 199}</p>
+                      <p className="text-sm">¥{(item.price || 199).toFixed(2)}</p>
                       <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                     </div>
                   </div>
@@ -180,15 +203,15 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>商品金额</span>
-                  <span>¥{subtotal}</span>
+                  <span>¥{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>运费</span>
-                  <span>¥{shipping}</span>
+                  <span>¥{shipping.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-medium pt-2 border-t">
                   <span>应付金额</span>
-                  <span className="text-red-500">¥{total}</span>
+                  <span className="text-red-500">¥{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -210,6 +233,14 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
         open={showAddressDialog}
         onOpenChange={setShowAddressDialog}
         onAddressSelect={handleAddressSelect}
+      />
+
+      <PaymentDialog
+        open={showPaymentDialog}
+        onOpenChange={setShowPaymentDialog}
+        orderId={orderId}
+        totalAmount={total}
+        qrCodeUrl={qrCodeUrl}
       />
     </>
   );
