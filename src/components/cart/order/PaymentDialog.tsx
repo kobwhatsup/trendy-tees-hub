@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { QRCodeDisplay } from "./payment/QRCodeDisplay";
-import { usePaymentPolling } from "./payment/usePaymentPolling";
+import { usePaymentPolling } from "./payment/hooks/usePaymentPolling";
 
 interface PaymentDialogProps {
   open: boolean;
