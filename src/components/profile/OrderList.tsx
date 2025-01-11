@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Info, Package2 } from "lucide-react";
+import { Package2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderStatus } from "./OrderStatus";
 import { OrderItems } from "./OrderItems";
@@ -26,15 +26,6 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
               <div className="flex items-center gap-2">
                 <Package2 className="h-5 w-5 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">订单编号: {order.order_number}</p>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setSelectedOrder(order)}
-                >
-                  <Info className="h-4 w-4" />
-                  <span className="sr-only">查看订单详情</span>
-                </Button>
               </div>
               <OrderStatus 
                 status={order.status} 
@@ -63,6 +54,13 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
 
             {/* 订单底部操作栏 */}
             <div className="flex justify-end items-center gap-2 border-t pt-3">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedOrder(order)}
+              >
+                订单详情
+              </Button>
               <Button variant="outline" size="sm">
                 查看物流
               </Button>
