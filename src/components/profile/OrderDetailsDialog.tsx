@@ -7,12 +7,14 @@ import type { Order } from "@/types/order";
 import { Button } from "../ui/button";
 
 interface OrderDetailsDialogProps {
-  order: Order;
+  order: Order | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDialogProps) => {
+  if (!order) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
