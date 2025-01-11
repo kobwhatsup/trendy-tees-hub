@@ -105,9 +105,6 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                 >
                   订单详情
                 </Button>
-                <Button variant="outline" size="sm">
-                  再次购买
-                </Button>
                 {order.status === 'delivered' && (
                   <Button variant="outline" size="sm">
                     评价
