@@ -8,11 +8,11 @@ const corsHeaders = {
 }
 
 // 解密回调数据
-async function decryptResource(ciphertext: string, associatedData: string, nonce: string) {
+async function decryptResource(ciphertext: string, associatedData: string, nonce: string, apiV3Key: string) {
   try {
     const key = await crypto.subtle.importKey(
       "raw",
-      new TextEncoder().encode(Deno.env.get('WECHAT_PAY_API_V2_KEY')),
+      new TextEncoder().encode(apiV3Key),
       { name: "AES-GCM" },
       false,
       ["decrypt"]
@@ -30,13 +30,13 @@ async function decryptResource(ciphertext: string, associatedData: string, nonce
 
     return new TextDecoder().decode(decrypted);
   } catch (error) {
-    console.error('Error decrypting resource:', error);
-    throw new Error('Failed to decrypt callback data');
+    console.error('解密回调数据失败:', error);
+    throw new Error('解密回调数据失败');
   }
 }
 
 // 验证签名
-async function verifySignature(headers: Headers, body: string) {
+async function verifySignature(headers: Headers, body: string, publicKey: string) {
   try {
     const timestamp = headers.get('Wechatpay-Timestamp');
     const nonce = headers.get('Wechatpay-Nonce');
@@ -44,21 +44,21 @@ async function verifySignature(headers: Headers, body: string) {
     const serial = headers.get('Wechatpay-Serial');
 
     if (!timestamp || !nonce || !signature || !serial) {
-      throw new Error('Missing required headers');
+      throw new Error('缺少必要的请求头');
     }
 
     // 验证证书序列号
     if (serial !== Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO')) {
-      throw new Error('Invalid certificate serial number');
+      throw new Error('证书序列号不匹配');
     }
 
     // 构造签名字符串
     const message = `${timestamp}\n${nonce}\n${body}\n`;
 
     // 使用微信支付平台证书公钥验证签名
-    const publicKey = await crypto.subtle.importKey(
+    const key = await crypto.subtle.importKey(
       "spki",
-      new TextEncoder().encode(Deno.env.get('WECHAT_PAY_PUBLIC_KEY')),
+      new TextEncoder().encode(publicKey),
       {
         name: "RSASSA-PKCS1-v1_5",
         hash: "SHA-256",
@@ -73,62 +73,30 @@ async function verifySignature(headers: Headers, body: string) {
 
     const isValid = await crypto.subtle.verify(
       "RSASSA-PKCS1-v1_5",
-      publicKey,
+      key,
       signatureBytes,
       new TextEncoder().encode(message)
     );
 
     if (!isValid) {
-      throw new Error('Invalid signature');
+      throw new Error('签名验证失败');
     }
 
     return true;
   } catch (error) {
-    console.error('Error verifying signature:', error);
-    throw new Error('Signature verification failed');
-  }
-}
-
-// 处理支付超时
-async function handlePaymentTimeout(supabaseClient: any, orderId: string) {
-  try {
-    // 更新订单状态为支付超时
-    const { error: orderError } = await supabaseClient
-      .from('orders')
-      .update({ 
-        status: 'payment_timeout',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', orderId);
-
-    if (orderError) throw orderError;
-
-    // 更新支付记录状态
-    const { error: paymentError } = await supabaseClient
-      .from('payment_records')
-      .update({ 
-        status: 'timeout',
-        updated_at: new Date().toISOString()
-      })
-      .eq('order_id', orderId);
-
-    if (paymentError) throw paymentError;
-
-    console.log('Payment timeout handled for order:', orderId);
-  } catch (error) {
-    console.error('Error handling payment timeout:', error);
+    console.error('签名验证失败:', error);
     throw error;
   }
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
+  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('Received WeChat payment callback');
+    console.log('收到微信支付回调');
     
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -137,35 +105,41 @@ serve(async (req) => {
 
     // 获取原始请求体
     const rawBody = await req.text();
-    console.log('Raw callback body:', rawBody);
+    console.log('回调原始数据:', rawBody);
 
     // 验证签名
-    await verifySignature(req.headers, rawBody);
+    const publicKey = Deno.env.get('WECHAT_PAY_PUBLIC_KEY') ?? '';
+    await verifySignature(req.headers, rawBody, publicKey);
+    console.log('签名验证通过');
 
     // 解析回调数据
     const callbackData = JSON.parse(rawBody);
-    console.log('Parsed callback data:', callbackData);
+    console.log('解析后的回调数据:', callbackData);
 
     // 验证通知数据
     const { resource } = callbackData;
     if (!resource || !resource.ciphertext) {
-      throw new Error('Invalid callback data format');
+      throw new Error('回调数据格式错误');
     }
 
     // 解密通知数据
+    const apiV3Key = Deno.env.get('WECHAT_PAY_API_V3_KEY') ?? '';
     const decryptedData = await decryptResource(
       resource.ciphertext,
       resource.associated_data,
-      resource.nonce
+      resource.nonce,
+      apiV3Key
     );
-    console.log('Decrypted data:', decryptedData);
+    console.log('解密后的数据:', decryptedData);
 
     const paymentInfo = JSON.parse(decryptedData);
 
     // 验证支付状态
     if (paymentInfo.trade_state !== 'SUCCESS') {
-      // 如果支付失败且超时，则处理支付超时
-      if (paymentInfo.trade_state === 'CLOSED' || paymentInfo.trade_state === 'PAYERROR') {
+      console.log(`支付状态不是成功: ${paymentInfo.trade_state}`);
+      
+      // 处理特定的失败状态
+      if (['CLOSED', 'PAYERROR', 'REVOKED'].includes(paymentInfo.trade_state)) {
         const { data: order } = await supabaseClient
           .from('orders')
           .select('id')
@@ -173,10 +147,27 @@ serve(async (req) => {
           .single();
 
         if (order) {
-          await handlePaymentTimeout(supabaseClient, order.id);
+          // 更新订单状态
+          await supabaseClient
+            .from('orders')
+            .update({ 
+              status: 'payment_timeout',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', order.id);
+
+          // 更新支付记录
+          await supabaseClient
+            .from('payment_records')
+            .update({ 
+              status: 'failed',
+              updated_at: new Date().toISOString()
+            })
+            .eq('order_id', order.id);
         }
       }
-      throw new Error(`Payment not successful: ${paymentInfo.trade_state}`);
+      
+      throw new Error(`支付未成功: ${paymentInfo.trade_state}`);
     }
 
     // 更新订单状态
@@ -184,14 +175,15 @@ serve(async (req) => {
       .from('orders')
       .update({ 
         status: 'paid',
-        paid_at: new Date().toISOString()
+        paid_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       })
       .eq('order_number', paymentInfo.out_trade_no)
       .select()
       .single();
 
     if (orderError) {
-      console.error('Error updating order:', orderError);
+      console.error('更新订单状态失败:', orderError);
       throw orderError;
     }
 
@@ -206,15 +198,18 @@ serve(async (req) => {
       .eq('order_id', order.id);
 
     if (paymentError) {
-      console.error('Error updating payment record:', paymentError);
+      console.error('更新支付记录失败:', paymentError);
       throw paymentError;
     }
 
-    console.log('Successfully processed payment callback for order:', order.order_number);
+    console.log('成功处理支付回调，订单号:', order.order_number);
 
     // 返回成功响应
     return new Response(
-      JSON.stringify({ code: "SUCCESS", message: "成功" }), 
+      JSON.stringify({
+        code: "SUCCESS",
+        message: "成功"
+      }), 
       { 
         headers: { 
           ...corsHeaders,
@@ -224,9 +219,12 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing payment callback:', error);
+    console.error('处理支付回调失败:', error);
     return new Response(
-      JSON.stringify({ error: error.message }), 
+      JSON.stringify({ 
+        code: "FAIL",
+        message: error.message 
+      }), 
       { 
         status: 500,
         headers: { 
