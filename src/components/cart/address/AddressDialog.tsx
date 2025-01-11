@@ -1,11 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
-import { AddressList } from "./AddressList";
-import { AddressForm } from "./AddressForm";
+import { AddressHeader } from "./components/AddressHeader";
+import { AddressContent } from "./components/AddressContent";
 import { AddressType } from "./types";
 
 interface AddressDialogProps {
@@ -144,7 +142,6 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
     }
   };
 
-  // 修复这里的useEffect使用
   useEffect(() => {
     if (open) {
       setLoading(true);
@@ -162,52 +159,27 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>收货地址管理</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6 py-4">
-          {loading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </div>
-          ) : (
-            <>
-              {addresses.length > 0 && (
-                <AddressList 
-                  addresses={addresses}
-                  onSelect={handleSelectAddress}
-                  onSetDefault={handleSetDefault}
-                />
-              )}
-
-              {adding ? (
-                <AddressForm
-                  newAddress={newAddress}
-                  onChange={handleAddressFormChange}
-                  onCancel={() => {
-                    setAdding(false);
-                    setNewAddress({
-                      recipient_name: "",
-                      phone: "",
-                      address: "",
-                    });
-                  }}
-                  onSave={handleSaveAddress}
-                  saving={saving}
-                />
-              ) : (
-                <Button
-                  className="w-full"
-                  variant="outline"
-                  onClick={() => setAdding(true)}
-                >
-                  添加新地址
-                </Button>
-              )}
-            </>
-          )}
-        </div>
+        <AddressHeader />
+        <AddressContent
+          loading={loading}
+          addresses={addresses}
+          adding={adding}
+          newAddress={newAddress}
+          onSelect={handleSelectAddress}
+          onSetDefault={handleSetDefault}
+          onAddNew={() => setAdding(true)}
+          onCancel={() => {
+            setAdding(false);
+            setNewAddress({
+              recipient_name: "",
+              phone: "",
+              address: "",
+            });
+          }}
+          onSave={handleSaveAddress}
+          onChange={handleAddressFormChange}
+          saving={saving}
+        />
       </DialogContent>
     </Dialog>
   );
