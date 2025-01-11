@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { QRCodeSVG } from "qrcode.react";  // 修改为使用命名导出
+import { QRCodeSVG } from "qrcode.react";
 
 interface OrderActionsProps {
   orderId: string;
