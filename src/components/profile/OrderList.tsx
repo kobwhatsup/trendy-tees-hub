@@ -1,12 +1,11 @@
 import { format } from "date-fns";
-import { ChevronDown, ChevronUp, Info, Package2 } from "lucide-react";
+import { Info, Package2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderStatus } from "./OrderStatus";
 import { OrderItems } from "./OrderItems";
 import { OrderDetailsDialog } from "./OrderDetailsDialog";
 import { useState } from "react";
 import type { Order } from "@/types/order";
-import { Badge } from "@/components/ui/badge";
 
 interface OrderListProps {
   orders: Order[];
@@ -53,30 +52,12 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
                   </p>
                   <p className="font-medium">总金额: ¥{order.total_amount}</p>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => onToggleOrder(order.id)}
-                  className="gap-1"
-                >
-                  {expandedOrders.includes(order.id) ? (
-                    <>
-                      收起详情
-                      <ChevronUp className="h-4 w-4" />
-                    </>
-                  ) : (
-                    <>
-                      展开详情
-                      <ChevronDown className="h-4 w-4" />
-                    </>
-                  )}
-                </Button>
               </div>
 
               <OrderItems 
                 items={order.items} 
-                expanded={expandedOrders.includes(order.id)}
-                onToggle={() => onToggleOrder(order.id)}
+                expanded={true}
+                onToggle={() => {}}
               />
             </div>
 
