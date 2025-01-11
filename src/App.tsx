@@ -8,6 +8,7 @@ import Products from "@/pages/Products";
 import MyDesigns from "@/pages/MyDesigns";
 import { DesignsPage } from "@/pages/Designs";
 import Profile from "@/pages/Profile";
+import Orders from "@/pages/Orders";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/my-designs" element={<MyDesigns />} />
             <Route path="/designs" element={<DesignsPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </main>
         <Toaster />
