@@ -6,6 +6,7 @@ import { AddressDialog } from "./address/AddressDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { CartItemType } from "@/types/cart";
+import { AddressType } from "./address/types";
 
 interface OrderConfirmDialogProps {
   open: boolean;
@@ -13,18 +14,12 @@ interface OrderConfirmDialogProps {
   items: CartItemType[];
 }
 
-interface AddressInfo {
-  recipient_name: string;
-  phone: string;
-  address: string;
-}
-
 export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDialogProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showAddressDialog, setShowAddressDialog] = useState(false);
   const [address, setAddress] = useState("请添加收货地址");
-  const [addressInfo, setAddressInfo] = useState<AddressInfo | null>(null);
+  const [addressInfo, setAddressInfo] = useState<AddressType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -126,7 +121,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
     onOpenChange(false);
   };
 
-  const handleAddressSelect = (addressData: AddressInfo) => {
+  const handleAddressSelect = (addressData: AddressType) => {
     setAddressInfo(addressData);
     setAddress(`${addressData.recipient_name} ${addressData.phone}\n${addressData.address}`);
   };

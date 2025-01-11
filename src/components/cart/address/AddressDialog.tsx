@@ -9,7 +9,7 @@ import { AddressType } from "./types";
 interface AddressDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddressSelect: (address: string) => void;
+  onAddressSelect: (address: AddressType) => void;
 }
 
 export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDialogProps) => {
@@ -93,7 +93,7 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
       await fetchAddresses();
 
       if (addresses.length === 0 && data) {
-        onAddressSelect(`${data.recipient_name} ${data.phone} ${data.address}`);
+        onAddressSelect(data);
       }
     } catch (error) {
       console.error("保存地址失败:", error);
@@ -108,7 +108,7 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
   };
 
   const handleSelectAddress = (address: AddressType) => {
-    onAddressSelect(`${address.recipient_name} ${address.phone} ${address.address}`);
+    onAddressSelect(address);
     onOpenChange(false);
   };
 
