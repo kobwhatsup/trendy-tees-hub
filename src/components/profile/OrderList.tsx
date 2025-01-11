@@ -106,9 +106,6 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                   订单详情
                 </Button>
                 <Button variant="outline" size="sm">
-                  查看物流
-                </Button>
-                <Button variant="outline" size="sm">
                   再次购买
                 </Button>
                 {order.status === 'delivered' && (
@@ -140,7 +137,7 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
           <AlertDialogHeader>
             <AlertDialogTitle>确认删除订单</AlertDialogTitle>
             <AlertDialogDescription>
-              删除后订单将不会在列表中显示，但订单记录会被保留。此操作无法撤销。
+              删除后订单将无法恢复，请确认。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

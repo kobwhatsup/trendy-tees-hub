@@ -103,9 +103,6 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
           {/* 底部操作按钮 */}
           <div className="flex justify-end gap-2 pt-4 border-t">
             <Button variant="outline" size="sm">
-              查看物流
-            </Button>
-            <Button variant="outline" size="sm">
               再次购买
             </Button>
             {order.status === 'delivered' && (
