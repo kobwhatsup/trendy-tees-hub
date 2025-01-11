@@ -50,21 +50,24 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
             <div className="flex justify-between items-center border-b pb-3">
               <div className="flex items-center gap-2">
                 <Package2 className="h-5 w-5 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
-                </p>
+                <p className="text-sm text-muted-foreground">订单编号: {order.order_number}</p>
               </div>
+              <OrderStatus 
+                status={order.status} 
+                orderNumber={order.order_number}
+                totalAmount={Number(order.total_amount)}
+              />
             </div>
             
             {/* 订单内容 */}
             <div className="space-y-4">
-              <div className="space-y-2">
-                <OrderStatus 
-                  status={order.status} 
-                  orderNumber={order.order_number}
-                  totalAmount={Number(order.total_amount)}
-                />
-                <p className="font-medium">总金额: ¥{order.total_amount}</p>
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">
+                    下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
+                  </p>
+                  <p className="font-medium">总金额: ¥{order.total_amount}</p>
+                </div>
               </div>
 
               <OrderItems 
@@ -102,22 +105,9 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                 >
                   订单详情
                 </Button>
-                {order.status === 'pending_payment' && (
-                  <Button 
-                    variant="secondary" 
-                    size="sm"
-                    onClick={() => {
-                      const orderStatusComponent = {
-                        handlePayment: () => {
-                          // 调用 OrderStatus 组件中的支付处理逻辑
-                          const paymentUrl = `https://example.com/pay?order_number=${order.order_number}&amount=${order.total_amount}`;
-                          console.log("Payment URL:", paymentUrl);
-                        }
-                      };
-                      orderStatusComponent.handlePayment();
-                    }}
-                  >
-                    去支付
+                {order.status === 'delivered' && (
+                  <Button variant="outline" size="sm">
+                    评价
                   </Button>
                 )}
                 {order.status === 'shipped' && (
