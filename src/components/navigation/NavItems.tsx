@@ -14,7 +14,6 @@ export const navItems = [
   { title: "AI设计师", path: "/design" },
   { title: "所有设计", path: "/designs", disabled: true },
   { title: "我的设计", path: "/my-designs" },
-  { title: "订单管理", path: "/orders" },
 ];
 
 interface NavItemsProps {

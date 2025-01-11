@@ -49,6 +49,9 @@ export const UserMenu = ({ user }: UserMenuProps) => {
           <DropdownMenuItem onClick={() => navigate('/profile')}>
             个人中心
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/orders')}>
+            订单管理
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSignOut}>
             退出登录
           </DropdownMenuItem>
