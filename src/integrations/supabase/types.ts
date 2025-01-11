@@ -245,6 +245,92 @@ export type Database = {
           },
         ]
       }
+      order_items: {
+        Row: {
+          created_at: string
+          design_back: string | null
+          design_front: string | null
+          id: string
+          order_id: string
+          preview_back: string | null
+          preview_front: string | null
+          quantity: number
+          tshirt_color: string
+          tshirt_gender: string
+          tshirt_size: string
+          tshirt_style: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          design_back?: string | null
+          design_front?: string | null
+          id?: string
+          order_id: string
+          preview_back?: string | null
+          preview_front?: string | null
+          quantity?: number
+          tshirt_color: string
+          tshirt_gender: string
+          tshirt_size: string
+          tshirt_style: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          design_back?: string | null
+          design_front?: string | null
+          id?: string
+          order_id?: string
+          preview_back?: string | null
+          preview_front?: string | null
+          quantity?: number
+          tshirt_color?: string
+          tshirt_gender?: string
+          tshirt_size?: string
+          tshirt_style?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          order_number: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_number: string
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_number?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       product_categories: {
         Row: {
           category_id: string
