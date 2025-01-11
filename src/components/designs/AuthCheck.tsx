@@ -1,27 +1,25 @@
-import { useEffect } from "react";
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const AuthCheck = () => {
-  const { toast } = useToast();
+interface AuthCheckProps {
+  children: ReactNode;
+}
+
+export const AuthCheck = ({ children }: AuthCheckProps) => {
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error || !session) {
-        toast({
-          variant: "destructive",
-          title: "需要登录",
-          description: "请先登录后查看设计",
-        });
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         navigate("/");
       }
     };
-    
-    checkAuth();
-  }, [navigate, toast]);
 
-  return null;
+    checkAuth();
+  }, [navigate]);
+
+  return <>{children}</>;
 };
