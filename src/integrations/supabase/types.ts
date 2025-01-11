@@ -304,8 +304,14 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          delivered_at: string | null
           id: string
           order_number: string
+          paid_at: string | null
+          recipient_name: string | null
+          recipient_phone: string | null
+          shipped_at: string | null
+          shipping_address: string | null
           status: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at: string
@@ -313,8 +319,14 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          delivered_at?: string | null
           id?: string
           order_number: string
+          paid_at?: string | null
+          recipient_name?: string | null
+          recipient_phone?: string | null
+          shipped_at?: string | null
+          shipping_address?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at?: string
@@ -322,8 +334,14 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          delivered_at?: string | null
           id?: string
           order_number?: string
+          paid_at?: string | null
+          recipient_name?: string | null
+          recipient_phone?: string | null
+          shipped_at?: string | null
+          shipping_address?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
           updated_at?: string

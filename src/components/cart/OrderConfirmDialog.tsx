@@ -13,11 +13,18 @@ interface OrderConfirmDialogProps {
   items: CartItemType[];
 }
 
+interface AddressInfo {
+  recipient_name: string;
+  phone: string;
+  address: string;
+}
+
 export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDialogProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showAddressDialog, setShowAddressDialog] = useState(false);
   const [address, setAddress] = useState("请添加收货地址");
+  const [addressInfo, setAddressInfo] = useState<AddressInfo | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -35,14 +42,17 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
       const orderNumber = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}${randomNum}`;
 
-      // 创建订单
+      // 创建订单，包含收货地址信息
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: user.id,
           order_number: orderNumber,
           total_amount: total,
-          status: 'pending_payment'
+          status: 'pending_payment',
+          shipping_address: addressInfo?.address,
+          recipient_name: addressInfo?.recipient_name,
+          recipient_phone: addressInfo?.phone
         })
         .select()
         .single();
@@ -101,7 +111,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
   };
 
   const handlePayment = async () => {
-    if (address === "请添加收货地址") {
+    if (address === "请添加收货地址" || !addressInfo) {
       toast({
         title: "请先添加收货地址",
         description: "点击地址栏添加收货地址",
@@ -114,6 +124,11 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
     await createOrder();
     setIsProcessing(false);
     onOpenChange(false);
+  };
+
+  const handleAddressSelect = (addressData: AddressInfo) => {
+    setAddressInfo(addressData);
+    setAddress(`${addressData.recipient_name} ${addressData.phone}\n${addressData.address}`);
   };
 
   return (
@@ -132,7 +147,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
                 className="p-3 bg-muted rounded-lg cursor-pointer hover:bg-muted/80"
                 onClick={() => setShowAddressDialog(true)}
               >
-                <p className="text-sm text-muted-foreground">{address}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">{address}</p>
               </div>
             </div>
 
@@ -199,7 +214,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       <AddressDialog 
         open={showAddressDialog}
         onOpenChange={setShowAddressDialog}
-        onAddressSelect={setAddress}
+        onAddressSelect={handleAddressSelect}
       />
     </>
   );
