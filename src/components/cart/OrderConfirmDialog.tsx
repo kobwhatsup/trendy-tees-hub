@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { AddressDialog } from "./address/AddressDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface OrderConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   items: Array<{
+    id: string;
     quantity: number;
     price: number;
     selected: boolean;
@@ -15,20 +18,102 @@ interface OrderConfirmDialogProps {
     tshirt_color: string;
     tshirt_gender: string;
     tshirt_size: string;
+    design_front: string | null;
+    design_back: string | null;
+    preview_front: string | null;
+    preview_back: string | null;
   }>;
 }
 
 export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDialogProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showAddressDialog, setShowAddressDialog] = useState(false);
   const [address, setAddress] = useState("请添加收货地址");
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   const selectedItems = items.filter(item => item.selected);
   const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 0; // 运费默认为0
+  const shipping = 0;
   const total = subtotal + shipping;
 
-  const handlePayment = () => {
+  const createOrder = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("用户未登录");
+
+      // 生成订单号 (年月日时分秒 + 4位随机数)
+      const now = new Date();
+      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      const orderNumber = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}${randomNum}`;
+
+      // 创建订单
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          order_number: orderNumber,
+          total_amount: total,
+          status: 'pending_payment'
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // 创建订单项
+      const orderItems = selectedItems.map(item => ({
+        order_id: order.id,
+        design_front: item.design_front,
+        design_back: item.design_back,
+        preview_front: item.preview_front,
+        preview_back: item.preview_back,
+        tshirt_style: item.tshirt_style,
+        tshirt_color: item.tshirt_color,
+        tshirt_gender: item.tshirt_gender,
+        tshirt_size: item.tshirt_size,
+        quantity: item.quantity,
+        unit_price: item.price
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      // 删除已购买的购物车商品
+      const cartItemIds = selectedItems.map(item => item.id);
+      const { error: deleteError } = await supabase
+        .from('cart_items')
+        .delete()
+        .in('id', cartItemIds);
+
+      if (deleteError) throw deleteError;
+
+      // 触发购物车更新事件
+      window.dispatchEvent(new Event('cart-updated'));
+
+      // 跳转到订单页面
+      navigate('/orders');
+      
+      toast({
+        title: "订单创建成功",
+        description: "订单已生成，请尽快完成支付",
+      });
+
+    } catch (error) {
+      console.error('创建订单失败:', error);
+      toast({
+        title: "创建订单失败",
+        description: "请稍后重试",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePayment = async () => {
     if (address === "请添加收货地址") {
       toast({
         title: "请先添加收货地址",
@@ -38,10 +123,9 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       return;
     }
 
-    toast({
-      title: "支付功能开发中",
-      description: "支付系统即将上线",
-    });
+    setIsProcessing(true);
+    await createOrder();
+    setIsProcessing(false);
     onOpenChange(false);
   };
 
@@ -116,9 +200,10 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
           <div className="flex justify-end">
             <Button 
               onClick={handlePayment}
+              disabled={isProcessing}
               className="bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600"
             >
-              立即支付
+              {isProcessing ? "处理中..." : "立即支付"}
             </Button>
           </div>
         </DialogContent>

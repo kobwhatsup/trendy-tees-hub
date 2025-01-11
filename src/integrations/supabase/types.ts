@@ -306,7 +306,7 @@ export type Database = {
           created_at: string
           id: string
           order_number: string
-          status: string
+          status: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at: string
           user_id: string
@@ -315,7 +315,7 @@ export type Database = {
           created_at?: string
           id?: string
           order_number: string
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at?: string
           user_id: string
@@ -324,7 +324,7 @@ export type Database = {
           created_at?: string
           id?: string
           order_number?: string
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
           updated_at?: string
           user_id?: string
@@ -453,7 +453,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      order_status:
+        | "pending_payment"
+        | "paid"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "refund_requested"
+        | "refunded"
     }
     CompositeTypes: {
       [_ in never]: never
