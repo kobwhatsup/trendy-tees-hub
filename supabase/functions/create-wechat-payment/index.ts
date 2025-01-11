@@ -31,8 +31,9 @@ serve(async (req) => {
     const mchid = Deno.env.get('WECHAT_PAY_MCH_ID');
     const serialNo = Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO');
     const privateKey = Deno.env.get('WECHAT_PAY_PRIVATE_KEY');
+    const appId = Deno.env.get('WECHAT_PAY_APP_ID');
 
-    if (!mchid || !serialNo || !privateKey) {
+    if (!mchid || !serialNo || !privateKey || !appId) {
       throw new Error('Missing WeChat Pay configuration');
     }
 
@@ -42,7 +43,7 @@ serve(async (req) => {
     
     // 构建请求参数
     const requestBody = {
-      appid: Deno.env.get('WECHAT_PAY_APP_ID'),
+      appid: appId,
       mchid: mchid,
       description: description,
       out_trade_no: orderId,
@@ -68,6 +69,8 @@ serve(async (req) => {
     // 构建认证头
     const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
 
+    console.log('Sending request to WeChat Pay API...');
+    
     // 调用微信支付API
     const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
       method: 'POST',
@@ -80,10 +83,13 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error('WeChat Pay API error:', errorData);
       throw new Error(`WeChat Pay API error: ${response.statusText}`);
     }
 
     const paymentResult = await response.json();
+    console.log('Payment result:', paymentResult);
 
     // 创建支付记录
     const { error: paymentError } = await supabaseClient
@@ -95,6 +101,7 @@ serve(async (req) => {
       });
 
     if (paymentError) {
+      console.error('Error creating payment record:', paymentError);
       throw paymentError;
     }
 
