@@ -67,11 +67,18 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
 
     setSaving(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("未登录用户");
+      }
+
       const { data, error } = await supabase
         .from("shipping_addresses")
         .insert([
           {
             ...newAddress,
+            user_id: user.id,
             is_default: addresses.length === 0, // 如果是第一个地址，设为默认
           },
         ])
