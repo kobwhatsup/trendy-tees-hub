@@ -1,9 +1,68 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+// 解密回调数据
+async function decryptResource(ciphertext: string, associatedData: string, nonce: string) {
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(Deno.env.get('WECHAT_PAY_API_V2_KEY')),
+      { name: "AES-GCM" },
+      false,
+      ["decrypt"]
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: new TextEncoder().encode(nonce),
+        additionalData: new TextEncoder().encode(associatedData),
+      },
+      key,
+      new TextEncoder().encode(ciphertext)
+    );
+
+    return new TextDecoder().decode(decrypted);
+  } catch (error) {
+    console.error('Error decrypting resource:', error);
+    throw new Error('Failed to decrypt callback data');
+  }
+}
+
+// 验证签名
+async function verifySignature(headers: Headers, body: string) {
+  try {
+    const timestamp = headers.get('Wechatpay-Timestamp');
+    const nonce = headers.get('Wechatpay-Nonce');
+    const signature = headers.get('Wechatpay-Signature');
+    const serial = headers.get('Wechatpay-Serial');
+
+    if (!timestamp || !nonce || !signature || !serial) {
+      throw new Error('Missing required headers');
+    }
+
+    // 验证证书序列号
+    if (serial !== Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO')) {
+      throw new Error('Invalid certificate serial number');
+    }
+
+    // 构造签名字符串
+    const message = `${timestamp}\n${nonce}\n${body}\n`;
+
+    // TODO: 实现完整的签名验证逻辑
+    // 需要使用微信支付平台证书公钥验证签名
+    
+    return true;
+  } catch (error) {
+    console.error('Error verifying signature:', error);
+    throw new Error('Signature verification failed');
+  }
 }
 
 serve(async (req) => {
@@ -20,9 +79,16 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // 获取原始请求体
+    const rawBody = await req.text();
+    console.log('Raw callback body:', rawBody);
+
+    // 验证签名
+    await verifySignature(req.headers, rawBody);
+
     // 解析回调数据
-    const callbackData = await req.json();
-    console.log('Callback data:', callbackData);
+    const callbackData = JSON.parse(rawBody);
+    console.log('Parsed callback data:', callbackData);
 
     // 验证通知数据
     const { resource } = callbackData;
@@ -31,7 +97,19 @@ serve(async (req) => {
     }
 
     // 解密通知数据
-    // TODO: 实现解密逻辑，需要使用商户API证书中的密钥
+    const decryptedData = await decryptResource(
+      resource.ciphertext,
+      resource.associated_data,
+      resource.nonce
+    );
+    console.log('Decrypted data:', decryptedData);
+
+    const paymentInfo = JSON.parse(decryptedData);
+
+    // 验证支付状态
+    if (paymentInfo.trade_state !== 'SUCCESS') {
+      throw new Error(`Payment not successful: ${paymentInfo.trade_state}`);
+    }
 
     // 更新订单状态
     const { data: order, error: orderError } = await supabaseClient
@@ -40,7 +118,7 @@ serve(async (req) => {
         status: 'paid',
         paid_at: new Date().toISOString()
       })
-      .eq('order_number', resource.out_trade_no)
+      .eq('order_number', paymentInfo.out_trade_no)
       .select()
       .single();
 
@@ -54,7 +132,7 @@ serve(async (req) => {
       .from('payment_records')
       .update({ 
         status: 'success',
-        transaction_id: resource.transaction_id,
+        transaction_id: paymentInfo.transaction_id,
         updated_at: new Date().toISOString()
       })
       .eq('order_id', order.id);
