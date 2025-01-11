@@ -17,7 +17,7 @@ export const OrderItems = ({ items, expanded, onToggle }: OrderItemsProps) => {
           variant="ghost" 
           size="sm"
           onClick={onToggle}
-          className="w-full justify-start p-0 font-normal"
+          className="w-full justify-start p-0 font-normal hover:no-underline"
         >
           {expanded ? (
             <ChevronUp className="h-4 w-4 mr-2" />
@@ -29,15 +29,17 @@ export const OrderItems = ({ items, expanded, onToggle }: OrderItemsProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 mt-2">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
-            {item.preview_front && (
-              <img
-                src={getValidImageUrl(item.preview_front)}
-                alt="商品预览图"
-                className="w-20 h-20 object-cover rounded bg-white"
-              />
-            )}
-            <div className="flex-1 min-w-0">
+          <div key={index} className="flex items-start gap-4 p-4 rounded-lg bg-muted/30">
+            <div className="relative w-20 h-20 bg-white rounded overflow-hidden flex-shrink-0">
+              {item.preview_front && (
+                <img
+                  src={getValidImageUrl(item.preview_front)}
+                  alt="商品预览图"
+                  className="w-full h-full object-contain"
+                />
+              )}
+            </div>
+            <div className="flex-1 min-w-0 space-y-1">
               <div className="text-sm font-medium">
                 {item.tshirt_gender === 'male' ? '男款' : '女款'}{" "}
                 {item.tshirt_style === 'short' ? '短袖' : '长袖'}{" "}
@@ -46,8 +48,13 @@ export const OrderItems = ({ items, expanded, onToggle }: OrderItemsProps) => {
               <div className="text-sm text-muted-foreground">
                 尺码: {item.tshirt_size.toUpperCase()}
               </div>
-              <div className="text-sm text-muted-foreground">
-                数量: {item.quantity} × ¥{item.unit_price}
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-muted-foreground">
+                  数量: {item.quantity}
+                </div>
+                <div className="text-sm font-medium">
+                  ¥{item.unit_price}
+                </div>
               </div>
             </div>
           </div>

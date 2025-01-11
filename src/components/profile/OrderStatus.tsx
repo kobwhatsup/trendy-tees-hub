@@ -50,7 +50,6 @@ export const OrderStatus = ({ status, orderNumber, totalAmount }: OrderStatusPro
     // TODO: 实际项目中需要接入真实的支付网关
     const paymentUrl = `https://example.com/pay?order_number=${orderNumber}&amount=${totalAmount}`;
     
-    // 在实际项目中,这里应该是真实的支付网关地址
     toast({
       title: "正在跳转到支付页面",
       description: "即将跳转到支付平台...",
@@ -58,17 +57,16 @@ export const OrderStatus = ({ status, orderNumber, totalAmount }: OrderStatusPro
 
     // 模拟支付跳转
     console.log("Payment URL:", paymentUrl);
-    // window.location.href = paymentUrl; // 实际项目中取消注释此行
   };
 
   return (
     <div className="flex items-center gap-2">
-      <Badge variant={getStatusBadgeVariant(status)}>
+      <Badge variant={getStatusBadgeVariant(status)} className="px-2 py-1">
         {getStatusText(status)}
       </Badge>
       {status === "pending_payment" && (
         <Button 
-          variant="outline" 
+          variant="secondary" 
           size="sm"
           onClick={handlePayment}
         >
