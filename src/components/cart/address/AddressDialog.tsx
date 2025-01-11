@@ -1,10 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { AddressList } from "./AddressList";
+import { AddressForm } from "./AddressForm";
+import { AddressType } from "./types";
 
 interface AddressDialogProps {
   open: boolean;
@@ -13,26 +15,18 @@ interface AddressDialogProps {
 }
 
 export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDialogProps) => {
-  const [addresses, setAddresses] = useState<Array<{
-    id: string;
-    recipient_name: string;
-    phone: string;
-    address: string;
-    is_default: boolean;
-  }>>([]);
+  const [addresses, setAddresses] = useState<AddressType[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
-  // 新地址表单数据
   const [newAddress, setNewAddress] = useState({
     recipient_name: "",
     phone: "",
     address: "",
   });
 
-  // 获取用户地址列表
   const fetchAddresses = async () => {
     try {
       const { data, error } = await supabase
@@ -54,7 +48,6 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
     }
   };
 
-  // 保存新地址
   const handleSaveAddress = async () => {
     if (!newAddress.recipient_name || !newAddress.phone || !newAddress.address) {
       toast({
@@ -79,7 +72,7 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
           {
             ...newAddress,
             user_id: user.id,
-            is_default: addresses.length === 0, // 如果是第一个地址，设为默认
+            is_default: addresses.length === 0,
           },
         ])
         .select()
@@ -92,7 +85,6 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
         description: "新地址已添加",
       });
 
-      // 重置表单
       setNewAddress({
         recipient_name: "",
         phone: "",
@@ -100,10 +92,8 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
       });
       setAdding(false);
 
-      // 刷新地址列表
       await fetchAddresses();
 
-      // 如果是第一个地址，自动选中
       if (addresses.length === 0 && data) {
         onAddressSelect(`${data.recipient_name} ${data.phone} ${data.address}`);
       }
@@ -119,22 +109,18 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
     }
   };
 
-  // 选择地址
-  const handleSelectAddress = (address: typeof addresses[0]) => {
+  const handleSelectAddress = (address: AddressType) => {
     onAddressSelect(`${address.recipient_name} ${address.phone} ${address.address}`);
     onOpenChange(false);
   };
 
-  // 设为默认地址
   const handleSetDefault = async (id: string) => {
     try {
-      // 先将所有地址的is_default设为false
       await supabase
         .from("shipping_addresses")
         .update({ is_default: false })
         .neq("id", id);
 
-      // 将选中的地址设为默认
       const { error } = await supabase
         .from("shipping_addresses")
         .update({ is_default: true })
@@ -147,7 +133,6 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
         description: "已更新默认地址",
       });
 
-      // 刷新地址列表
       await fetchAddresses();
     } catch (error) {
       console.error("设置默认地址失败:", error);
@@ -159,12 +144,18 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
     }
   };
 
-  // 组件加载时获取地址列表
   useState(() => {
     if (open) {
       fetchAddresses();
     }
   });
+
+  const handleAddressFormChange = (field: string, value: string) => {
+    setNewAddress(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -180,95 +171,29 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
             </div>
           ) : (
             <>
-              {/* 地址列表 */}
               {addresses.length > 0 && (
-                <div className="space-y-4">
-                  {addresses.map((address) => (
-                    <div
-                      key={address.id}
-                      className="flex flex-col space-y-2 p-4 border rounded-lg hover:border-primary cursor-pointer"
-                      onClick={() => handleSelectAddress(address)}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium">
-                            {address.recipient_name} {address.phone}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {address.address}
-                          </p>
-                        </div>
-                        {!address.is_default && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSetDefault(address.id);
-                            }}
-                          >
-                            设为默认
-                          </Button>
-                        )}
-                      </div>
-                      {address.is_default && (
-                        <div className="text-xs text-primary">默认地址</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <AddressList 
+                  addresses={addresses}
+                  onSelect={handleSelectAddress}
+                  onSetDefault={handleSetDefault}
+                />
               )}
 
-              {/* 添加新地址表单 */}
               {adding ? (
-                <div className="space-y-4 border rounded-lg p-4">
-                  <Input
-                    placeholder="收货人姓名"
-                    value={newAddress.recipient_name}
-                    onChange={(e) =>
-                      setNewAddress({ ...newAddress, recipient_name: e.target.value })
-                    }
-                  />
-                  <Input
-                    placeholder="手机号码"
-                    value={newAddress.phone}
-                    onChange={(e) =>
-                      setNewAddress({ ...newAddress, phone: e.target.value })
-                    }
-                  />
-                  <Input
-                    placeholder="详细地址"
-                    value={newAddress.address}
-                    onChange={(e) =>
-                      setNewAddress({ ...newAddress, address: e.target.value })
-                    }
-                  />
-                  <div className="flex justify-end space-x-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setAdding(false);
-                        setNewAddress({
-                          recipient_name: "",
-                          phone: "",
-                          address: "",
-                        });
-                      }}
-                    >
-                      取消
-                    </Button>
-                    <Button onClick={handleSaveAddress} disabled={saving}>
-                      {saving ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          保存中
-                        </>
-                      ) : (
-                        "保存地址"
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                <AddressForm
+                  newAddress={newAddress}
+                  onChange={handleAddressFormChange}
+                  onCancel={() => {
+                    setAdding(false);
+                    setNewAddress({
+                      recipient_name: "",
+                      phone: "",
+                      address: "",
+                    });
+                  }}
+                  onSave={handleSaveAddress}
+                  saving={saving}
+                />
               ) : (
                 <Button
                   className="w-full"
