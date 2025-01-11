@@ -7,6 +7,7 @@ import Cart from "@/pages/Cart";
 import Products from "@/pages/Products";
 import MyDesigns from "@/pages/MyDesigns";
 import { DesignsPage } from "@/pages/Designs";
+import Profile from "@/pages/Profile";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/my-designs" element={<MyDesigns />} />
             <Route path="/designs" element={<DesignsPage />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
         <Toaster />

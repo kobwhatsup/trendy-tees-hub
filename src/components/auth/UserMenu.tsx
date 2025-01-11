@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { CartButton } from "../cart/CartButton";
 import { EmailVerificationButton } from "./EmailVerificationButton";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +17,8 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ user }: UserMenuProps) => {
+  const navigate = useNavigate();
+  
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
@@ -42,6 +45,9 @@ export const UserMenu = ({ user }: UserMenuProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuItem className="text-sm text-muted-foreground">
             {user.email}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/profile')}>
+            个人中心
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSignOut}>
             退出登录
