@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { OrderStatus } from "./OrderStatus";
 import { OrderItems } from "./OrderItems";
 import type { Order } from "@/types/order";
@@ -45,11 +46,11 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
             </Button>
           </div>
 
-          {expandedOrders.includes(order.id) && (
-            <div className="pt-4 border-t">
-              <OrderItems items={order.items} />
-            </div>
-          )}
+          <OrderItems 
+            items={order.items} 
+            expanded={expandedOrders.includes(order.id)}
+            onToggle={() => onToggleOrder(order.id)}
+          />
         </div>
       ))}
     </div>
