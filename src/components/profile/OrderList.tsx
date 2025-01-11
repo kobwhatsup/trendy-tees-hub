@@ -50,24 +50,21 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
             <div className="flex justify-between items-center border-b pb-3">
               <div className="flex items-center gap-2">
                 <Package2 className="h-5 w-5 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">订单编号: {order.order_number}</p>
+                <p className="text-sm text-muted-foreground">
+                  下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
+                </p>
               </div>
-              <OrderStatus 
-                status={order.status} 
-                orderNumber={order.order_number}
-                totalAmount={Number(order.total_amount)}
-              />
             </div>
             
             {/* 订单内容 */}
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">
-                    下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
-                  </p>
-                  <p className="font-medium">总金额: ¥{order.total_amount}</p>
-                </div>
+              <div className="space-y-2">
+                <OrderStatus 
+                  status={order.status} 
+                  orderNumber={order.order_number}
+                  totalAmount={Number(order.total_amount)}
+                />
+                <p className="font-medium">总金额: ¥{order.total_amount}</p>
               </div>
 
               <OrderItems 
@@ -105,9 +102,20 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                 >
                   订单详情
                 </Button>
-                {order.status === 'delivered' && (
-                  <Button variant="outline" size="sm">
-                    评价
+                {order.status === 'pending_payment' && (
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={() => {
+                      const orderStatus = new OrderStatus({ 
+                        status: order.status, 
+                        orderNumber: order.order_number,
+                        totalAmount: Number(order.total_amount)
+                      });
+                      orderStatus.handlePayment();
+                    }}
+                  >
+                    去支付
                   </Button>
                 )}
                 {order.status === 'shipped' && (
