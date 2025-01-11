@@ -12,4 +12,5 @@ export interface CartItemType {
   quantity: number;
   created_at: string;
   selected?: boolean;
+  price?: number;
 }
