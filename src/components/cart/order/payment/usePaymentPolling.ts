@@ -29,6 +29,7 @@ export const usePaymentPolling = ({
       // 每3秒轮询一次支付状态
       pollIntervalRef.current = setInterval(async () => {
         try {
+          // 查询订单状态
           const { data: order, error } = await supabase
             .from('orders')
             .select('status')
@@ -46,40 +47,47 @@ export const usePaymentPolling = ({
           setRemainingTime(remaining);
 
           // 处理不同的支付状态
-          if (order?.status === 'paid') {
-            clearInterval(pollIntervalRef.current);
-            clearTimeout(pollTimeoutRef.current);
-            setIsPolling(false);
-            onOpenChange(false);
-            toast({
-              title: "支付成功",
-              description: "订单支付已完成",
-            });
-            window.location.reload();
-          } else if (order?.status === 'pending_payment') {
-            console.log('等待支付中，继续轮询...');
-          } else if (order?.status === 'payment_timeout') {
-            clearInterval(pollIntervalRef.current);
-            clearTimeout(pollTimeoutRef.current);
-            setIsPolling(false);
-            onOpenChange(false);
-            toast({
-              title: "支付超时",
-              description: "二维码已过期，请重新下单",
-              variant: "destructive",
-            });
-            window.location.reload();
-          } else {
-            clearInterval(pollIntervalRef.current);
-            clearTimeout(pollTimeoutRef.current);
-            setIsPolling(false);
-            onOpenChange(false);
-            toast({
-              title: "支付异常",
-              description: "订单支付状态异常，请重新下单",
-              variant: "destructive",
-            });
-            window.location.reload();
+          switch (order?.status) {
+            case 'paid':
+              clearInterval(pollIntervalRef.current);
+              clearTimeout(pollTimeoutRef.current);
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付成功",
+                description: "订单支付已完成",
+              });
+              window.location.reload();
+              break;
+
+            case 'pending_payment':
+              console.log('等待支付中，继续轮询...');
+              break;
+
+            case 'payment_timeout':
+              clearInterval(pollIntervalRef.current);
+              clearTimeout(pollTimeoutRef.current);
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付超时",
+                description: "二维码已过期，请重新下单",
+                variant: "destructive",
+              });
+              window.location.reload();
+              break;
+
+            default:
+              clearInterval(pollIntervalRef.current);
+              clearTimeout(pollTimeoutRef.current);
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付异常",
+                description: "订单支付状态异常，请重新下单",
+                variant: "destructive",
+              });
+              window.location.reload();
           }
         } catch (error) {
           console.error('轮询支付状态时发生错误:', error);
