@@ -34,6 +34,9 @@ export const CartContainer = ({
     });
   };
 
+  // 获取选中的商品列表
+  const selectedCartItems = cartItems.filter(item => selectedItems.has(item.id));
+
   return (
     <>
       <div className="space-y-4">
@@ -50,7 +53,7 @@ export const CartContainer = ({
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
         <div className={`container mx-auto ${isMobile ? 'px-2' : 'px-4'}`}>
           <CartSummary 
-            items={cartItems.filter(item => selectedItems.has(item.id))}
+            items={selectedCartItems}
             onCheckout={handleCheckout}
           />
         </div>

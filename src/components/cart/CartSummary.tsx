@@ -11,10 +11,11 @@ interface CartSummaryProps {
 
 export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
   const [showOrderConfirm, setShowOrderConfirm] = useState(false);
-  const selectedItems = items.filter(item => item.selected);
-  const itemCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-  const total = selectedItems.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
   const isMobile = useIsMobile();
+
+  // 计算选中商品的总数量和总金额
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
 
   const handleCheckoutClick = () => {
     setShowOrderConfirm(true);
@@ -48,7 +49,7 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
       <OrderConfirmDialog
         open={showOrderConfirm}
         onOpenChange={setShowOrderConfirm}
-        items={selectedItems}
+        items={items}
       />
     </>
   );
