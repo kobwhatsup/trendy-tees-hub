@@ -20,8 +20,8 @@ export const PaymentDialog = ({
   qrCodeUrl
 }: PaymentDialogProps) => {
   const { toast } = useToast();
-  const pollIntervalRef = useRef<number>();
-  const pollTimeoutRef = useRef<number>();
+  const pollIntervalRef = useRef<NodeJS.Timeout>();
+  const pollTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (open && qrCodeUrl) {
@@ -43,14 +43,17 @@ export const PaymentDialog = ({
             description: "订单支付已完成",
           });
           window.location.reload();
-        } else if (order?.status === 'payment_timeout') {
-          // 支付超时
+        } else if (order?.status === 'pending_payment') {
+          // 继续轮询
+          console.log('Payment pending, continue polling...');
+        } else {
+          // 其他状态（包括支付超时）
           clearInterval(pollIntervalRef.current);
           clearTimeout(pollTimeoutRef.current);
           onOpenChange(false);
           toast({
-            title: "支付超时",
-            description: "订单支付已超时，请重新下单",
+            title: "支付异常",
+            description: "订单支付状态异常，请重新下单",
             variant: "destructive",
           });
           window.location.reload();
@@ -59,7 +62,9 @@ export const PaymentDialog = ({
 
       // 设置5分钟超时
       pollTimeoutRef.current = setTimeout(() => {
-        clearInterval(pollIntervalRef.current);
+        if (pollIntervalRef.current) {
+          clearInterval(pollIntervalRef.current);
+        }
         onOpenChange(false);
         toast({
           title: "支付超时",
@@ -69,8 +74,12 @@ export const PaymentDialog = ({
       }, 5 * 60 * 1000);
 
       return () => {
-        clearInterval(pollIntervalRef.current);
-        clearTimeout(pollTimeoutRef.current);
+        if (pollIntervalRef.current) {
+          clearInterval(pollIntervalRef.current);
+        }
+        if (pollTimeoutRef.current) {
+          clearTimeout(pollTimeoutRef.current);
+        }
       };
     }
   }, [open, qrCodeUrl, orderId, onOpenChange, toast]);
