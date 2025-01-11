@@ -2,7 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { format } from "date-fns";
 import { OrderItems } from "./OrderItems";
 import { OrderStatus } from "./OrderStatus";
+import { Package2, MapPin, Phone } from "lucide-react";
 import type { Order } from "@/types/order";
+import { Button } from "../ui/button";
 
 interface OrderDetailsDialogProps {
   order: Order;
@@ -15,64 +17,98 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>订单详情</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Package2 className="h-5 w-5" />
+            订单详情
+          </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
-          <div className="grid gap-2 text-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-muted-foreground">订单编号</p>
-                <p className="font-medium">{order.order_number}</p>
-              </div>
-              <OrderStatus 
-                status={order.status} 
-                orderNumber={order.order_number}
-                totalAmount={Number(order.total_amount)}
-              />
-            </div>
-            
-            <div>
-              <p className="text-muted-foreground">下单时间</p>
-              <p className="font-medium">
-                {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
+          {/* 订单状态和时间信息 */}
+          <div className="flex justify-between items-start border-b pb-4">
+            <div className="space-y-1">
+              <p className="text-lg font-medium">订单编号: {order.order_number}</p>
+              <p className="text-sm text-muted-foreground">
+                下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
               </p>
             </div>
-            
-            <div>
-              <p className="text-muted-foreground">总金额</p>
-              <p className="font-medium">¥{order.total_amount}</p>
+            <OrderStatus 
+              status={order.status} 
+              orderNumber={order.order_number}
+              totalAmount={Number(order.total_amount)}
+            />
+          </div>
+
+          {/* 收货地址信息 */}
+          <div className="space-y-2">
+            <h3 className="font-medium flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              收货地址
+            </h3>
+            <div className="bg-muted/30 rounded-lg p-4">
+              <p className="text-sm">张三</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                浙江省杭州市西湖区文三路 478 号
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">138****8888</p>
+              </div>
             </div>
           </div>
 
-          <div>
-            <h3 className="font-medium mb-4">商品信息</h3>
-            <div className="bg-muted/30 rounded-lg p-4">
-              {order.items.map((item, index) => (
-                <div key={index} className="flex items-center gap-4 py-2">
-                  {item.preview_front && (
-                    <img
-                      src={item.preview_front}
-                      alt="商品预览图"
-                      className="w-20 h-20 object-cover rounded bg-white"
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium">
-                      {item.tshirt_gender === 'male' ? '男款' : '女款'}{" "}
-                      {item.tshirt_style === 'short' ? '短袖' : '长袖'}{" "}
-                      {item.tshirt_color === 'white' ? '白色' : '黑色'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      尺码: {item.tshirt_size.toUpperCase()}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      数量: {item.quantity} × ¥{item.unit_price}
-                    </div>
-                  </div>
-                </div>
-              ))}
+          {/* 商品信息 */}
+          <div className="space-y-2">
+            <h3 className="font-medium">商品信息</h3>
+            <div className="bg-muted/30 rounded-lg">
+              <OrderItems 
+                items={order.items} 
+                expanded={true}
+                onToggle={() => {}}
+              />
             </div>
+          </div>
+
+          {/* 订单信息 */}
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-medium">订单信息</h3>
+            <div className="grid gap-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">订单编号</span>
+                <span className="font-medium">{order.order_number}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">创建时间</span>
+                <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">付款时间</span>
+                <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">发货时间</span>
+                <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">总金额</span>
+                <span className="font-medium">¥{order.total_amount}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 底部操作按钮 */}
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" size="sm">
+              查看物流
+            </Button>
+            <Button variant="outline" size="sm">
+              再次购买
+            </Button>
+            {order.status === 'delivered' && (
+              <Button variant="outline" size="sm">
+                评价
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
