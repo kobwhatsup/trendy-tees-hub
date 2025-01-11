@@ -37,6 +37,14 @@ serve(async (req) => {
       throw new Error('Missing WeChat Pay configuration');
     }
 
+    console.log('Starting WeChat payment request with config:', {
+      mchid,
+      serialNo,
+      appId,
+      orderId,
+      amount
+    });
+
     // 生成随机字符串
     const nonceStr = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -62,6 +70,8 @@ serve(async (req) => {
     const url = '/v3/pay/transactions/native';
     const signStr = `${method}\n${url}\n${timestamp}\n${nonceStr}\n${JSON.stringify(requestBody)}\n`;
     
+    console.log('Generating signature with string:', signStr);
+
     const sign = createSign('ECDSA');
     sign.update(signStr);
     const signature = sign.sign(privateKey, 'base64');
