@@ -50,15 +50,7 @@ export const CartContainer = ({
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
         <div className={`container mx-auto ${isMobile ? 'px-2' : 'px-4'}`}>
           <CartSummary 
-            items={cartItems.map(item => ({
-              quantity: item.quantity,
-              price: item.price || 199,
-              selected: selectedItems.has(item.id),
-              tshirt_style: item.tshirt_style,
-              tshirt_color: item.tshirt_color,
-              tshirt_gender: item.tshirt_gender,
-              tshirt_size: item.tshirt_size
-            }))}
+            items={cartItems.filter(item => selectedItems.has(item.id))}
             onCheckout={handleCheckout}
           />
         </div>
