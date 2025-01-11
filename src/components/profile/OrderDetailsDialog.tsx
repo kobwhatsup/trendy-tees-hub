@@ -46,13 +46,13 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
               收货地址
             </h3>
             <div className="bg-muted/30 rounded-lg p-4">
-              <p className="text-sm">张三</p>
+              <p className="text-sm">{order.recipient_name}</p>
               <p className="text-sm text-muted-foreground mt-1">
-                浙江省杭州市西湖区文三路 478 号
+                {order.shipping_address}
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">138****8888</p>
+                <p className="text-sm text-muted-foreground">{order.recipient_phone}</p>
               </div>
             </div>
           </div>
@@ -81,14 +81,18 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
                 <span className="text-muted-foreground">创建时间</span>
                 <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">付款时间</span>
-                <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">发货时间</span>
-                <span>{format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
-              </div>
+              {order.paid_at && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">付款时间</span>
+                  <span>{format(new Date(order.paid_at), "yyyy-MM-dd HH:mm:ss")}</span>
+                </div>
+              )}
+              {order.shipped_at && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">发货时间</span>
+                  <span>{format(new Date(order.shipped_at), "yyyy-MM-dd HH:mm:ss")}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">总金额</span>
                 <span className="font-medium">¥{order.total_amount}</span>

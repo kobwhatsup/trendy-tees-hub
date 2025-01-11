@@ -17,4 +17,10 @@ export interface Order {
   status: string;
   created_at: string;
   items: OrderItem[];
+  shipping_address?: string;
+  recipient_name?: string;
+  recipient_phone?: string;
+  paid_at?: string;
+  shipped_at?: string;
+  delivered_at?: string;
 }
