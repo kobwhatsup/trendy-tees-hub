@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useState } from "react";
 import { getValidImageUrl } from "@/utils/imageUrl";
 
 interface OrderItemsProps {
