@@ -9,25 +9,24 @@ const Profile = () => {
     <AuthCheck>
       <div className="container mx-auto px-4 py-24">
         <h1 className="text-2xl font-bold mb-8">个人中心</h1>
-        <Tabs defaultValue="info" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="info">基本信息</TabsTrigger>
-            <TabsTrigger value="orders">我的订单</TabsTrigger>
-            <TabsTrigger value="addresses">收货地址</TabsTrigger>
-          </TabsList>
+        
+        {/* 基本信息部分 */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">基本信息</h2>
+          <UserInfo />
+        </div>
 
-          <TabsContent value="info">
-            <UserInfo />
-          </TabsContent>
+        {/* 订单部分 - 直接显示 */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">我的订单</h2>
+          <UserOrders />
+        </div>
 
-          <TabsContent value="orders">
-            <UserOrders />
-          </TabsContent>
-
-          <TabsContent value="addresses">
-            <UserAddresses />
-          </TabsContent>
-        </Tabs>
+        {/* 地址管理部分 */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">收货地址</h2>
+          <UserAddresses />
+        </div>
       </div>
     </AuthCheck>
   );
