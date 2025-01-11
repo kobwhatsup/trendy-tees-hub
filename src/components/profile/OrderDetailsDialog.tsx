@@ -15,15 +15,15 @@ interface OrderDetailsDialogProps {
 export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Package2 className="h-5 w-5" />
             订单详情
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6">
+        <div className="space-y-6 overflow-y-auto flex-1 pr-2">
           {/* 订单状态和时间信息 */}
           <div className="flex justify-between items-start border-b pb-4">
             <div className="space-y-1">
@@ -57,7 +57,7 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
             </div>
           </div>
 
-          {/* 物流信息 - 移除状态检查，始终显示物流信息区域 */}
+          {/* 物流信息 */}
           <div className="space-y-2">
             <h3 className="font-medium flex items-center gap-2">
               <Truck className="h-4 w-4" />
