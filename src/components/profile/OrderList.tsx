@@ -63,10 +63,8 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
             
             {/* 订单内容 */}
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="font-medium text-right">总金额: ¥{order.total_amount}</p>
-                </div>
+              <div className="flex justify-end items-center">
+                <p className="font-medium">总金额: ¥{order.total_amount}</p>
               </div>
 
               <OrderItems 
