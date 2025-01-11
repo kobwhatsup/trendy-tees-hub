@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-import { createHash } from "https://deno.land/std@0.218.2/crypto/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,6 +13,7 @@ interface WechatPayRequestBody {
 }
 
 serve(async (req) => {
+  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -82,10 +82,19 @@ serve(async (req) => {
     console.log('Generating signature with string:', signStr);
 
     try {
+      // 处理私钥格式，移除头尾和换行符
+      const formattedPrivateKey = privateKey
+        .replace(/-----BEGIN PRIVATE KEY-----/, '')
+        .replace(/-----END PRIVATE KEY-----/, '')
+        .replace(/\n/g, '');
+
+      // 将Base64格式的私钥转换为字节数组
+      const binaryKey = Uint8Array.from(atob(formattedPrivateKey), c => c.charCodeAt(0));
+
       // 使用私钥签名
       const key = await crypto.subtle.importKey(
         "pkcs8",
-        new TextEncoder().encode(privateKey),
+        binaryKey,
         {
           name: "RSASSA-PKCS1-v1_5",
           hash: "SHA-256",
@@ -94,13 +103,13 @@ serve(async (req) => {
         ["sign"]
       );
 
-      const signature = await crypto.subtle.sign(
+      const signatureBytes = await crypto.subtle.sign(
         "RSASSA-PKCS1-v1_5",
         key,
         new TextEncoder().encode(signStr)
       );
 
-      const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
+      const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signatureBytes)));
 
       // 构建认证头
       const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${base64Signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
