@@ -1,4 +1,6 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface OrderStatusProps {
   status: string;
@@ -6,7 +8,9 @@ interface OrderStatusProps {
   totalAmount: number;
 }
 
-export const OrderStatus = ({ status }: OrderStatusProps) => {
+export const OrderStatus = ({ status, orderNumber, totalAmount }: OrderStatusProps) => {
+  const { toast } = useToast();
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "pending_payment":
@@ -41,9 +45,34 @@ export const OrderStatus = ({ status }: OrderStatusProps) => {
     return statusMap[status] || status;
   };
 
+  const handlePayment = async () => {
+    // 这里我们模拟跳转到支付页面
+    // TODO: 实际项目中需要接入真实的支付网关
+    const paymentUrl = `https://example.com/pay?order_number=${orderNumber}&amount=${totalAmount}`;
+    
+    toast({
+      title: "正在跳转到支付页面",
+      description: "即将跳转到支付平台...",
+    });
+
+    // 模拟支付跳转
+    console.log("Payment URL:", paymentUrl);
+  };
+
   return (
-    <Badge variant={getStatusBadgeVariant(status)} className="px-2 py-1">
-      {getStatusText(status)}
-    </Badge>
+    <div className="flex items-center gap-2">
+      <Badge variant={getStatusBadgeVariant(status)} className="px-2 py-1">
+        {getStatusText(status)}
+      </Badge>
+      {status === "pending_payment" && (
+        <Button 
+          variant="secondary" 
+          size="sm"
+          onClick={handlePayment}
+        >
+          去支付
+        </Button>
+      )}
+    </div>
   );
 };
