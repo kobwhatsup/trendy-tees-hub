@@ -3,35 +3,18 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { formatDistanceToNow } from "date-fns";
-import { zhCN } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
 import { DesignPreviewGrid } from "./DesignPreviewGrid";
 import { DesignActions } from "./DesignActions";
-import { useNavigate } from "react-router-dom";
-import { Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { DesignMetrics } from "./cards/DesignMetrics";
+import { DesignTimestamp } from "./cards/DesignTimestamp";
+import type { DesignType } from "@/types/design";
 
-interface Design {
-  id: string;
-  is_public: boolean;
-  created_at: string;
-  design_front: string;
-  design_back: string;
-  preview_front: string;
-  preview_back: string;
-  reward_percentage: number;
-  total_earnings: number;
-  view_count: number;
-  use_count: number;
-  sales_amount: number;
+interface DesignCardProps {
+  design: DesignType;
 }
 
-export const DesignCard = ({ design }: { design: Design }) => {
+export const DesignCard = ({ design }: DesignCardProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -46,7 +29,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       if (error) throw error;
 
-      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
+      queryClient.setQueryData<DesignType[]>(['my-designs'], (oldData = []) => {
         return oldData.map(d => 
           d.id === design.id ? { ...d, is_public: !design.is_public } : d
         );
@@ -79,7 +62,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       if (error) throw error;
 
-      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
+      queryClient.setQueryData<DesignType[]>(['my-designs'], (oldData = []) => {
         return oldData.filter(d => d.id !== design.id);
       });
 
@@ -98,16 +81,12 @@ export const DesignCard = ({ design }: { design: Design }) => {
   };
 
   const handleUseDesign = () => {
-    // 将设计图信息存储到 localStorage
     localStorage.setItem('reusedDesign', JSON.stringify({
       design_front: design.design_front,
       design_back: design.design_back
     }));
     
-    // 更新使用次数
     updateUseCount();
-    
-    // 跳转到 AI 设计师页面
     navigate('/design');
   };
 
@@ -122,8 +101,7 @@ export const DesignCard = ({ design }: { design: Design }) => {
 
       if (error) throw error;
 
-      // 更新本地缓存的数据
-      queryClient.setQueryData<Design[]>(['my-designs'], (oldData = []) => {
+      queryClient.setQueryData<DesignType[]>(['my-designs'], (oldData = []) => {
         return oldData.map(d => 
           d.id === design.id ? { ...d, use_count: (d.use_count || 0) + 1 } : d
         );
@@ -141,51 +119,13 @@ export const DesignCard = ({ design }: { design: Design }) => {
         </CardHeader>
         <CardContent className="p-4">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              创建于 {formatDistanceToNow(new Date(design.created_at), { locale: zhCN, addSuffix: true })}
-            </p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <p className="text-muted-foreground">浏览次数</p>
-                <p className="font-medium">{design.view_count || 0}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">使用次数</p>
-                <p className="font-medium">{design.use_count || 0}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground flex items-center gap-1">
-                  销售收入
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>印有该设计图的T恤收入总额</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </p>
-                <p className="font-medium">¥{design.sales_amount?.toFixed(2) || '0.00'}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground flex items-center gap-1">
-                  获得奖励
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>该设计图的T恤收入总额*10%，该奖励归您所有</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </p>
-                <p className="font-medium text-green-600">¥{design.total_earnings?.toFixed(2) || '0.00'}</p>
-              </div>
-            </div>
+            <DesignTimestamp createdAt={design.created_at} />
+            <DesignMetrics 
+              viewCount={design.view_count}
+              useCount={design.use_count}
+              salesAmount={design.sales_amount}
+              totalEarnings={design.total_earnings}
+            />
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-0">
