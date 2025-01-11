@@ -1,15 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { OrderConfirmDialog } from "@/components/cart/OrderConfirmDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface OrderStatusProps {
   status: string;
-  orderItems: any[];
+  orderNumber: string;
+  totalAmount: number;
 }
 
-export const OrderStatus = ({ status, orderItems }: OrderStatusProps) => {
-  const [showPayment, setShowPayment] = useState(false);
+export const OrderStatus = ({ status, orderNumber, totalAmount }: OrderStatusProps) => {
+  const { toast } = useToast();
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -45,6 +45,22 @@ export const OrderStatus = ({ status, orderItems }: OrderStatusProps) => {
     return statusMap[status] || status;
   };
 
+  const handlePayment = async () => {
+    // 这里我们模拟跳转到支付页面
+    // TODO: 实际项目中需要接入真实的支付网关
+    const paymentUrl = `https://example.com/pay?order_number=${orderNumber}&amount=${totalAmount}`;
+    
+    // 在实际项目中,这里应该是真实的支付网关地址
+    toast({
+      title: "正在跳转到支付页面",
+      description: "即将跳转到支付平台...",
+    });
+
+    // 模拟支付跳转
+    console.log("Payment URL:", paymentUrl);
+    // window.location.href = paymentUrl; // 实际项目中取消注释此行
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Badge variant={getStatusBadgeVariant(status)}>
@@ -54,17 +70,10 @@ export const OrderStatus = ({ status, orderItems }: OrderStatusProps) => {
         <Button 
           variant="outline" 
           size="sm"
-          onClick={() => setShowPayment(true)}
+          onClick={handlePayment}
         >
           去支付
         </Button>
-      )}
-      {showPayment && (
-        <OrderConfirmDialog
-          open={showPayment}
-          onOpenChange={setShowPayment}
-          items={orderItems}
-        />
       )}
     </div>
   );

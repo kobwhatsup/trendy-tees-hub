@@ -1,9 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { OrderStatus } from "./OrderStatus";
 import { OrderItems } from "./OrderItems";
-import { Order } from "@/types/order";
+import type { Order } from "@/types/order";
 
 interface OrderListProps {
   orders: Order[];
@@ -13,39 +12,46 @@ interface OrderListProps {
 
 export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListProps) => {
   return (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>商品信息</TableHead>
-              <TableHead className="text-right">订单金额</TableHead>
-              <TableHead>订单状态</TableHead>
-              <TableHead>下单时间</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>
-                  <OrderItems 
-                    items={order.items}
-                    expanded={expandedOrders.includes(order.id)}
-                    onToggle={() => onToggleOrder(order.id)}
-                  />
-                </TableCell>
-                <TableCell className="text-right">¥{order.total_amount}</TableCell>
-                <TableCell>
-                  <OrderStatus status={order.status} orderItems={order.items} />
-                </TableCell>
-                <TableCell>
-                  {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <div className="space-y-4">
+      {orders.map((order) => (
+        <div key={order.id} className="border rounded-lg p-4 space-y-4">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">
+                下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
+              </p>
+            </div>
+            <OrderStatus 
+              status={order.status} 
+              orderNumber={order.order_number}
+              totalAmount={Number(order.total_amount)}
+            />
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm font-medium">总金额: ¥{order.total_amount}</p>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => onToggleOrder(order.id)}
+            >
+              {expandedOrders.includes(order.id) ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+
+          {expandedOrders.includes(order.id) && (
+            <div className="pt-4 border-t">
+              <OrderItems items={order.items} />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
