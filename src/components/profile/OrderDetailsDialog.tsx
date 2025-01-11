@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { format } from "date-fns";
 import { OrderItems } from "./OrderItems";
 import { OrderStatus } from "./OrderStatus";
-import { Package2, MapPin, Phone } from "lucide-react";
+import { Package2, MapPin, Phone, Truck } from "lucide-react";
 import type { Order } from "@/types/order";
 import { Button } from "../ui/button";
 
@@ -56,6 +56,42 @@ export const OrderDetailsDialog = ({ order, open, onOpenChange }: OrderDetailsDi
               </div>
             </div>
           </div>
+
+          {/* 物流信息 */}
+          {(order.status === 'shipped' || order.status === 'delivered') && (
+            <div className="space-y-2">
+              <h3 className="font-medium flex items-center gap-2">
+                <Truck className="h-4 w-4" />
+                物流信息
+              </h3>
+              <div className="bg-muted/30 rounded-lg p-4 space-y-2">
+                {order.shipping_company && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">物流公司</span>
+                    <span className="text-sm">{order.shipping_company}</span>
+                  </div>
+                )}
+                {order.tracking_number && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">物流单号</span>
+                    <span className="text-sm font-medium">{order.tracking_number}</span>
+                  </div>
+                )}
+                {order.shipped_at && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">发货时间</span>
+                    <span className="text-sm">{format(new Date(order.shipped_at), "yyyy-MM-dd HH:mm:ss")}</span>
+                  </div>
+                )}
+                {order.shipping_status && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">物流状态</span>
+                    <span className="text-sm">{order.shipping_status}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 商品信息 */}
           <div className="space-y-2">

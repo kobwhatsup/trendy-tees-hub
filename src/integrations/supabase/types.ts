@@ -313,8 +313,11 @@ export type Database = {
           recipient_phone: string | null
           shipped_at: string | null
           shipping_address: string | null
+          shipping_company: string | null
+          shipping_status: string | null
           status: Database["public"]["Enums"]["order_status"]
           total_amount: number
+          tracking_number: string | null
           updated_at: string
           user_id: string
         }
@@ -329,8 +332,11 @@ export type Database = {
           recipient_phone?: string | null
           shipped_at?: string | null
           shipping_address?: string | null
+          shipping_company?: string | null
+          shipping_status?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string
           user_id: string
         }
@@ -345,8 +351,11 @@ export type Database = {
           recipient_phone?: string | null
           shipped_at?: string | null
           shipping_address?: string | null
+          shipping_company?: string | null
+          shipping_status?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string
         }

@@ -24,4 +24,7 @@ export interface Order {
   shipped_at?: string;
   delivered_at?: string;
   is_deleted?: boolean;
+  shipping_company?: string;
+  tracking_number?: string;
+  shipping_status?: string;
 }
