@@ -54,11 +54,13 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                   下单时间: {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
                 </p>
               </div>
-              <OrderStatus 
-                status={order.status} 
-                orderNumber={order.order_number}
-                totalAmount={Number(order.total_amount)}
-              />
+              <div className="flex items-center gap-2">
+                <OrderStatus 
+                  status={order.status} 
+                  orderNumber={order.order_number}
+                  totalAmount={Number(order.total_amount)}
+                />
+              </div>
             </div>
             
             {/* 订单内容 */}
