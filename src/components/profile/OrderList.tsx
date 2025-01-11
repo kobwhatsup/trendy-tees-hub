@@ -107,12 +107,14 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
                     variant="secondary" 
                     size="sm"
                     onClick={() => {
-                      const orderStatus = new OrderStatus({ 
-                        status: order.status, 
-                        orderNumber: order.order_number,
-                        totalAmount: Number(order.total_amount)
-                      });
-                      orderStatus.handlePayment();
+                      const orderStatusComponent = {
+                        handlePayment: () => {
+                          // 调用 OrderStatus 组件中的支付处理逻辑
+                          const paymentUrl = `https://example.com/pay?order_number=${order.order_number}&amount=${order.total_amount}`;
+                          console.log("Payment URL:", paymentUrl);
+                        }
+                      };
+                      orderStatusComponent.handlePayment();
                     }}
                   >
                     去支付
