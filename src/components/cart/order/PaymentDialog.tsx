@@ -46,8 +46,19 @@ export const PaymentDialog = ({
         } else if (order?.status === 'pending_payment') {
           // 继续轮询
           console.log('Payment pending, continue polling...');
+        } else if (order?.status === 'payment_timeout') {
+          // 支付超时
+          clearInterval(pollIntervalRef.current);
+          clearTimeout(pollTimeoutRef.current);
+          onOpenChange(false);
+          toast({
+            title: "支付超时",
+            description: "二维码已过期，请重新下单",
+            variant: "destructive",
+          });
+          window.location.reload();
         } else {
-          // 其他状态（包括支付超时）
+          // 其他异常状态
           clearInterval(pollIntervalRef.current);
           clearTimeout(pollTimeoutRef.current);
           onOpenChange(false);
