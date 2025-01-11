@@ -12,16 +12,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface OrderListProps {
   orders: Order[];
   expandedOrders: string[];
   onToggleOrder: (orderId: string) => void;
+  onDeleteOrder: (orderId: string) => void;
 }
 
-export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListProps) => {
+export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder }: OrderListProps) => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
   
+  const handleDeleteConfirm = () => {
+    if (orderToDelete) {
+      onDeleteOrder(orderToDelete);
+      setOrderToDelete(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {orders.map((order) => (
@@ -68,7 +87,10 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  <DropdownMenuItem className="text-destructive">
+                  <DropdownMenuItem 
+                    className="text-destructive"
+                    onClick={() => setOrderToDelete(order.id)}
+                  >
                     <Trash className="h-4 w-4 mr-2" />
                     删除订单
                   </DropdownMenuItem>
@@ -112,6 +134,21 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
           onOpenChange={(open) => !open && setSelectedOrder(null)}
         />
       )}
+
+      <AlertDialog open={!!orderToDelete} onOpenChange={() => setOrderToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除订单</AlertDialogTitle>
+            <AlertDialogDescription>
+              删除后订单将不会在列表中显示，但订单记录会被保留。此操作无法撤销。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm}>确认删除</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

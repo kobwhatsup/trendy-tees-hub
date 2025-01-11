@@ -23,4 +23,5 @@ export interface Order {
   paid_at?: string;
   shipped_at?: string;
   delivered_at?: string;
+  is_deleted?: boolean;
 }

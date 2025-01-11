@@ -21,6 +21,7 @@ export const UserOrders = () => {
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
         .select("*")
+        .eq('is_deleted', false)
         .order("created_at", { ascending: false });
 
       if (ordersError) throw ordersError;
@@ -62,6 +63,32 @@ export const UserOrders = () => {
     );
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ is_deleted: true })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      // 更新本地状态，移除已删除的订单
+      setOrders(prev => prev.filter(order => order.id !== orderId));
+
+      toast({
+        title: "删除成功",
+        description: "订单已成功删除",
+      });
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      toast({
+        variant: "destructive",
+        title: "删除失败",
+        description: "请稍后重试",
+      });
+    }
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -75,6 +102,7 @@ export const UserOrders = () => {
       orders={orders}
       expandedOrders={expandedOrders}
       onToggleOrder={toggleOrderExpand}
+      onDeleteOrder={handleDeleteOrder}
     />
   );
 };

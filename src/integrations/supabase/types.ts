@@ -306,6 +306,7 @@ export type Database = {
           created_at: string
           delivered_at: string | null
           id: string
+          is_deleted: boolean | null
           order_number: string
           paid_at: string | null
           recipient_name: string | null
@@ -321,6 +322,7 @@ export type Database = {
           created_at?: string
           delivered_at?: string | null
           id?: string
+          is_deleted?: boolean | null
           order_number: string
           paid_at?: string | null
           recipient_name?: string | null
@@ -336,6 +338,7 @@ export type Database = {
           created_at?: string
           delivered_at?: string | null
           id?: string
+          is_deleted?: boolean | null
           order_number?: string
           paid_at?: string | null
           recipient_name?: string | null
