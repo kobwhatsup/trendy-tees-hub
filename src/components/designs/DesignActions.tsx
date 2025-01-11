@@ -41,7 +41,11 @@ export const DesignActions = ({
       </div>
       
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2 bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white rounded-full px-4 py-1.5 shadow-sm">
+        <div className={`flex items-center space-x-2 rounded-full px-4 py-1.5 shadow-sm transition-colors duration-300 ${
+          isPublic 
+            ? "bg-gradient-to-r from-[#8B5CF6] to-[#6D28D9] text-white" 
+            : "bg-gradient-to-r from-[#9CA3AF] to-[#6B7280] text-white"
+        }`}>
           <Switch
             checked={isPublic}
             onCheckedChange={onShareToggle}
