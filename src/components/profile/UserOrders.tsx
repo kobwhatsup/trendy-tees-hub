@@ -6,6 +6,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Order {
   id: string;
@@ -31,6 +38,7 @@ interface OrderItem {
 export const UserOrders = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -77,14 +85,20 @@ export const UserOrders = () => {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case "pending":
+      case "pending_payment":
         return "default";
+      case "paid":
+        return "secondary";
       case "processing":
         return "secondary";
-      case "completed":
+      case "shipped":
+        return "default";
+      case "delivered":
         return "success";
-      case "cancelled":
+      case "refund_requested":
         return "destructive";
+      case "refunded":
+        return "outline";
       default:
         return "outline";
     }
@@ -92,12 +106,35 @@ export const UserOrders = () => {
 
   const getStatusText = (status: string) => {
     const statusMap: { [key: string]: string } = {
-      pending: "待付款",
+      pending_payment: "待付款",
+      paid: "已支付",
       processing: "处理中",
-      completed: "已完成",
-      cancelled: "已取消",
+      shipped: "已发货",
+      delivered: "已送达",
+      refund_requested: "申请退款",
+      refunded: "已退款",
     };
     return statusMap[status] || status;
+  };
+
+  const getTshirtStyleText = (style: string) => {
+    return style === "short" ? "短袖" : "长袖";
+  };
+
+  const getTshirtColorText = (color: string) => {
+    return color === "white" ? "白色" : "黑色";
+  };
+
+  const getTshirtGenderText = (gender: string) => {
+    return gender === "male" ? "男款" : "女款";
+  };
+
+  const toggleOrderExpand = (orderId: string) => {
+    setExpandedOrders(prev => 
+      prev.includes(orderId) 
+        ? prev.filter(id => id !== orderId)
+        : [...prev, orderId]
+    );
   };
 
   if (loading) {
@@ -122,15 +159,15 @@ export const UserOrders = () => {
 
   return (
     <Card>
-      <CardContent>
+      <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>订单编号</TableHead>
+              <TableHead className="w-[200px]">订单编号</TableHead>
               <TableHead>商品信息</TableHead>
-              <TableHead>订单金额</TableHead>
-              <TableHead>订单状态</TableHead>
-              <TableHead>下单时间</TableHead>
+              <TableHead className="w-[100px] text-right">订单金额</TableHead>
+              <TableHead className="w-[100px]">订单状态</TableHead>
+              <TableHead className="w-[180px]">下单时间</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -138,31 +175,51 @@ export const UserOrders = () => {
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.order_number}</TableCell>
                 <TableCell>
-                  <div className="space-y-2">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center gap-2">
-                        {item.preview_front && (
-                          <img
-                            src={item.preview_front}
-                            alt="T恤预览图"
-                            className="w-12 h-12 object-cover rounded"
-                          />
+                  <Collapsible open={expandedOrders.includes(order.id)}>
+                    <CollapsibleTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => toggleOrderExpand(order.id)}
+                        className="w-full justify-start p-0 font-normal"
+                      >
+                        {expandedOrders.includes(order.id) ? (
+                          <ChevronUp className="h-4 w-4 mr-2" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 mr-2" />
                         )}
-                        <div className="flex-1">
-                          <div className="text-sm">
-                            {item.tshirt_gender === "male" ? "男款" : "女款"} {" "}
-                            {item.tshirt_style === "short" ? "短袖" : "长袖"} {" "}
-                            {item.tshirt_color === "white" ? "白色" : "黑色"}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            尺码: {item.tshirt_size} × {item.quantity}
+                        {order.items.length} 件商品
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2 mt-2">
+                      {order.items.map((item) => (
+                        <div key={item.id} className="flex items-center gap-4 p-2 rounded-lg bg-muted/50">
+                          {item.preview_front && (
+                            <img
+                              src={item.preview_front}
+                              alt="T恤预览图"
+                              className="w-16 h-16 object-cover rounded"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium">
+                              {getTshirtGenderText(item.tshirt_gender)}{" "}
+                              {getTshirtStyleText(item.tshirt_style)}{" "}
+                              {getTshirtColorText(item.tshirt_color)}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              尺码: {item.tshirt_size.toUpperCase()}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              数量: {item.quantity} × ¥{item.unit_price}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
                 </TableCell>
-                <TableCell>¥{order.total_amount}</TableCell>
+                <TableCell className="text-right">¥{order.total_amount}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(order.status)}>
                     {getStatusText(order.status)}
