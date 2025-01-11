@@ -53,6 +53,7 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder, onDeleteOrder
             <OrderActions 
               orderId={order.id}
               status={order.status}
+              totalAmount={Number(order.total_amount)}
               onDelete={(id) => setOrderToDelete(id)}
               onViewDetails={() => setSelectedOrder(order)}
             />

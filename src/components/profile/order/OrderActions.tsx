@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";  // 修改为使用命名导出
 
 interface OrderActionsProps {
   orderId: string;
@@ -144,7 +144,7 @@ export const OrderActions = ({
           <div className="flex flex-col items-center justify-center p-4">
             {qrCodeUrl && (
               <div className="bg-white p-4 rounded-lg">
-                <QRCode value={qrCodeUrl} size={200} />
+                <QRCodeSVG value={qrCodeUrl} size={200} />
               </div>
             )}
             <p className="mt-4 text-sm text-muted-foreground">
