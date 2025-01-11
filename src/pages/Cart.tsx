@@ -123,7 +123,11 @@ const Cart = () => {
             items={cartItems.map(item => ({
               quantity: item.quantity,
               price: item.price || 199,
-              selected: selectedItems.has(item.id)
+              selected: selectedItems.has(item.id),
+              tshirt_style: item.tshirt_style,
+              tshirt_color: item.tshirt_color,
+              tshirt_gender: item.tshirt_gender,
+              tshirt_size: item.tshirt_size
             }))}
             onCheckout={handleCheckout}
           />
