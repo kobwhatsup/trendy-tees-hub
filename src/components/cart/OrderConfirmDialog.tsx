@@ -5,24 +5,12 @@ import { useState } from "react";
 import { AddressDialog } from "./address/AddressDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { CartItemType } from "@/types/cart";
 
 interface OrderConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  items: Array<{
-    id: string;
-    quantity: number;
-    price: number;
-    selected: boolean;
-    tshirt_style: string;
-    tshirt_color: string;
-    tshirt_gender: string;
-    tshirt_size: string;
-    design_front: string | null;
-    design_back: string | null;
-    preview_front: string | null;
-    preview_back: string | null;
-  }>;
+  items: CartItemType[];
 }
 
 export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDialogProps) => {
@@ -32,9 +20,8 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
   const [address, setAddress] = useState("请添加收货地址");
   const [isProcessing, setIsProcessing] = useState(false);
   
-  const selectedItems = items.filter(item => item.selected);
-  const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
   const shipping = 0;
   const total = subtotal + shipping;
 
@@ -63,7 +50,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       if (orderError) throw orderError;
 
       // 创建订单项
-      const orderItems = selectedItems.map(item => ({
+      const orderItems = items.map(item => ({
         order_id: order.id,
         design_front: item.design_front,
         design_back: item.design_back,
@@ -74,7 +61,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
         tshirt_gender: item.tshirt_gender,
         tshirt_size: item.tshirt_size,
         quantity: item.quantity,
-        unit_price: item.price
+        unit_price: item.price || 199
       }));
 
       const { error: itemsError } = await supabase
@@ -84,7 +71,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       if (itemsError) throw itemsError;
 
       // 删除已购买的购物车商品
-      const cartItemIds = selectedItems.map(item => item.id);
+      const cartItemIds = items.map(item => item.id);
       const { error: deleteError } = await supabase
         .from('cart_items')
         .delete()
@@ -153,7 +140,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
             <div className="space-y-2">
               <h3 className="font-medium text-sm">商品信息</h3>
               <div className="space-y-3">
-                {selectedItems.map((item, index) => (
+                {items.map((item, index) => (
                   <div key={index} className="flex justify-between items-start p-3 bg-muted rounded-lg">
                     <div className="space-y-1">
                       <p className="text-sm">
@@ -165,7 +152,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">¥{item.price}</p>
+                      <p className="text-sm">¥{item.price || 199}</p>
                       <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                     </div>
                   </div>

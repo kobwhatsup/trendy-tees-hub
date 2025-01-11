@@ -2,19 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import { OrderConfirmDialog } from "./OrderConfirmDialog";
-
-interface CartItem {
-  quantity: number;
-  price: number;
-  selected: boolean;
-  tshirt_style: string;
-  tshirt_color: string;
-  tshirt_gender: string;
-  tshirt_size: string;
-}
+import { CartItemType } from "@/types/cart";
 
 interface CartSummaryProps {
-  items: CartItem[];
+  items: CartItemType[];
   onCheckout: () => void;
 }
 
@@ -22,7 +13,7 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
   const [showOrderConfirm, setShowOrderConfirm] = useState(false);
   const selectedItems = items.filter(item => item.selected);
   const itemCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-  const total = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = selectedItems.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
   const isMobile = useIsMobile();
 
   const handleCheckoutClick = () => {
@@ -57,7 +48,7 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
       <OrderConfirmDialog
         open={showOrderConfirm}
         onOpenChange={setShowOrderConfirm}
-        items={items}
+        items={selectedItems}
       />
     </>
   );
