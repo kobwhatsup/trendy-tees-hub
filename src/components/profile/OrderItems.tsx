@@ -29,12 +29,12 @@ export const OrderItems = ({ items, expanded, onToggle }: OrderItemsProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 mt-2">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-4 p-2 rounded-lg bg-muted/50">
+          <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
             {item.preview_front && (
               <img
                 src={getValidImageUrl(item.preview_front)}
                 alt="商品预览图"
-                className="w-16 h-16 object-cover rounded bg-white"
+                className="w-20 h-20 object-cover rounded bg-white"
               />
             )}
             <div className="flex-1 min-w-0">
