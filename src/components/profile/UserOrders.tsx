@@ -1,33 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { OrderStatus } from "./OrderStatus";
-import { OrderItems } from "./OrderItems";
-
-interface Order {
-  id: string;
-  order_number: string;
-  total_amount: number;
-  status: string;
-  created_at: string;
-  items: OrderItem[];
-}
-
-interface OrderItem {
-  id: string;
-  tshirt_style: string;
-  tshirt_color: string;
-  tshirt_gender: string;
-  tshirt_size: string;
-  quantity: number;
-  unit_price: number;
-  preview_front?: string;
-  preview_back?: string;
-}
+import { LoadingState } from "./LoadingState";
+import { EmptyOrderState } from "./EmptyOrderState";
+import { OrderList } from "./OrderList";
+import type { Order } from "@/types/order";
 
 export const UserOrders = () => {
   const [loading, setLoading] = useState(true);
@@ -86,59 +63,18 @@ export const UserOrders = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (orders.length === 0) {
-    return (
-      <Card>
-        <CardContent className="py-8">
-          <div className="text-center text-muted-foreground">
-            暂无订单记录
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <EmptyOrderState />;
   }
 
   return (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>商品信息</TableHead>
-              <TableHead className="text-right">订单金额</TableHead>
-              <TableHead>订单状态</TableHead>
-              <TableHead>下单时间</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>
-                  <OrderItems 
-                    items={order.items}
-                    expanded={expandedOrders.includes(order.id)}
-                    onToggle={() => toggleOrderExpand(order.id)}
-                  />
-                </TableCell>
-                <TableCell className="text-right">¥{order.total_amount}</TableCell>
-                <TableCell>
-                  <OrderStatus status={order.status} orderItems={order.items} />
-                </TableCell>
-                <TableCell>
-                  {format(new Date(order.created_at), "yyyy-MM-dd HH:mm:ss")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <OrderList 
+      orders={orders}
+      expandedOrders={expandedOrders}
+      onToggleOrder={toggleOrderExpand}
+    />
   );
 };
