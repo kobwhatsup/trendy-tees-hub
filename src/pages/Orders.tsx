@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const Orders = () => {
   return (
     <AuthCheck>
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="container mx-auto px-4 pt-20 pb-8 md:pb-12">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">订单管理</h1>
           <div className="relative">
