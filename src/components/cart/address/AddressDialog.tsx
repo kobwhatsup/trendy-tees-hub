@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -144,11 +144,13 @@ export const AddressDialog = ({ open, onOpenChange, onAddressSelect }: AddressDi
     }
   };
 
-  useState(() => {
+  // 修复这里的useEffect使用
+  useEffect(() => {
     if (open) {
+      setLoading(true);
       fetchAddresses();
     }
-  });
+  }, [open]);
 
   const handleAddressFormChange = (field: string, value: string) => {
     setNewAddress(prev => ({
