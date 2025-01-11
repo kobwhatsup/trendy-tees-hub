@@ -1,4 +1,4 @@
-import { AuthCheck } from "./AuthCheck";
+import { AuthCheck } from "@/components/designs/AuthCheck";
 import { DesignsHeader } from "./DesignsHeader";
 import { MyDesignsContent } from "./MyDesignsContent";
 
