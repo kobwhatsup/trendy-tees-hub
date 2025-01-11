@@ -9,7 +9,7 @@ export const OrderContent = ({ items, totalAmount }: OrderContentProps) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-end items-center">
-        <p className="font-medium">总金额: ¥{totalAmount}</p>
+        <p className="font-medium">总金额: ¥{totalAmount.toFixed(2)}</p>
       </div>
       <OrderItems 
         items={items} 

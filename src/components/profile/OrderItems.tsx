@@ -37,7 +37,7 @@ export const OrderItems = ({ items, expanded, onToggle }: OrderItemsProps) => {
                 数量: {item.quantity}
               </div>
               <div className="text-sm font-medium">
-                ¥{item.unit_price}
+                ¥{item.unit_price.toFixed(2)}
               </div>
             </div>
           </div>
