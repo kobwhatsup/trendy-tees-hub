@@ -41,14 +41,14 @@ export const DesignActions = ({
       </div>
       
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2 bg-gradient-to-r from-accent to-muted rounded-md px-3 py-1.5">
+        <div className="flex items-center space-x-2 bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white rounded-full px-4 py-1.5 shadow-sm">
           <Switch
             checked={isPublic}
             onCheckedChange={onShareToggle}
             disabled={isUpdating}
-            className="data-[state=checked]:bg-green-500"
+            className="data-[state=checked]:bg-white/90 data-[state=unchecked]:bg-white/40"
           />
-          <Label className="flex items-center gap-1.5 cursor-pointer">
+          <Label className="flex items-center gap-1.5 cursor-pointer text-sm font-medium">
             <Share2 className="h-4 w-4" />
             分享设计
           </Label>
