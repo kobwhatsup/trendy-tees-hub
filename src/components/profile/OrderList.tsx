@@ -54,7 +54,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
       ))}
 
       <OrderDetailsDialog
-        order={selectedOrder}
+        order={selectedOrder!}
         open={!!selectedOrder}
         onOpenChange={(open) => !open && setSelectedOrder(null)}
       />
