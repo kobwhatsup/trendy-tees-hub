@@ -19,13 +19,14 @@ export const usePaymentPolling = ({
   const pollIntervalRef = useRef<NodeJS.Timeout>();
   const pollTimeoutRef = useRef<NodeJS.Timeout>();
   const [isPolling, setIsPolling] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(300);
+  const [remainingTime, setRemainingTime] = useState(300); // 5分钟有效期
 
   useEffect(() => {
     if (open && qrCodeUrl) {
       setIsPolling(true);
       let startTime = Date.now();
       
+      // 每3秒轮询一次支付状态
       pollIntervalRef.current = setInterval(async () => {
         try {
           const { data: order, error } = await supabase
@@ -34,12 +35,17 @@ export const usePaymentPolling = ({
             .eq('id', orderId)
             .single();
 
-          if (error) throw error;
+          if (error) {
+            console.error('轮询支付状态时发生错误:', error);
+            throw error;
+          }
 
+          // 更新剩余时间
           const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
           const remaining = Math.max(300 - elapsedTime, 0);
           setRemainingTime(remaining);
 
+          // 处理不同的支付状态
           if (order?.status === 'paid') {
             clearInterval(pollIntervalRef.current);
             clearTimeout(pollTimeoutRef.current);
@@ -51,7 +57,7 @@ export const usePaymentPolling = ({
             });
             window.location.reload();
           } else if (order?.status === 'pending_payment') {
-            console.log('Payment pending, continue polling...');
+            console.log('等待支付中，继续轮询...');
           } else if (order?.status === 'payment_timeout') {
             clearInterval(pollIntervalRef.current);
             clearTimeout(pollTimeoutRef.current);
@@ -76,7 +82,7 @@ export const usePaymentPolling = ({
             window.location.reload();
           }
         } catch (error) {
-          console.error('Error polling payment status:', error);
+          console.error('轮询支付状态时发生错误:', error);
           clearInterval(pollIntervalRef.current);
           clearTimeout(pollTimeoutRef.current);
           setIsPolling(false);
@@ -89,6 +95,7 @@ export const usePaymentPolling = ({
         }
       }, 3000);
 
+      // 5分钟后自动关闭
       pollTimeoutRef.current = setTimeout(() => {
         if (pollIntervalRef.current) {
           clearInterval(pollIntervalRef.current);
@@ -102,6 +109,7 @@ export const usePaymentPolling = ({
         });
       }, 5 * 60 * 1000);
 
+      // 清理函数
       return () => {
         if (pollIntervalRef.current) {
           clearInterval(pollIntervalRef.current);
