@@ -55,13 +55,69 @@ async function verifySignature(headers: Headers, body: string) {
     // 构造签名字符串
     const message = `${timestamp}\n${nonce}\n${body}\n`;
 
-    // TODO: 实现完整的签名验证逻辑
-    // 需要使用微信支付平台证书公钥验证签名
-    
+    // 使用微信支付平台证书公钥验证签名
+    const publicKey = await crypto.subtle.importKey(
+      "spki",
+      new TextEncoder().encode(Deno.env.get('WECHAT_PAY_PUBLIC_KEY')),
+      {
+        name: "RSASSA-PKCS1-v1_5",
+        hash: "SHA-256",
+      },
+      false,
+      ["verify"]
+    );
+
+    const signatureBytes = new Uint8Array(
+      signature.match(/.{2}/g)!.map(byte => parseInt(byte, 16))
+    );
+
+    const isValid = await crypto.subtle.verify(
+      "RSASSA-PKCS1-v1_5",
+      publicKey,
+      signatureBytes,
+      new TextEncoder().encode(message)
+    );
+
+    if (!isValid) {
+      throw new Error('Invalid signature');
+    }
+
     return true;
   } catch (error) {
     console.error('Error verifying signature:', error);
     throw new Error('Signature verification failed');
+  }
+}
+
+// 处理支付超时
+async function handlePaymentTimeout(supabaseClient: any, orderId: string) {
+  try {
+    // 更新订单状态为支付超时
+    const { error: orderError } = await supabaseClient
+      .from('orders')
+      .update({ 
+        status: 'payment_timeout',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', orderId);
+
+    if (orderError) throw orderError;
+
+    // 更新支付记录状态
+    const { error: paymentError } = await supabaseClient
+      .from('payment_records')
+      .update({ 
+        status: 'timeout',
+        updated_at: new Date().toISOString()
+      })
+      .eq('order_id', orderId);
+
+    if (paymentError) throw paymentError;
+
+    console.log('Payment timeout handled for order:', orderId);
+  } catch (error) {
+    console.error('Error handling payment timeout:', error);
+    throw error;
   }
 }
 
@@ -108,6 +164,18 @@ serve(async (req) => {
 
     // 验证支付状态
     if (paymentInfo.trade_state !== 'SUCCESS') {
+      // 如果支付失败且超时，则处理支付超时
+      if (paymentInfo.trade_state === 'CLOSED' || paymentInfo.trade_state === 'PAYERROR') {
+        const { data: order } = await supabaseClient
+          .from('orders')
+          .select('id')
+          .eq('order_number', paymentInfo.out_trade_no)
+          .single();
+
+        if (order) {
+          await handlePaymentTimeout(supabaseClient, order.id);
+        }
+      }
       throw new Error(`Payment not successful: ${paymentInfo.trade_state}`);
     }
 
