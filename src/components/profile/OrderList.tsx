@@ -1,11 +1,17 @@
 import { format } from "date-fns";
-import { Package2 } from "lucide-react";
+import { Package2, MoreVertical, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderStatus } from "./OrderStatus";
 import { OrderItems } from "./OrderItems";
 import { OrderDetailsDialog } from "./OrderDetailsDialog";
 import { useState } from "react";
 import type { Order } from "@/types/order";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface OrderListProps {
   orders: Order[];
@@ -53,30 +59,47 @@ export const OrderList = ({ orders, expandedOrders, onToggleOrder }: OrderListPr
             </div>
 
             {/* 订单底部操作栏 */}
-            <div className="flex justify-end items-center gap-2 border-t pt-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSelectedOrder(order)}
-              >
-                订单详情
-              </Button>
-              <Button variant="outline" size="sm">
-                查看物流
-              </Button>
-              <Button variant="outline" size="sm">
-                再次购买
-              </Button>
-              {order.status === 'delivered' && (
+            <div className="flex justify-between items-center border-t pt-3">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <MoreVertical className="h-4 w-4 mr-1" />
+                    更多
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem className="text-destructive">
+                    <Trash className="h-4 w-4 mr-2" />
+                    删除订单
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  订单详情
+                </Button>
                 <Button variant="outline" size="sm">
-                  评价
+                  查看物流
                 </Button>
-              )}
-              {order.status === 'shipped' && (
-                <Button variant="secondary" size="sm">
-                  确认收货
+                <Button variant="outline" size="sm">
+                  再次购买
                 </Button>
-              )}
+                {order.status === 'delivered' && (
+                  <Button variant="outline" size="sm">
+                    评价
+                  </Button>
+                )}
+                {order.status === 'shipped' && (
+                  <Button variant="secondary" size="sm">
+                    确认收货
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
