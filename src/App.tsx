@@ -9,9 +9,9 @@ import Profile from "./pages/Profile";
 import Designs from "./pages/Designs";
 import MyDesigns from "./pages/MyDesigns";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/admin/Login";
 import AdminOrders from "./pages/admin/Orders";
 
-// 创建一个 QueryClient 实例
 const queryClient = new QueryClient();
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/designs" element={<Designs />} />
           <Route path="/my-designs" element={<MyDesigns />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
         </Routes>
