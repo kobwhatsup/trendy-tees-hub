@@ -16,20 +16,21 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      console.log("Attempting login with:", email); // 调试日志
+      console.log("开始登录流程，邮箱:", email);
 
-      // 1. 首先进行基本的登录
+      // 1. 基本登录
       const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) {
-        console.error("Sign in error:", signInError); // 调试日志
+        console.error("登录错误:", signInError);
         throw signInError;
       }
 
       if (!user) {
+        console.error("登录失败：没有用户数据");
         toast({
           title: "登录失败",
           description: "邮箱或密码错误",
@@ -38,18 +39,19 @@ const AdminLogin = () => {
         return;
       }
 
-      console.log("User logged in:", user.id); // 调试日志
+      console.log("用户登录成功，ID:", user.id);
 
-      // 2. 验证是否为管理员
+      // 2. 验证管理员权限
       const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
         .eq('user_id', user.id)
         .single();
 
-      console.log("Admin check result:", { adminData, adminError }); // 调试日志
+      console.log("管理员验证结果:", { adminData, adminError });
 
       if (adminError || !adminData) {
+        console.error("管理员验证失败:", adminError);
         // 如果不是管理员，立即登出
         await supabase.auth.signOut();
         toast({
@@ -65,11 +67,11 @@ const AdminLogin = () => {
         description: "欢迎回来，管理员！",
       });
       
-      console.log("Navigating to admin dashboard"); // 调试日志
+      console.log("验证成功，正在跳转到管理面板");
       navigate('/admin');
       
     } catch (error) {
-      console.error('Login error:', error); // 调试日志
+      console.error('登录过程出错:', error);
       toast({
         title: "登录失败",
         description: "请检查您的登录信息",
