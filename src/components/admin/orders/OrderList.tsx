@@ -109,6 +109,45 @@ export const OrderList = () => {
     }
   };
 
+  const handleLogisticsUpdate = async (
+    orderId: string,
+    data: {
+      shipping_company: string;
+      tracking_number: string;
+      shipping_status: string;
+    }
+  ) => {
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({
+          shipping_company: data.shipping_company,
+          tracking_number: data.tracking_number,
+          shipping_status: data.shipping_status,
+          shipped_at: new Date().toISOString(),
+          status: "shipped" as OrderStatus,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "物流信息更新成功",
+        description: "订单物流信息已更新",
+      });
+
+      refetch();
+    } catch (error) {
+      console.error("更新物流信息失败:", error);
+      toast({
+        variant: "destructive",
+        title: "更新失败",
+        description: "更新物流信息时发生错误",
+      });
+    }
+  };
+
   return (
     <div className="space-y-4">
       <OrderFilters filters={filters} onFiltersChange={setFilters} />
@@ -120,6 +159,7 @@ export const OrderList = () => {
           orders={orders}
           onViewDetails={setSelectedOrder}
           onStatusChange={handleStatusChange}
+          onLogisticsUpdate={handleLogisticsUpdate}
         />
       )}
 

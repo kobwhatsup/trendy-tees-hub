@@ -19,9 +19,22 @@ interface OrderTableProps {
   orders: Order[] | null;
   onViewDetails: (order: Order) => void;
   onStatusChange: (orderId: string, newStatus: Database["public"]["Enums"]["order_status"]) => void;
+  onLogisticsUpdate: (
+    orderId: string,
+    data: {
+      shipping_company: string;
+      tracking_number: string;
+      shipping_status: string;
+    }
+  ) => void;
 }
 
-export const OrderTable = ({ orders, onViewDetails, onStatusChange }: OrderTableProps) => {
+export const OrderTable = ({ 
+  orders, 
+  onViewDetails, 
+  onStatusChange,
+  onLogisticsUpdate,
+}: OrderTableProps) => {
   if (!orders?.length) return <div>暂无订单数据</div>;
 
   return (
@@ -54,6 +67,7 @@ export const OrderTable = ({ orders, onViewDetails, onStatusChange }: OrderTable
                   order={order}
                   onViewDetails={() => onViewDetails(order)}
                   onStatusChange={onStatusChange}
+                  onLogisticsUpdate={onLogisticsUpdate}
                 />
               </TableCell>
             </TableRow>
