@@ -22,6 +22,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
+
+type OrderStatus = Database["public"]["Enums"]["order_status"];
 
 export const OrderList = () => {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -45,7 +48,7 @@ export const OrderList = () => {
     },
   });
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
     try {
       const { error } = await supabase
         .from("orders")
@@ -77,7 +80,7 @@ export const OrderList = () => {
     return <div>加载中...</div>;
   }
 
-  const statusOptions = [
+  const statusOptions: { value: OrderStatus; label: string }[] = [
     { value: "pending_payment", label: "待付款" },
     { value: "paid", label: "已付款" },
     { value: "processing", label: "处理中" },
