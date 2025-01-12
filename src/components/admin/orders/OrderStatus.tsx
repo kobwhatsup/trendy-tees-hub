@@ -9,6 +9,10 @@ const statusMap = {
     label: "已付款",
     variant: "default",
   },
+  processing: {
+    label: "处理中",
+    variant: "default",
+  },
   shipped: {
     label: "已发货",
     variant: "default",
@@ -17,8 +21,16 @@ const statusMap = {
     label: "已送达",
     variant: "success",
   },
-  cancelled: {
-    label: "已取消",
+  refund_requested: {
+    label: "申请退款",
+    variant: "destructive",
+  },
+  refunded: {
+    label: "已退款",
+    variant: "destructive",
+  },
+  payment_timeout: {
+    label: "支付超时",
     variant: "destructive",
   },
 } as const;
