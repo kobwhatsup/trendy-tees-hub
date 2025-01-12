@@ -152,6 +152,7 @@ export const OrderList = () => {
 
       <OrderDetailsDialog
         order={selectedOrder}
+        isOpen={!!selectedOrder}
         onClose={() => setSelectedOrder(null)}
       />
     </div>
