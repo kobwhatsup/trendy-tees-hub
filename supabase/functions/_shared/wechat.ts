@@ -11,39 +11,53 @@ export const generateSignString = (
   nonceStr: string,
   body: any
 ) => {
-  return `${method}\n${url}\n${timestamp}\n${nonceStr}\n${JSON.stringify(body)}\n`;
+  const message = `${method}\n${url}\n${timestamp}\n${nonceStr}\n${JSON.stringify(body)}\n`;
+  console.log('生成的签名字符串:', message);
+  return message;
 };
 
 // 将 Base64 字符串转换为 ArrayBuffer
 const base64ToArrayBuffer = (base64: string) => {
-  const binaryString = atob(base64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
+  try {
+    // 移除可能存在的换行符和空格
+    const cleanBase64 = base64.replace(/[\n\r\s]/g, '');
+    const binaryString = atob(cleanBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  } catch (error) {
+    console.error('Base64转换失败:', error);
+    throw new Error('Base64转换失败: ' + error.message);
   }
-  return bytes.buffer;
 };
 
 // 格式化私钥
 export const formatPrivateKey = (privateKey: string) => {
-  // 移除头尾标记和换行符
-  const pemContent = privateKey
-    .replace('-----BEGIN PRIVATE KEY-----', '')
-    .replace('-----END PRIVATE KEY-----', '')
-    .replace(/\s/g, '');
-  
-  return base64ToArrayBuffer(pemContent);
+  try {
+    console.log('开始格式化私钥...');
+    // 移除头尾标记和所有换行符、空格
+    const pemContent = privateKey
+      .replace('-----BEGIN PRIVATE KEY-----', '')
+      .replace('-----END PRIVATE KEY-----', '')
+      .replace(/[\n\r\s]/g, '');
+    
+    console.log('私钥格式化完成');
+    return base64ToArrayBuffer(pemContent);
+  } catch (error) {
+    console.error('私钥格式化失败:', error);
+    throw new Error('私钥格式化失败: ' + error.message);
+  }
 };
 
 // 生成签名
 export const generateSignature = async (signStr: string, privateKey: string) => {
   try {
     console.log('开始生成签名...');
-    console.log('签名字符串:', signStr);
     
     const keyData = formatPrivateKey(privateKey);
-    
-    console.log('私钥格式化完成，准备导入密钥...');
+    console.log('私钥数据准备完成');
     
     const key = await crypto.subtle.importKey(
       "pkcs8",
@@ -55,8 +69,7 @@ export const generateSignature = async (signStr: string, privateKey: string) => 
       false,
       ["sign"]
     );
-    
-    console.log('密钥导入成功，开始签名...');
+    console.log('密钥导入成功');
 
     const encoder = new TextEncoder();
     const signatureBytes = await crypto.subtle.sign(
@@ -64,19 +77,17 @@ export const generateSignature = async (signStr: string, privateKey: string) => 
       key,
       encoder.encode(signStr)
     );
-
-    console.log('签名生成成功，转换为 Base64...');
+    console.log('签名生成成功');
     
     // 将签名转换为 Base64
     const signatureArray = new Uint8Array(signatureBytes);
     const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
     
     console.log('签名处理完成');
-    
     return signatureBase64;
   } catch (error) {
     console.error('生成签名时发生错误:', error);
-    throw error;
+    throw new Error('生成签名失败: ' + error.message);
   }
 };
 
@@ -88,7 +99,9 @@ export const buildAuthorizationHeader = (
   timestamp: string,
   serialNo: string
 ) => {
-  return `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
+  const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
+  console.log('生成的认证头:', authorization);
+  return authorization;
 };
 
 // 构建请求体
@@ -101,7 +114,7 @@ export const buildRequestBody = (
   notifyUrl: string,
   clientIp: string
 ) => {
-  return {
+  const body = {
     appid: appId,
     mchid: mchid,
     description: description,
@@ -115,4 +128,6 @@ export const buildRequestBody = (
       payer_client_ip: clientIp,
     }
   };
+  console.log('构建的请求体:', JSON.stringify(body, null, 2));
+  return body;
 };

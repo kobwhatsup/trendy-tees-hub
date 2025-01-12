@@ -9,6 +9,7 @@ interface WechatPayRequestBody {
 }
 
 serve(async (req) => {
+  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -26,7 +27,7 @@ serve(async (req) => {
     const appId = Deno.env.get('WECHAT_PAY_APP_ID');
 
     if (!mchid || !serialNo || !privateKey || !appId) {
-      console.error('缺少微信支付配置:', { mchid, serialNo, appId });
+      console.error('缺少微信支付配置');
       throw new Error('缺少微信支付配置');
     }
 
@@ -45,11 +46,14 @@ serve(async (req) => {
       req.headers.get('x-real-ip') || '127.0.0.1'
     );
 
-    console.log('请求体:', JSON.stringify(requestBody, null, 2));
-
     // 生成签名
-    const signStr = generateSignString('POST', '/v3/pay/transactions/native', timestamp, nonceStr, requestBody);
-    console.log('签名字符串:', signStr);
+    const signStr = generateSignString(
+      'POST',
+      '/v3/pay/transactions/native',
+      timestamp,
+      nonceStr,
+      requestBody
+    );
 
     try {
       // 生成签名
@@ -57,8 +61,13 @@ serve(async (req) => {
       console.log('签名生成完成');
 
       // 构建认证头
-      const authorization = buildAuthorizationHeader(mchid, nonceStr, signature, timestamp, serialNo);
-      console.log('认证头构建完成');
+      const authorization = buildAuthorizationHeader(
+        mchid,
+        nonceStr,
+        signature,
+        timestamp,
+        serialNo
+      );
 
       // 调用微信支付API
       console.log('开始调用微信支付API...');
@@ -78,7 +87,7 @@ serve(async (req) => {
 
       if (!response.ok) {
         console.error('微信支付API错误:', responseData);
-        throw new Error(`微信支付API错误: ${responseData.message || response.statusText}`);
+        throw new Error(`微信支付API错误: ${JSON.stringify(responseData)}`);
       }
 
       // 创建支付记录
