@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
+import { createPaymentRecord } from '../_shared/payment.ts'
 
 interface WechatPayRequestBody {
   orderId: string;
@@ -13,18 +9,12 @@ interface WechatPayRequestBody {
 }
 
 serve(async (req) => {
-  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     console.log('开始处理支付请求...');
-    
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
 
     const { orderId, amount, description }: WechatPayRequestBody = await req.json();
     console.log('请求参数:', { orderId, amount, description });
@@ -40,73 +30,34 @@ serve(async (req) => {
       throw new Error('缺少微信支付配置');
     }
 
-    // 生成随机字符串
+    // 生成随机字符串和时间戳
     const nonceStr = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000).toString();
-    
-    // 构建请求参数
-    const requestBody = {
-      appid: appId,
-      mchid: mchid,
-      description: description,
-      out_trade_no: orderId,
-      notify_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/wechat-payment-callback`,
-      amount: {
-        total: amount,
-        currency: 'CNY'
-      },
-      scene_info: {
-        payer_client_ip: req.headers.get('x-real-ip') || '127.0.0.1',
-      }
-    };
+
+    // 构建请求体
+    const requestBody = buildRequestBody(
+      appId,
+      mchid,
+      description,
+      orderId,
+      amount,
+      `${Deno.env.get('SUPABASE_URL')}/functions/v1/wechat-payment-callback`,
+      req.headers.get('x-real-ip') || '127.0.0.1'
+    );
 
     console.log('请求体:', JSON.stringify(requestBody, null, 2));
 
     // 生成签名
-    const method = 'POST';
-    const url = '/v3/pay/transactions/native';
-    const signStr = `${method}\n${url}\n${timestamp}\n${nonceStr}\n${JSON.stringify(requestBody)}\n`;
-    
+    const signStr = generateSignString('POST', '/v3/pay/transactions/native', timestamp, nonceStr, requestBody);
     console.log('签名字符串:', signStr);
 
     try {
-      // 处理私钥格式
-      let formattedPrivateKey = privateKey;
-      if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
-        formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
-      }
-      console.log('私钥格式化完成');
-
-      // 将私钥转换为二进制格式
-      const binaryKey = new TextEncoder().encode(formattedPrivateKey);
-      console.log('私钥转换为二进制完成');
-
-      // 导入私钥
-      const key = await crypto.subtle.importKey(
-        "pkcs8",
-        binaryKey,
-        {
-          name: "RSASSA-PKCS1-v1_5",
-          hash: "SHA-256",
-        },
-        false,
-        ["sign"]
-      );
-      console.log('私钥导入完成');
-
-      // 签名
-      const signatureBytes = await crypto.subtle.sign(
-        "RSASSA-PKCS1-v1_5",
-        key,
-        new TextEncoder().encode(signStr)
-      );
+      // 生成签名
+      const signature = await generateSignature(signStr, privateKey);
       console.log('签名生成完成');
 
-      const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signatureBytes)));
-      console.log('签名Base64编码完成');
-
       // 构建认证头
-      const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",signature="${base64Signature}",timestamp="${timestamp}",serial_no="${serialNo}"`;
+      const authorization = buildAuthorizationHeader(mchid, nonceStr, signature, timestamp, serialNo);
       console.log('认证头构建完成');
 
       // 调用微信支付API
@@ -131,18 +82,12 @@ serve(async (req) => {
       }
 
       // 创建支付记录
-      const { error: paymentError } = await supabaseClient
-        .from('payment_records')
-        .insert({
-          order_id: orderId,
-          amount: amount / 100, // 转换回元
-          status: 'pending'
-        });
-
-      if (paymentError) {
-        console.error('创建支付记录失败:', paymentError);
-        throw new Error('创建支付记录失败');
-      }
+      await createPaymentRecord(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+        orderId,
+        amount
+      );
 
       // 返回支付二维码URL
       return new Response(
