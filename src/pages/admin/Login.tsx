@@ -16,13 +16,18 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login with:", email); // 调试日志
+
       // 1. 首先进行基本的登录
       const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (signInError) throw signInError;
+      if (signInError) {
+        console.error("Sign in error:", signInError); // 调试日志
+        throw signInError;
+      }
 
       if (!user) {
         toast({
@@ -33,12 +38,16 @@ const AdminLogin = () => {
         return;
       }
 
+      console.log("User logged in:", user.id); // 调试日志
+
       // 2. 验证是否为管理员
       const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
         .eq('user_id', user.id)
         .single();
+
+      console.log("Admin check result:", { adminData, adminError }); // 调试日志
 
       if (adminError || !adminData) {
         // 如果不是管理员，立即登出
@@ -55,10 +64,12 @@ const AdminLogin = () => {
         title: "登录成功",
         description: "欢迎回来，管理员！",
       });
+      
+      console.log("Navigating to admin dashboard"); // 调试日志
       navigate('/admin');
       
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error); // 调试日志
       toast({
         title: "登录失败",
         description: "请检查您的登录信息",
@@ -81,6 +92,7 @@ const AdminLogin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="w-full"
             />
           </div>
           <div>
@@ -90,6 +102,7 @@ const AdminLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="w-full"
             />
           </div>
           <Button 
