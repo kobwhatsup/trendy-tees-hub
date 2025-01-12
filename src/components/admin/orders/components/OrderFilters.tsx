@@ -1,41 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon, X } from "lucide-react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Database } from "@/integrations/supabase/types";
+import { format } from "date-fns";
+import { CalendarIcon, ChevronDown, X } from "lucide-react";
+import { useState } from "react";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 
-type FilterState = {
-  search: string;
-  status: OrderStatus | "all";
-  dateRange: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
-};
-
 interface OrderFiltersProps {
-  filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+  onSearch: (searchTerm: string) => void;
+  onStatusFilter: (status: OrderStatus | null) => void;
+  onDateFilter: (dates: { from: Date | null; to: Date | null }) => void;
+  onClearFilters: () => void;
 }
 
-const statusOptions: { value: OrderStatus | "all"; label: string }[] = [
-  { value: "all", label: "全部状态" },
+const statusOptions: { value: OrderStatus; label: string }[] = [
   { value: "pending_payment", label: "待付款" },
   { value: "paid", label: "已付款" },
   { value: "processing", label: "处理中" },
@@ -43,130 +30,94 @@ const statusOptions: { value: OrderStatus | "all"; label: string }[] = [
   { value: "delivered", label: "已送达" },
   { value: "refund_requested", label: "申请退款" },
   { value: "refunded", label: "已退款" },
-  { value: "payment_timeout", label: "支付超时" },
 ];
 
-export const OrderFilters = ({ filters, onFiltersChange }: OrderFiltersProps) => {
-  const handleSearchChange = (value: string) => {
-    onFiltersChange({ ...filters, search: value });
-  };
+export const OrderFilters = ({
+  onSearch,
+  onStatusFilter,
+  onDateFilter,
+  onClearFilters,
+}: OrderFiltersProps) => {
+  const [date, setDate] = useState<{
+    from: Date | null;
+    to: Date | null;
+  }>({
+    from: null,
+    to: null,
+  });
 
-  const handleStatusChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      status: value as OrderStatus | "all",
-    });
-  };
-
-  const handleDateChange = (field: "from" | "to", value: Date | undefined) => {
-    onFiltersChange({
-      ...filters,
-      dateRange: {
-        ...filters.dateRange,
-        [field]: value,
-      },
-    });
-  };
-
-  const clearFilters = () => {
-    onFiltersChange({
-      search: "",
-      status: "all",
-      dateRange: {
-        from: undefined,
-        to: undefined,
-      },
-    });
+  const handleDateSelect = (dates: { from: Date | null; to: Date | null }) => {
+    setDate(dates);
+    onDateFilter(dates);
   };
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row items-end">
-      <div className="flex-1 w-full sm:w-auto">
-        <Input
-          placeholder="搜索订单号或收件人"
-          value={filters.search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full"
-        />
-      </div>
+    <div className="flex items-center gap-4 mb-4">
+      <Input
+        placeholder="搜索订单号或收件人"
+        className="max-w-sm"
+        onChange={(e) => onSearch(e.target.value)}
+      />
 
-      <Select
-        value={filters.status}
-        onValueChange={handleStatusChange}
-      >
-        <SelectTrigger className="w-full sm:w-[180px]">
-          <SelectValue placeholder="订单状态" />
-        </SelectTrigger>
-        <SelectContent>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            状态筛选
+            <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => onStatusFilter(null)}>
+            全部状态
+          </DropdownMenuItem>
           {statusOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <DropdownMenuItem
+              key={option.value}
+              onClick={() => onStatusFilter(option.value)}
+            >
               {option.label}
-            </SelectItem>
+            </DropdownMenuItem>
           ))}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-      <div className="flex gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-[130px] justify-start text-left font-normal",
-                !filters.dateRange.from && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateRange.from ? (
-                format(filters.dateRange.from, "yyyy-MM-dd")
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} -{" "}
+                  {format(date.to, "LLL dd, y")}
+                </>
               ) : (
-                <span>开始日期</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={filters.dateRange.from}
-              onSelect={(date) => handleDateChange("from", date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-[130px] justify-start text-left font-normal",
-                !filters.dateRange.to && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateRange.to ? (
-                format(filters.dateRange.to, "yyyy-MM-dd")
-              ) : (
-                <span>结束日期</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={filters.dateRange.to}
-              onSelect={(date) => handleDateChange("to", date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              "选择日期范围"
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date.from}
+            selected={date}
+            onSelect={handleDateSelect}
+            numberOfMonths={2}
+          />
+        </PopoverContent>
+      </Popover>
 
       <Button
         variant="ghost"
         size="icon"
-        onClick={clearFilters}
-        className="h-10 w-10"
+        onClick={() => {
+          setDate({ from: null, to: null });
+          onClearFilters();
+        }}
       >
         <X className="h-4 w-4" />
       </Button>
