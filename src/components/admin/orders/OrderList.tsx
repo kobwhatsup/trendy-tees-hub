@@ -11,8 +11,12 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { OrderStatus } from "@/components/admin/orders/OrderStatus";
+import { OrderDetailsDialog } from "./OrderDetailsDialog";
+import { useState } from "react";
 
 export const OrderList = () => {
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: async () => {
@@ -36,39 +40,51 @@ export const OrderList = () => {
   }
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>订单号</TableHead>
-            <TableHead>下单时间</TableHead>
-            <TableHead>收件人</TableHead>
-            <TableHead>金额</TableHead>
-            <TableHead>状态</TableHead>
-            <TableHead>操作</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders?.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell>{order.order_number}</TableCell>
-              <TableCell>
-                {format(new Date(order.created_at), "yyyy-MM-dd HH:mm")}
-              </TableCell>
-              <TableCell>{order.recipient_name}</TableCell>
-              <TableCell>¥{order.total_amount}</TableCell>
-              <TableCell>
-                <OrderStatus status={order.status} />
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline" className="cursor-pointer">
-                  查看详情
-                </Badge>
-              </TableCell>
+    <>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>订单号</TableHead>
+              <TableHead>下单时间</TableHead>
+              <TableHead>收件人</TableHead>
+              <TableHead>金额</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead>操作</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {orders?.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>{order.order_number}</TableCell>
+                <TableCell>
+                  {format(new Date(order.created_at), "yyyy-MM-dd HH:mm")}
+                </TableCell>
+                <TableCell>{order.recipient_name}</TableCell>
+                <TableCell>¥{order.total_amount}</TableCell>
+                <TableCell>
+                  <OrderStatus status={order.status} />
+                </TableCell>
+                <TableCell>
+                  <Badge 
+                    variant="outline" 
+                    className="cursor-pointer"
+                    onClick={() => setSelectedOrder(order)}
+                  >
+                    查看详情
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <OrderDetailsDialog
+        order={selectedOrder}
+        isOpen={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+      />
+    </>
   );
 };
