@@ -10,6 +10,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentDialog } from "./PaymentDialog";
+import { WechatKeyForm } from "@/components/payment/WechatKeyForm";
 
 interface OrderActionsProps {
   orderId: string;
@@ -90,14 +91,17 @@ export const OrderActions = ({
             订单详情
           </Button>
           {status === 'pending_payment' && (
-            <Button 
-              variant="secondary" 
-              size="sm"
-              onClick={handlePayment}
-              disabled={isProcessing}
-            >
-              {isProcessing ? "处理中..." : "去支付"}
-            </Button>
+            <>
+              <WechatKeyForm />
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={handlePayment}
+                disabled={isProcessing}
+              >
+                {isProcessing ? "处理中..." : "去支付"}
+              </Button>
+            </>
           )}
           {status === 'shipped' && (
             <Button variant="secondary" size="sm">
