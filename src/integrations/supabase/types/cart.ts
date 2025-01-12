@@ -8,6 +8,7 @@ export type CartItem = {
   tshirt_style: string;
   tshirt_color: string;
   tshirt_gender: string;
+  tshirt_size: string;
   quantity: number;
   created_at: string;
 }

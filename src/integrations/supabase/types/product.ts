@@ -9,10 +9,8 @@ export type Product = {
   updated_at: string;
 }
 
-export type ProductCategory = {
-  product_id: string;
-  category_id: string;
-}
+export type ProductInsert = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
+export type ProductUpdate = Partial<ProductInsert>;
 
 export type Category = {
   id: string;
@@ -21,5 +19,7 @@ export type Category = {
   created_at: string;
 }
 
-export type ProductInsert = Omit<Product, 'id' | 'created_at' | 'updated_at'>;
-export type ProductUpdate = Partial<ProductInsert>;
+export type ProductCategory = {
+  product_id: string;
+  category_id: string;
+}

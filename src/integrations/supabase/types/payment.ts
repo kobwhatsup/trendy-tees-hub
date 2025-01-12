@@ -1,7 +1,7 @@
-export interface PaymentRecord {
+export type PaymentRecord = {
   id: string;
   order_id: string;
-  transaction_id?: string;
+  transaction_id: string | null;
   amount: number;
   status: string;
   created_at: string;
