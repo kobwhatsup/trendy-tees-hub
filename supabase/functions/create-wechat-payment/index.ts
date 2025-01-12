@@ -31,9 +31,17 @@ serve(async (req) => {
       throw new Error('缺少微信支付配置');
     }
 
+    console.log('配置检查完成');
+    console.log('商户号:', mchid);
+    console.log('证书序列号:', serialNo);
+    console.log('应用ID:', appId);
+
     // 生成随机字符串和时间戳
     const nonceStr = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000).toString();
+
+    console.log('生成的随机字符串:', nonceStr);
+    console.log('生成的时间戳:', timestamp);
 
     // 构建请求体
     const requestBody = buildRequestBody(
@@ -55,64 +63,58 @@ serve(async (req) => {
       requestBody
     );
 
-    try {
-      // 生成签名
-      const signature = await generateSignature(signStr, privateKey);
-      console.log('签名生成完成');
+    console.log('开始生成签名...');
+    const signature = await generateSignature(signStr, privateKey);
+    console.log('签名生成完成');
 
-      // 构建认证头
-      const authorization = buildAuthorizationHeader(
-        mchid,
-        nonceStr,
-        signature,
-        timestamp,
-        serialNo
-      );
+    // 构建认证头
+    const authorization = buildAuthorizationHeader(
+      mchid,
+      nonceStr,
+      signature,
+      timestamp,
+      serialNo
+    );
 
-      // 调用微信支付API
-      console.log('开始调用微信支付API...');
-      const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': authorization,
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
-        },
-        body: JSON.stringify(requestBody),
-      });
+    // 调用微信支付API
+    console.log('开始调用微信支付API...');
+    const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': authorization,
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-      const responseData = await response.json();
-      console.log('微信支付API响应:', responseData);
+    const responseData = await response.json();
+    console.log('微信支付API响应:', responseData);
 
-      if (!response.ok) {
-        console.error('微信支付API错误:', responseData);
-        throw new Error(`微信支付API错误: ${JSON.stringify(responseData)}`);
-      }
-
-      // 创建支付记录
-      await createPaymentRecord(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-        orderId,
-        amount
-      );
-
-      // 返回支付二维码URL
-      return new Response(
-        JSON.stringify({ code_url: responseData.code_url }),
-        { 
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
-        }
-      );
-
-    } catch (error) {
-      console.error('处理支付请求时发生错误:', error);
-      throw error;
+    if (!response.ok) {
+      console.error('微信支付API错误:', responseData);
+      throw new Error(`微信支付API错误: ${JSON.stringify(responseData)}`);
     }
+
+    // 创建支付记录
+    await createPaymentRecord(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      orderId,
+      amount
+    );
+
+    // 返回支付二维码URL
+    return new Response(
+      JSON.stringify({ code_url: responseData.code_url }),
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json' 
+        } 
+      }
+    );
 
   } catch (error) {
     console.error('创建微信支付失败:', error);

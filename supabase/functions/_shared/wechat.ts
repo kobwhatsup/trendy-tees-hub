@@ -19,8 +19,14 @@ export const generateSignString = (
 // 将 Base64 字符串转换为 ArrayBuffer
 const base64ToArrayBuffer = (base64: string) => {
   try {
-    // 移除可能存在的换行符和空格
-    const cleanBase64 = base64.replace(/[\n\r\s]/g, '');
+    // 移除 PEM 格式的头尾标记和所有换行符
+    const cleanBase64 = base64
+      .replace(/-----BEGIN PRIVATE KEY-----/, '')
+      .replace(/-----END PRIVATE KEY-----/, '')
+      .replace(/[\n\r\s]/g, '');
+      
+    console.log('清理后的 Base64 长度:', cleanBase64.length);
+    
     const binaryString = atob(cleanBase64);
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
@@ -28,8 +34,8 @@ const base64ToArrayBuffer = (base64: string) => {
     }
     return bytes.buffer;
   } catch (error) {
-    console.error('Base64转换失败:', error);
-    throw new Error('Base64转换失败: ' + error.message);
+    console.error('Base64 转换失败:', error);
+    throw new Error('Base64 转换失败: ' + error.message);
   }
 };
 
@@ -37,14 +43,17 @@ const base64ToArrayBuffer = (base64: string) => {
 export const formatPrivateKey = (privateKey: string) => {
   try {
     console.log('开始格式化私钥...');
-    // 移除头尾标记和所有换行符、空格
-    const pemContent = privateKey
-      .replace('-----BEGIN PRIVATE KEY-----', '')
-      .replace('-----END PRIVATE KEY-----', '')
-      .replace(/[\n\r\s]/g, '');
+    console.log('原始私钥长度:', privateKey.length);
     
-    console.log('私钥格式化完成');
-    return base64ToArrayBuffer(pemContent);
+    // 确保私钥是 PKCS#8 格式
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      throw new Error('私钥格式错误：需要 PKCS#8 格式');
+    }
+    
+    const keyBuffer = base64ToArrayBuffer(privateKey);
+    console.log('转换后的 ArrayBuffer 长度:', keyBuffer.byteLength);
+    
+    return keyBuffer;
   } catch (error) {
     console.error('私钥格式化失败:', error);
     throw new Error('私钥格式化失败: ' + error.message);
@@ -55,9 +64,10 @@ export const formatPrivateKey = (privateKey: string) => {
 export const generateSignature = async (signStr: string, privateKey: string) => {
   try {
     console.log('开始生成签名...');
+    console.log('签名字符串长度:', signStr.length);
     
     const keyData = formatPrivateKey(privateKey);
-    console.log('私钥数据准备完成');
+    console.log('私钥数据准备完成，长度:', keyData.byteLength);
     
     const key = await crypto.subtle.importKey(
       "pkcs8",
@@ -77,13 +87,13 @@ export const generateSignature = async (signStr: string, privateKey: string) => 
       key,
       encoder.encode(signStr)
     );
-    console.log('签名生成成功');
+    console.log('签名生成成功，长度:', signatureBytes.byteLength);
     
     // 将签名转换为 Base64
     const signatureArray = new Uint8Array(signatureBytes);
     const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
     
-    console.log('签名处理完成');
+    console.log('签名处理完成，Base64 长度:', signatureBase64.length);
     return signatureBase64;
   } catch (error) {
     console.error('生成签名时发生错误:', error);
