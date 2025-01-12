@@ -16,6 +16,7 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
+      // 1. 首先进行基本的登录
       const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -32,14 +33,14 @@ const AdminLogin = () => {
         return;
       }
 
-      // 验证是否为管理员
-      const { data: adminUser, error: adminError } = await supabase
+      // 2. 验证是否为管理员
+      const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
         .eq('user_id', user.id)
         .single();
 
-      if (adminError || !adminUser) {
+      if (adminError || !adminData) {
         // 如果不是管理员，立即登出
         await supabase.auth.signOut();
         toast({
@@ -55,6 +56,7 @@ const AdminLogin = () => {
         description: "欢迎回来，管理员！",
       });
       navigate('/admin');
+      
     } catch (error) {
       console.error('Login error:', error);
       toast({
