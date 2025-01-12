@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Designs from "./pages/Designs";
 import MyDesigns from "./pages/MyDesigns";
 import Admin from "./pages/Admin";
+import AdminOrders from "./pages/admin/Orders";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/designs" element={<Designs />} />
         <Route path="/my-designs" element={<MyDesigns />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
       </Routes>
     </Router>
   );
