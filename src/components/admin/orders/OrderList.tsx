@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/integrations/supabase/types";
 import { OrderTable } from "./components/OrderTable";
+import { OrderFilters } from "./components/OrderFilters";
+import { format } from "date-fns";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"] & {
   order_items: Database["public"]["Tables"]["order_items"]["Row"][];
@@ -12,14 +14,31 @@ type Order = Database["public"]["Tables"]["orders"]["Row"] & {
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 
+type FilterState = {
+  search: string;
+  status: OrderStatus | "all";
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+};
+
 export const OrderList = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    status: "all",
+    dateRange: {
+      from: undefined,
+      to: undefined,
+    },
+  });
   const { toast } = useToast();
 
   const { data: orders, isLoading, refetch } = useQuery({
-    queryKey: ["admin-orders"],
+    queryKey: ["admin-orders", filters],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("orders")
         .select(`
           *,
@@ -28,6 +47,34 @@ export const OrderList = () => {
           )
         `)
         .order("created_at", { ascending: false });
+
+      // 应用搜索过滤
+      if (filters.search) {
+        query = query.or(
+          `order_number.ilike.%${filters.search}%,recipient_name.ilike.%${filters.search}%`
+        );
+      }
+
+      // 应用状态过滤
+      if (filters.status !== "all") {
+        query = query.eq("status", filters.status);
+      }
+
+      // 应用日期范围过滤
+      if (filters.dateRange.from) {
+        query = query.gte(
+          "created_at",
+          format(filters.dateRange.from, "yyyy-MM-dd")
+        );
+      }
+      if (filters.dateRange.to) {
+        query = query.lte(
+          "created_at",
+          format(filters.dateRange.to, "yyyy-MM-dd")
+        );
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return data as Order[];
@@ -62,23 +109,25 @@ export const OrderList = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>加载中...</div>;
-  }
-
   return (
-    <>
-      <OrderTable 
-        orders={orders}
-        onViewDetails={setSelectedOrder}
-        onStatusChange={handleStatusChange}
-      />
+    <div className="space-y-4">
+      <OrderFilters filters={filters} onFiltersChange={setFilters} />
+      
+      {isLoading ? (
+        <div>加载中...</div>
+      ) : (
+        <OrderTable 
+          orders={orders}
+          onViewDetails={setSelectedOrder}
+          onStatusChange={handleStatusChange}
+        />
+      )}
 
       <OrderDetailsDialog
         order={selectedOrder}
         isOpen={!!selectedOrder}
         onClose={() => setSelectedOrder(null)}
       />
-    </>
+    </div>
   );
 };
