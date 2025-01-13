@@ -27,6 +27,25 @@ serve(async (req) => {
       throw new Error('缺少必要的配置参数');
     }
 
+    // 创建 Supabase 客户端
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // 获取订单信息
+    const { data: order, error: orderError } = await supabaseClient
+      .from('orders')
+      .select('order_number')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      throw new Error('获取订单信息失败');
+    }
+
+    console.log('获取到的订单号:', order.order_number);
+
     // 准备请求数据
     const url = '/v3/pay/transactions/native';
     const host = 'api.mch.weixin.qq.com';
@@ -38,13 +57,15 @@ serve(async (req) => {
       mchid,
       appid,
       description,
-      out_trade_no: orderId,
+      out_trade_no: order.order_number, // 使用数据库中的order_number
       notify_url: `https://gfraqpwyfxmpzdllsfoc.supabase.co/functions/v1/wechat-payment-callback`,
       amount: {
         total: amount,
         currency: 'CNY'
       }
     });
+
+    console.log('请求参数:', requestBody);
 
     // 生成签名
     const signature = await generateSignature(
