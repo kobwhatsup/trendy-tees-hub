@@ -12,8 +12,7 @@ serve(async (req) => {
     const { privateKey } = await req.json()
 
     // 验证私钥格式
-    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----') || 
-        !privateKey.includes('-----END PRIVATE KEY-----')) {
+    if (!privateKey || !privateKey.includes('PRIVATE KEY')) {
       throw new Error('无效的私钥格式')
     }
 
@@ -23,8 +22,8 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // 使用KV存储保存私钥
-    const { error: kvError } = await supabaseClient
+    // 更新数据库中的私钥
+    const { error: upsertError } = await supabaseClient
       .from('system_settings')
       .upsert({ 
         key: 'wechat_pay_private_key',
@@ -32,31 +31,29 @@ serve(async (req) => {
         updated_at: new Date().toISOString()
       })
 
-    if (kvError) throw kvError
+    if (upsertError) throw upsertError
 
     return new Response(
       JSON.stringify({ message: '私钥已更新' }),
       { 
         headers: { 
           ...corsHeaders,
-          'Content-Type': 'application/json' 
+          'Content-Type': 'application/json'
         } 
       }
     )
-
   } catch (error) {
     console.error('更新私钥失败:', error)
     return new Response(
       JSON.stringify({ 
-        error: error.message || '更新私钥失败',
-        details: error.stack
+        error: error.message || '更新私钥失败' 
       }),
       { 
-        status: 500,
-        headers: { 
+        status: 400,
+        headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
+          'Content-Type': 'application/json'
+        }
       }
     )
   }
