@@ -6,7 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// 解密回调数据
 async function decryptResource(ciphertext: string, associatedData: string, nonce: string, apiV3Key: string) {
   try {
     console.log('开始解密回调数据');
@@ -45,7 +44,6 @@ serve(async (req) => {
   console.log('收到微信支付回调请求');
   console.log('请求方法:', req.method);
   
-  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
