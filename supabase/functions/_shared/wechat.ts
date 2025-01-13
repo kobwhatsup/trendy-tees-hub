@@ -1,5 +1,4 @@
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { createHash } from "https://deno.land/std@0.168.0/hash/mod.ts";
 
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -47,17 +46,30 @@ export async function generateSignature(message: string, privateKey: string): Pr
     const formattedKey = formatPrivateKey(privateKey);
     console.log('格式化后的私钥长度:', formattedKey.length);
     
-    // 创建签名对象
-    const sign = createHash('sha256');
+    // 将私钥转换为ArrayBuffer
+    const binaryDer = await crypto.subtle.importKey(
+      "pkcs8",
+      new TextEncoder().encode(formattedKey),
+      {
+        name: "RSASSA-PKCS1-v1_5",
+        hash: "SHA-256",
+      },
+      true,
+      ["sign"]
+    );
     
-    // 更新数据
-    sign.update(message);
+    // 生成签名
+    const messageBuffer = new TextEncoder().encode(message);
+    const signature = await crypto.subtle.sign(
+      "RSASSA-PKCS1-v1_5",
+      binaryDer,
+      messageBuffer
+    );
     
-    // 使用私钥签名
-    const signature = sign.digest('base64');
+    // 转换为Base64
+    const base64Signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
     console.log('签名生成成功');
-    
-    return signature;
+    return base64Signature;
     
   } catch (error) {
     console.error('签名生成失败:', error);

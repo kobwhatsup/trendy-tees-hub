@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { createHash } from "https://deno.land/std@0.168.0/hash/mod.ts";
 
 interface WechatPayRequestBody {
   orderId: string;
