@@ -19,8 +19,8 @@ export const generateSignString = (
 // 将 Base64 字符串转换为 ArrayBuffer
 const base64ToArrayBuffer = (base64: string) => {
   try {
-    // 移除所有空白字符和换行符
-    const cleanBase64 = base64.replace(/[\n\r\s]/g, '');
+    // 移除所有空白字符
+    const cleanBase64 = base64.replace(/\s+/g, '');
     
     // 提取实际的密钥部分（移除PEM头尾）
     const matches = cleanBase64.match(/-----BEGIN PRIVATE KEY-----(.*?)-----END PRIVATE KEY-----/s);
@@ -29,7 +29,7 @@ const base64ToArrayBuffer = (base64: string) => {
       throw new Error('无效的PEM格式');
     }
     
-    const keyBase64 = matches[1];
+    const keyBase64 = matches[1].trim();
     console.log('处理后的Base64密钥长度:', keyBase64.length);
     
     // 解码Base64
@@ -52,19 +52,38 @@ const base64ToArrayBuffer = (base64: string) => {
 export const formatPrivateKey = (privateKey: string) => {
   try {
     console.log('开始格式化私钥...');
-    console.log('原始私钥长度:', privateKey.length);
     
-    // 验证私钥格式
-    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----') || 
-        !privateKey.includes('-----END PRIVATE KEY-----')) {
-      console.error('私钥格式错误，缺少PEM头尾标记');
-      throw new Error('私钥格式错误：需要完整的PKCS#8 PEM格式，包含BEGIN/END标记');
+    // 1. 清理私钥文本
+    let cleanKey = privateKey
+      .replace(/\\n/g, '\n')  // 替换转义的换行符
+      .replace(/\s+/g, '\n')  // 将所有空白字符转换为换行符
+      .trim();                // 移除首尾空白
+    
+    // 2. 确保有正确的头尾
+    if (!cleanKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      cleanKey = '-----BEGIN PRIVATE KEY-----\n' + cleanKey;
+    }
+    if (!cleanKey.includes('-----END PRIVATE KEY-----')) {
+      cleanKey = cleanKey + '\n-----END PRIVATE KEY-----';
     }
     
-    const keyBuffer = base64ToArrayBuffer(privateKey);
-    console.log('私钥ArrayBuffer长度:', keyBuffer.byteLength);
+    // 3. 规范化格式
+    const matches = cleanKey.match(/-----BEGIN PRIVATE KEY-----(.*?)-----END PRIVATE KEY-----/s);
+    if (!matches || !matches[1]) {
+      throw new Error('私钥格式错误：需要完整的PKCS#8 PEM格式');
+    }
     
-    return keyBuffer;
+    const keyContent = matches[1].trim();
+    const formattedKey = [
+      '-----BEGIN PRIVATE KEY-----',
+      ...keyContent.match(/.{1,64}/g) || [],  // 每64个字符一行
+      '-----END PRIVATE KEY-----'
+    ].join('\n');
+    
+    console.log('私钥格式化完成');
+    console.log('格式化后的私钥长度:', formattedKey.length);
+    
+    return formattedKey;
   } catch (error) {
     console.error('私钥格式化失败:', error);
     if (error instanceof Error) {
@@ -80,7 +99,12 @@ export const generateSignature = async (signStr: string, privateKey: string) => 
     console.log('开始生成签名...');
     console.log('签名字符串长度:', signStr.length);
     
-    const keyData = formatPrivateKey(privateKey);
+    // 格式化私钥
+    const formattedKey = formatPrivateKey(privateKey);
+    console.log('格式化后的私钥长度:', formattedKey.length);
+    
+    // 转换为ArrayBuffer
+    const keyData = base64ToArrayBuffer(formattedKey);
     console.log('私钥数据准备完成');
     
     const key = await crypto.subtle.importKey(
