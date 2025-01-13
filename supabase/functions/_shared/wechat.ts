@@ -17,13 +17,21 @@ export async function getPrivateKey() {
     .from('system_settings')
     .select('value')
     .eq('key', 'wechat_pay_private_key')
-    .single();
+    .maybeSingle();  // 改用maybeSingle()而不是single()
 
-  if (error) throw error;
-  return data?.value;
+  if (error) {
+    console.error('获取私钥失败:', error);
+    throw error;
+  }
+  
+  if (!data?.value) {
+    console.error('未找到私钥配置');
+    throw new Error('未找到私钥配置');
+  }
+
+  return data.value;
 }
 
-// 格式化私钥
 function formatPrivateKey(privateKey: string): string {
   // 移除所有空格和换行符
   let formattedKey = privateKey.replace(/\s+/g, '');

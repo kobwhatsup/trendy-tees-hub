@@ -32,15 +32,12 @@ serve(async (req) => {
     }
 
     // 从数据库获取私钥
+    console.log('开始获取私钥...');
     const privateKey = await getPrivateKey();
     if (!privateKey) {
       throw new Error('未找到私钥配置');
     }
-
-    console.log('配置检查完成');
-    console.log('商户号:', mchid);
-    console.log('证书序列号:', serialNo);
-    console.log('应用ID:', appId);
+    console.log('成功获取私钥');
 
     // 生成随机字符串和时间戳
     const nonceStr = crypto.randomUUID();
