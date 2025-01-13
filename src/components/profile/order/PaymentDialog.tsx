@@ -3,7 +3,6 @@ import { QRCodeSVG } from "qrcode.react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { PrivateKeyInput } from "./PrivateKeyInput";
 
 interface PaymentDialogProps {
   open: boolean;
@@ -58,26 +57,17 @@ export const PaymentDialog = ({
           <DialogTitle>微信扫码支付</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center p-4">
-          {qrCodeUrl ? (
-            <>
-              <div className="bg-white p-4 rounded-lg">
-                <QRCodeSVG value={qrCodeUrl} size={200} />
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground">
-                请使用微信扫描二维码完成支付
-              </p>
-              <p className="text-sm text-muted-foreground">
-                支付金额: ¥{totalAmount}
-              </p>
-            </>
-          ) : (
-            <div className="space-y-4 w-full">
-              <p className="text-sm text-muted-foreground text-center">
-                获取支付二维码失败，请更新私钥后重试
-              </p>
-              <PrivateKeyInput />
+          {qrCodeUrl && (
+            <div className="bg-white p-4 rounded-lg">
+              <QRCodeSVG value={qrCodeUrl} size={200} />
             </div>
           )}
+          <p className="mt-4 text-sm text-muted-foreground">
+            请使用微信扫描二维码完成支付
+          </p>
+          <p className="text-sm text-muted-foreground">
+            支付金额: ¥{totalAmount}
+          </p>
         </div>
       </DialogContent>
     </Dialog>

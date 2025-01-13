@@ -1,8 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
 import { createPaymentRecord } from '../_shared/payment.ts'
-import { getPrivateKey } from '../_shared/wechat.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 interface WechatPayRequestBody {
   orderId: string;
@@ -11,6 +9,7 @@ interface WechatPayRequestBody {
 }
 
 serve(async (req) => {
+  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -24,20 +23,18 @@ serve(async (req) => {
     // 获取微信支付配置
     const mchid = Deno.env.get('WECHAT_PAY_MCH_ID');
     const serialNo = Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO');
+    const privateKey = Deno.env.get('WECHAT_PAY_PRIVATE_KEY');
     const appId = Deno.env.get('WECHAT_PAY_APP_ID');
 
-    if (!mchid || !serialNo || !appId) {
+    if (!mchid || !serialNo || !privateKey || !appId) {
       console.error('缺少微信支付配置');
       throw new Error('缺少微信支付配置');
     }
 
-    // 从数据库获取私钥
-    console.log('开始获取私钥...');
-    const privateKey = await getPrivateKey();
-    if (!privateKey) {
-      throw new Error('未找到私钥配置');
-    }
-    console.log('成功获取私钥');
+    console.log('配置检查完成');
+    console.log('商户号:', mchid);
+    console.log('证书序列号:', serialNo);
+    console.log('应用ID:', appId);
 
     // 生成随机字符串和时间戳
     const nonceStr = crypto.randomUUID();
@@ -63,7 +60,7 @@ serve(async (req) => {
       '/v3/pay/transactions/native',
       timestamp,
       nonceStr,
-      JSON.stringify(requestBody)
+      requestBody
     );
 
     console.log('开始生成签名...');
@@ -101,11 +98,6 @@ serve(async (req) => {
     }
 
     // 创建支付记录
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-    
     await createPaymentRecord(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',

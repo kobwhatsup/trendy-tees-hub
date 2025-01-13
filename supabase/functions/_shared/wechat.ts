@@ -1,37 +1,11 @@
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// 从数据库获取私钥
-export async function getPrivateKey() {
-  const supabaseClient = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-  );
-
-  const { data, error } = await supabaseClient
-    .from('system_settings')
-    .select('value')
-    .eq('key', 'wechat_pay_private_key')
-    .maybeSingle();  // 改用maybeSingle()而不是single()
-
-  if (error) {
-    console.error('获取私钥失败:', error);
-    throw error;
-  }
-  
-  if (!data?.value) {
-    console.error('未找到私钥配置');
-    throw new Error('未找到私钥配置');
-  }
-
-  return data.value;
-}
-
+// 格式化私钥
 function formatPrivateKey(privateKey: string): string {
   // 移除所有空格和换行符
   let formattedKey = privateKey.replace(/\s+/g, '');
