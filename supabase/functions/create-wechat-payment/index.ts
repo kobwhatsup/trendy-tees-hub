@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createHash } from "https://deno.land/std@0.168.0/hash/mod.ts";
 
 interface WechatPayRequestBody {
   orderId: string;
@@ -32,16 +33,10 @@ serve(async (req) => {
     }
 
     console.log('配置检查完成');
-    console.log('商户号:', mchid);
-    console.log('证书序列号:', serialNo);
-    console.log('应用ID:', appId);
 
     // 生成随机字符串和时间戳
     const nonceStr = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000).toString();
-
-    console.log('生成的随机字符串:', nonceStr);
-    console.log('生成的时间戳:', timestamp);
 
     // 构建请求体
     const requestBody = buildRequestBody(
@@ -54,7 +49,7 @@ serve(async (req) => {
       req.headers.get('x-real-ip') || '127.0.0.1'
     );
 
-    // 生成签名
+    // 生成签名字符串
     const signStr = generateSignString(
       'POST',
       '/v3/pay/transactions/native',
