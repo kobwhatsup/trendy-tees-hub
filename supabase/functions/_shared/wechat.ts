@@ -8,20 +8,29 @@ export const corsHeaders = {
 // 格式化私钥
 function formatPrivateKey(privateKey: string): string {
   try {
-    // 移除所有空格、换行符和制表符
-    let formattedKey = privateKey.replace(/[\s\t\n\r]/g, '');
+    // 移除所有空格和换行符
+    let formattedKey = privateKey.replace(/[\s\n\r]/g, '');
     
-    // 移除现有的PEM头尾(如果存在)
-    formattedKey = formattedKey.replace(/-----BEGIN PRIVATE KEY-----/, '');
-    formattedKey = formattedKey.replace(/-----END PRIVATE KEY-----/, '');
+    // 如果不是PEM格式，添加PEM头尾
+    if (!formattedKey.includes('-----BEGIN')) {
+      formattedKey = `-----BEGIN PRIVATE KEY-----\n${formattedKey}\n-----END PRIVATE KEY-----`;
+    }
     
-    // 添加PEM格式的头尾
-    formattedKey = `-----BEGIN PRIVATE KEY-----\n${formattedKey}\n-----END PRIVATE KEY-----`;
+    // 每64个字符添加换行符
+    formattedKey = formattedKey
+      .replace(/-----BEGIN PRIVATE KEY-----/, '-----BEGIN PRIVATE KEY-----\n')
+      .replace(/-----END PRIVATE KEY-----/, '\n-----END PRIVATE KEY-----');
     
-    return formattedKey;
+    const base64Content = formattedKey
+      .replace(/-----BEGIN PRIVATE KEY-----\n/, '')
+      .replace(/\n-----END PRIVATE KEY-----/, '');
+    
+    const formatted = base64Content.match(/.{1,64}/g)?.join('\n') || base64Content;
+    
+    return `-----BEGIN PRIVATE KEY-----\n${formatted}\n-----END PRIVATE KEY-----`;
   } catch (error) {
     console.error('格式化私钥时出错:', error);
-    throw new Error('私钥格式化失败');
+    throw new Error(`格式化私钥失败: ${error.message}`);
   }
 }
 
@@ -44,7 +53,7 @@ export async function generateSignature(message: string, privateKey: string): Pr
     
     // 格式化私钥
     const formattedKey = formatPrivateKey(privateKey);
-    console.log('格式化后的私钥长度:', formattedKey.length);
+    console.log('格式化后的私钥:', formattedKey);
     
     // 将私钥转换为ArrayBuffer
     const binaryDer = await crypto.subtle.importKey(
