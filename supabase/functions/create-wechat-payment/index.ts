@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
-import { createPaymentRecord } from '../_shared/payment.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 interface WechatPayRequestBody {
   orderId: string;
@@ -60,7 +60,7 @@ serve(async (req) => {
       '/v3/pay/transactions/native',
       timestamp,
       nonceStr,
-      requestBody
+      JSON.stringify(requestBody)
     );
 
     console.log('开始生成签名...');
@@ -98,12 +98,23 @@ serve(async (req) => {
     }
 
     // 创建支付记录
-    await createPaymentRecord(
+    const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      orderId,
-      amount
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+
+    const { error: paymentError } = await supabase
+      .from('payment_records')
+      .insert({
+        order_id: orderId,
+        amount: amount / 100, // 转换为元
+        status: 'pending'
+      });
+
+    if (paymentError) {
+      console.error('创建支付记录失败:', paymentError);
+      throw paymentError;
+    }
 
     // 返回支付二维码URL
     return new Response(
