@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { AddressDialog } from "./address/AddressDialog";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { CartItemType } from "@/types/cart";
 import { AddressType } from "./address/types";
 import { PaymentDialog } from "./order/PaymentDialog";
+import { OrderAddressSection } from "./order/OrderAddressSection";
+import { OrderItemsSection } from "./order/OrderItemsSection";
+import { OrderSummarySection } from "./order/OrderSummarySection";
+import { useOrderCreation } from "./order/hooks/useOrderCreation";
 
 interface OrderConfirmDialogProps {
   open: boolean;
@@ -17,126 +19,17 @@ interface OrderConfirmDialogProps {
 
 export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDialogProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [showAddressDialog, setShowAddressDialog] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [address, setAddress] = useState("请添加收货地址");
   const [addressInfo, setAddressInfo] = useState<AddressType | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [orderId, setOrderId] = useState<string>("");
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
   const shipping = 0;
   const total = subtotal + shipping;
 
-  const generateOrderNumber = () => {
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(-2); // 取年份后两位
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); // 3位随机数
-    return `${year}${month}${day}${hours}${minutes}${seconds}${random}`;
-  };
-
-  const createOrder = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("用户未登录");
-
-      const orderNumber = generateOrderNumber();
-      console.log('生成的订单号:', orderNumber);
-
-      // 创建订单，包含收货地址信息
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: user.id,
-          order_number: orderNumber,
-          total_amount: total,
-          status: 'pending_payment',
-          shipping_address: addressInfo?.address,
-          recipient_name: addressInfo?.recipient_name,
-          recipient_phone: addressInfo?.phone
-        })
-        .select()
-        .single();
-
-      if (orderError) throw orderError;
-
-      // 创建订单项
-      const orderItems = items.map(item => ({
-        order_id: order.id,
-        design_front: item.design_front,
-        design_back: item.design_back,
-        preview_front: item.preview_front,
-        preview_back: item.preview_back,
-        tshirt_style: item.tshirt_style,
-        tshirt_color: item.tshirt_color,
-        tshirt_gender: item.tshirt_gender,
-        tshirt_size: item.tshirt_size,
-        quantity: item.quantity,
-        unit_price: item.price || 199
-      }));
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
-
-      if (itemsError) throw itemsError;
-
-      // 删除已购买的购物车商品
-      const cartItemIds = items.map(item => item.id);
-      const { error: deleteError } = await supabase
-        .from('cart_items')
-        .delete()
-        .in('id', cartItemIds);
-
-      if (deleteError) throw deleteError;
-
-      // 触发购物车更新事件
-      window.dispatchEvent(new Event('cart-updated'));
-
-      // 创建支付
-      try {
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-wechat-payment', {
-          body: {
-            orderId: order.id,
-            amount: Math.round(total * 100), // 转换为分
-            description: `订单支付 #${orderNumber}`
-          }
-        });
-
-        if (paymentError) throw paymentError;
-
-        setOrderId(order.id);
-        setQrCodeUrl(paymentData.code_url);
-        setShowPaymentDialog(true);
-        onOpenChange(false);
-
-      } catch (error) {
-        console.error('创建支付失败:', error);
-        navigate('/orders');
-        toast({
-          title: "创建支付失败",
-          description: "订单已创建，请在订单页面重新发起支付",
-          variant: "destructive",
-        });
-      }
-
-    } catch (error) {
-      console.error('创建订单失败:', error);
-      toast({
-        title: "创建订单失败",
-        description: "请稍后重试",
-        variant: "destructive",
-      });
-    }
-  };
+  const { isProcessing, orderId, qrCodeUrl, createOrder } = useOrderCreation(items, total);
 
   const handlePayment = async () => {
     if (address === "请添加收货地址" || !addressInfo) {
@@ -148,9 +41,11 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
       return;
     }
 
-    setIsProcessing(true);
-    await createOrder();
-    setIsProcessing(false);
+    const result = await createOrder(addressInfo);
+    if (result) {
+      setShowPaymentDialog(true);
+      onOpenChange(false);
+    }
   };
 
   const handleAddressSelect = (addressData: AddressType) => {
@@ -167,63 +62,21 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
           </DialogHeader>
           
           <div className="space-y-6 py-4">
-            {/* 收货地址 */}
-            <div className="space-y-2">
-              <h3 className="font-medium text-sm">收货地址</h3>
-              <div 
-                className="p-3 bg-muted rounded-lg cursor-pointer hover:bg-muted/80"
-                onClick={() => setShowAddressDialog(true)}
-              >
-                <p className="text-sm text-muted-foreground whitespace-pre-line">{address}</p>
-              </div>
-            </div>
+            <OrderAddressSection 
+              address={address}
+              setShowAddressDialog={setShowAddressDialog}
+              showAddressDialog={showAddressDialog}
+              handleAddressSelect={handleAddressSelect}
+            />
 
-            {/* 商品信息 */}
-            <div className="space-y-2">
-              <h3 className="font-medium text-sm">商品信息</h3>
-              <div className="space-y-3">
-                {items.map((item, index) => (
-                  <div key={index} className="flex justify-between items-start p-3 bg-muted rounded-lg">
-                    <div className="space-y-1">
-                      <p className="text-sm">
-                        {item.tshirt_gender === 'male' ? '男款' : '女款'} 
-                        {item.tshirt_style === 'short' ? '短袖' : '长袖'}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.tshirt_color} / {item.tshirt_size}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm">¥{(item.price || 199).toFixed(2)}</p>
-                      <p className="text-xs text-muted-foreground">x{item.quantity}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <OrderItemsSection items={items} />
 
-            {/* 订单汇总 */}
-            <div className="space-y-2">
-              <h3 className="font-medium text-sm">订单汇总</h3>
-              <div className="space-y-2 p-3 bg-muted rounded-lg">
-                <div className="flex justify-between text-sm">
-                  <span>商品总计</span>
-                  <span>{totalQuantity}件</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>商品金额</span>
-                  <span>¥{subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>运费</span>
-                  <span>¥{shipping.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm font-medium pt-2 border-t">
-                  <span>应付金额</span>
-                  <span className="text-red-500">¥{total.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
+            <OrderSummarySection 
+              totalQuantity={totalQuantity}
+              subtotal={subtotal}
+              shipping={shipping}
+              total={total}
+            />
           </div>
 
           <div className="flex justify-end">
@@ -237,12 +90,6 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
           </div>
         </DialogContent>
       </Dialog>
-
-      <AddressDialog 
-        open={showAddressDialog}
-        onOpenChange={setShowAddressDialog}
-        onAddressSelect={handleAddressSelect}
-      />
 
       <PaymentDialog
         open={showPaymentDialog}
