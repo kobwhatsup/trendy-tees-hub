@@ -31,15 +31,25 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
   const shipping = 0;
   const total = subtotal + shipping;
 
+  const generateOrderNumber = () => {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2); // 取年份后两位
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); // 3位随机数
+    return `${year}${month}${day}${hours}${minutes}${seconds}${random}`;
+  };
+
   const createOrder = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("用户未登录");
 
-      // 生成订单号 (年月日时分秒 + 4位随机数)
-      const now = new Date();
-      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-      const orderNumber = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}${randomNum}`;
+      const orderNumber = generateOrderNumber();
+      console.log('生成的订单号:', orderNumber);
 
       // 创建订单，包含收货地址信息
       const { data: order, error: orderError } = await supabase
@@ -110,7 +120,6 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
 
       } catch (error) {
         console.error('创建支付失败:', error);
-        // 支付创建失败时，导航到订单页面让用户重试
         navigate('/orders');
         toast({
           title: "创建支付失败",
