@@ -1,12 +1,11 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { corsHeaders, generateSignString, generateSignature, buildAuthorizationHeader, buildRequestBody } from '../_shared/wechat.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { generateSignature, createPaymentRecord } from '../_shared/wechat.ts';
 
-interface WechatPayRequestBody {
-  orderId: string;
-  amount: number;
-  description: string;
-}
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 serve(async (req) => {
   // 处理 CORS 预检请求
@@ -15,125 +14,101 @@ serve(async (req) => {
   }
 
   try {
-    console.log('开始处理支付请求...');
+    const { orderId, amount, description } = await req.json();
+    console.log('收到支付请求:', { orderId, amount, description });
 
-    const { orderId, amount, description }: WechatPayRequestBody = await req.json();
-    console.log('请求参数:', { orderId, amount, description });
-
-    // 获取微信支付配置
+    // 获取必要的配置
     const mchid = Deno.env.get('WECHAT_PAY_MCH_ID');
-    const serialNo = Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO');
+    const appid = Deno.env.get('WECHAT_PAY_APP_ID');
     const privateKey = Deno.env.get('WECHAT_PAY_PRIVATE_KEY');
-    const appId = Deno.env.get('WECHAT_PAY_APP_ID');
+    const serialNo = Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO');
 
-    if (!mchid || !serialNo || !privateKey || !appId) {
-      console.error('缺少微信支付配置');
-      throw new Error('缺少微信支付配置');
+    if (!mchid || !appid || !privateKey || !serialNo) {
+      throw new Error('缺少必要的配置参数');
     }
 
-    console.log('配置检查完成');
-
-    // 生成随机字符串和时间戳
-    const nonceStr = crypto.randomUUID();
+    // 准备请求数据
+    const url = '/v3/pay/transactions/native';
+    const host = 'api.mch.weixin.qq.com';
+    const method = 'POST';
     const timestamp = Math.floor(Date.now() / 1000).toString();
+    const nonce = crypto.randomUUID();
 
-    // 构建请求体
-    const requestBody = buildRequestBody(
-      appId,
+    const requestBody = JSON.stringify({
       mchid,
+      appid,
       description,
-      orderId,
-      amount,
-      `${Deno.env.get('SUPABASE_URL')}/functions/v1/wechat-payment-callback`,
-      req.headers.get('x-real-ip') || '127.0.0.1'
-    );
+      out_trade_no: orderId,
+      notify_url: `https://gfraqpwyfxmpzdllsfoc.supabase.co/functions/v1/wechat-payment-callback`,
+      amount: {
+        total: amount,
+        currency: 'CNY'
+      }
+    });
 
-    // 生成签名字符串
-    const signStr = generateSignString(
-      'POST',
-      '/v3/pay/transactions/native',
+    // 生成签名
+    const signature = await generateSignature(
+      method,
+      url,
       timestamp,
-      nonceStr,
-      JSON.stringify(requestBody)
+      nonce,
+      requestBody,
+      privateKey
     );
 
-    console.log('开始生成签名...');
-    const signature = await generateSignature(signStr, privateKey);
-    console.log('签名生成完成');
+    // 构造认证头
+    const token = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonce}",timestamp="${timestamp}",serial_no="${serialNo}",signature="${signature}"`;
 
-    // 构建认证头
-    const authorization = buildAuthorizationHeader(
-      mchid,
-      nonceStr,
-      signature,
-      timestamp,
-      serialNo
-    );
-
-    // 调用微信支付API
-    console.log('开始调用微信支付API...');
-    const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
-      method: 'POST',
+    // 发送请求到微信支付API
+    const response = await fetch(`https://${host}${url}`, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': authorization,
+        'Authorization': token,
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
       },
-      body: JSON.stringify(requestBody),
+      body: requestBody
     });
 
     const responseData = await response.json();
     console.log('微信支付API响应:', responseData);
 
     if (!response.ok) {
-      console.error('微信支付API错误:', responseData);
       throw new Error(`微信支付API错误: ${JSON.stringify(responseData)}`);
     }
 
     // 创建支付记录
-    const supabase = createClient(
+    await createPaymentRecord(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      orderId,
+      amount
     );
 
-    const { error: paymentError } = await supabase
-      .from('payment_records')
-      .insert({
-        order_id: orderId,
-        amount: amount / 100, // 转换为元
-        status: 'pending'
-      });
-
-    if (paymentError) {
-      console.error('创建支付记录失败:', paymentError);
-      throw paymentError;
-    }
-
-    // 返回支付二维码URL
     return new Response(
-      JSON.stringify({ code_url: responseData.code_url }),
+      JSON.stringify(responseData),
       { 
         headers: { 
           ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
+          'Content-Type': 'application/json'
+        }
       }
     );
 
   } catch (error) {
-    console.error('创建微信支付失败:', error);
+    console.error('处理支付请求失败:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || '创建支付失败',
+        error: error.message,
         details: error.stack
-      }), 
+      }),
       { 
         status: 500,
-        headers: { 
+        headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
+          'Content-Type': 'application/json'
+        }
       }
     );
   }
