@@ -4,7 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 function formatPrivateKey(privateKey: string): string {
   try {
     // 移除所有空格和换行符
-    let formattedKey = privateKey.trim();
+    let formattedKey = privateKey.replace(/[\r\n\s]/g, '');
     
     // 如果已经是PEM格式，直接返回
     if (formattedKey.includes('-----BEGIN PRIVATE KEY-----')) {
@@ -34,30 +34,39 @@ async function generateSignature(method: string, url: string, timestamp: string,
     const formattedKey = formatPrivateKey(privateKey);
     console.log('使用的私钥格式:', formattedKey);
 
-    // 将私钥转换为CryptoKey
-    const binaryDer = await crypto.subtle.importKey(
-      "pkcs8",
-      new TextEncoder().encode(formattedKey),
-      {
-        name: "RSASSA-PKCS1-v1_5",
-        hash: "SHA-256",
-      },
-      false,
-      ["sign"]
-    );
+    // 将私钥字符串转换为 ArrayBuffer
+    const binaryKey = new TextEncoder().encode(formattedKey);
 
-    // 生成签名
-    const signature = await crypto.subtle.sign(
-      "RSASSA-PKCS1-v1_5",
-      binaryDer,
-      new TextEncoder().encode(message)
-    );
+    try {
+      // 导入私钥
+      const cryptoKey = await crypto.subtle.importKey(
+        "pkcs8",
+        binaryKey,
+        {
+          name: "RSASSA-PKCS1-v1_5",
+          hash: "SHA-256",
+        },
+        false,
+        ["sign"]
+      );
 
-    // 转换为Base64
-    return btoa(String.fromCharCode(...new Uint8Array(signature)));
+      // 生成签名
+      const messageBuffer = new TextEncoder().encode(message);
+      const signature = await crypto.subtle.sign(
+        "RSASSA-PKCS1-v1_5",
+        cryptoKey,
+        messageBuffer
+      );
+
+      // 转换为Base64
+      return btoa(String.fromCharCode(...new Uint8Array(signature)));
+    } catch (cryptoError) {
+      console.error('签名过程中出错:', cryptoError);
+      throw new Error(`签名生成失败: ${cryptoError.message}`);
+    }
   } catch (error) {
     console.error('生成签名时出错:', error);
-    throw new Error(`签名生成失败: ${error.message}`);
+    throw error;
   }
 }
 
