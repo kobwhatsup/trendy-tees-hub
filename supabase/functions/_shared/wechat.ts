@@ -3,13 +3,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 // 格式化私钥
 function formatPrivateKey(privateKey: string): string {
   try {
+    // 如果已经是完整的PEM格式，直接返回
+    if (privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      return privateKey;
+    }
+
     // 移除所有空格和换行符
     let formattedKey = privateKey.replace(/[\r\n\s]/g, '');
-    
-    // 如果已经是PEM格式，直接返回
-    if (formattedKey.includes('-----BEGIN PRIVATE KEY-----')) {
-      return formattedKey;
-    }
     
     // 每64个字符添加换行符
     const chunks = formattedKey.match(/.{1,64}/g) || [];
@@ -34,8 +34,16 @@ async function generateSignature(method: string, url: string, timestamp: string,
     const formattedKey = formatPrivateKey(privateKey);
     console.log('使用的私钥格式:', formattedKey);
 
-    // 将私钥字符串转换为 ArrayBuffer
-    const binaryKey = new TextEncoder().encode(formattedKey);
+    // 将私钥字符串转换为 Uint8Array
+    const pemHeader = '-----BEGIN PRIVATE KEY-----';
+    const pemFooter = '-----END PRIVATE KEY-----';
+    const pemContents = formattedKey
+      .replace(pemHeader, '')
+      .replace(pemFooter, '')
+      .replace(/\s/g, '');
+    
+    // Base64解码私钥内容
+    const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
 
     try {
       // 导入私钥
