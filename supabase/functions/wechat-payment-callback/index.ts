@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,6 +9,11 @@ const corsHeaders = {
 // 解密回调数据
 async function decryptResource(ciphertext: string, associatedData: string, nonce: string, apiV3Key: string) {
   try {
+    console.log('开始解密回调数据');
+    console.log('密文:', ciphertext);
+    console.log('关联数据:', associatedData);
+    console.log('随机数:', nonce);
+    
     const key = await crypto.subtle.importKey(
       "raw",
       new TextEncoder().encode(apiV3Key),
@@ -28,7 +32,9 @@ async function decryptResource(ciphertext: string, associatedData: string, nonce
       new TextEncoder().encode(ciphertext)
     );
 
-    return new TextDecoder().decode(decrypted);
+    const decryptedText = new TextDecoder().decode(decrypted);
+    console.log('解密后的数据:', decryptedText);
+    return decryptedText;
   } catch (error) {
     console.error('解密回调数据失败:', error);
     throw error;
@@ -36,6 +42,9 @@ async function decryptResource(ciphertext: string, associatedData: string, nonce
 }
 
 serve(async (req) => {
+  console.log('收到微信支付回调请求');
+  console.log('请求方法:', req.method);
+  
   // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -46,11 +55,12 @@ serve(async (req) => {
     const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') || '';
     const WECHAT_PAY_API_V3_KEY = Deno.env.get('WECHAT_PAY_API_V3_KEY') || '';
 
+    console.log('初始化 Supabase 客户端');
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // 获取回调数据
     const payload = await req.json();
-    console.log('收到微信支付回调:', payload);
+    console.log('收到微信支付回调数据:', JSON.stringify(payload));
 
     // 解密回调数据
     const decryptedData = await decryptResource(
@@ -61,9 +71,12 @@ serve(async (req) => {
     );
 
     const callbackData = JSON.parse(decryptedData);
-    console.log('解密后的回调数据:', callbackData);
+    console.log('解密后的回调数据:', JSON.stringify(callbackData));
 
     if (callbackData.trade_state === 'SUCCESS') {
+      console.log('支付状态为成功，开始更新订单状态');
+      console.log('商户订单号:', callbackData.out_trade_no);
+      
       // 更新订单状态为已支付
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -80,6 +93,8 @@ serve(async (req) => {
         throw orderError;
       }
 
+      console.log('订单状态更新成功:', order);
+
       // 更新支付记录状态
       const { error: paymentError } = await supabase
         .from('payment_records')
@@ -95,7 +110,9 @@ serve(async (req) => {
         throw paymentError;
       }
 
-      console.log('订单和支付记录更新成功');
+      console.log('支付记录更新成功');
+    } else {
+      console.log('支付状态不是成功:', callbackData.trade_state);
     }
 
     // 返回成功响应
