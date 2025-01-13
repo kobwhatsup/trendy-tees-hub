@@ -47,6 +47,7 @@ export const usePaymentStatus = () => {
   };
 
   const checkOrderStatus = async (orderId: string) => {
+    console.log('正在查询订单状态:', orderId);
     const { data: order, error } = await supabase
       .from('orders')
       .select('status')
@@ -58,6 +59,7 @@ export const usePaymentStatus = () => {
       throw error;
     }
 
+    console.log('查询到的订单状态:', order?.status);
     return order?.status;
   };
 

@@ -44,35 +44,42 @@ export const usePaymentPolling = ({
       // 每3秒轮询一次支付状态
       pollIntervalRef.current = setInterval(async () => {
         try {
+          console.log('开始检查订单状态:', orderId);
           const status = await checkOrderStatus(orderId);
+          console.log('当前订单状态:', status);
           updateRemainingTime(startTime);
 
           // 处理不同的支付状态
-          switch (status) {
-            case 'paid':
-              clearIntervals();
-              setIsPolling(false);
-              onOpenChange(false);
-              toast({
-                title: "支付成功",
-                description: "订单支付已完成",
-              });
-              // 支付成功后立即跳转到订单页面
-              navigate('/orders');
-              window.location.reload(); // 确保订单列表更新
-              break;
-
-            case 'pending_payment':
-              console.log('等待支付中，继续轮询...');
-              break;
-
-            case 'payment_timeout':
-              handleTimeoutStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
-              break;
-
-            default:
-              handleErrorStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+          if (status === 'paid' || status === 'processing') {
+            console.log('支付成功，准备关闭弹窗');
+            clearIntervals();
+            setIsPolling(false);
+            onOpenChange(false);
+            toast({
+              title: "支付成功",
+              description: "订单支付已完成",
+            });
+            // 支付成功后立即跳转到订单页面
+            navigate('/orders');
+            window.location.reload(); // 确保订单列表更新
+            return;
           }
+
+          if (status === 'payment_timeout') {
+            console.log('支付超时');
+            handleTimeoutStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+            return;
+          }
+
+          if (status === 'pending_payment') {
+            console.log('等待支付中，继续轮询...');
+            return;
+          }
+
+          // 处理其他状态
+          console.log('未知状态:', status);
+          handleErrorStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+
         } catch (error) {
           console.error('轮询支付状态时发生错误:', error);
           clearIntervals();
