@@ -48,7 +48,7 @@ serve(async (req) => {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const nonce = crypto.randomUUID();
 
-    // 使用线上域名作为回调地址
+    // 使用正确的回调域名
     const callbackUrl = `https://gfraqpwyfxmpzdllsfoc.functions.supabase.co/wechat-payment-callback`;
     console.log('回调URL:', callbackUrl);
 

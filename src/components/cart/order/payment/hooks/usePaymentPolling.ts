@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { usePaymentStatus } from "./usePaymentStatus";
-import { usePaymentTimer } from "./usePaymentTimer";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UsePaymentPollingProps {
   orderId: string;
@@ -20,21 +19,7 @@ export const usePaymentPolling = ({
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isPolling, setIsPolling] = useState(false);
-  const {
-    remainingTime,
-    pollIntervalRef,
-    pollTimeoutRef,
-    clearIntervals,
-    updateRemainingTime,
-    formatRemainingTime,
-  } = usePaymentTimer();
-  
-  const {
-    handlePaidStatus,
-    handleTimeoutStatus,
-    handleErrorStatus,
-    checkOrderStatus,
-  } = usePaymentStatus();
+  const [remainingTime, setRemainingTime] = useState(300); // 5分钟有效期
 
   useEffect(() => {
     if (open && qrCodeUrl) {
@@ -42,24 +27,40 @@ export const usePaymentPolling = ({
       let startTime = Date.now();
       
       // 每3秒轮询一次支付状态
-      pollIntervalRef.current = setInterval(async () => {
+      const pollInterval = setInterval(async () => {
         try {
-          const status = await checkOrderStatus(orderId);
-          updateRemainingTime(startTime);
+          console.log('正在查询订单状态...');
+          
+          // 查询订单状态
+          const { data: order, error } = await supabase
+            .from('orders')
+            .select('status')
+            .eq('id', orderId)
+            .single();
+
+          if (error) {
+            console.error('轮询支付状态时发生错误:', error);
+            throw error;
+          }
+
+          console.log('当前订单状态:', order?.status);
+
+          // 更新剩余时间
+          const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+          const remaining = Math.max(300 - elapsedTime, 0);
+          setRemainingTime(remaining);
 
           // 处理不同的支付状态
-          switch (status) {
-            case 'paid':
-              clearIntervals();
+          switch (order?.status) {
+            case 'processing':
+              clearInterval(pollInterval);
               setIsPolling(false);
               onOpenChange(false);
               toast({
                 title: "支付成功",
                 description: "订单支付已完成",
               });
-              // 支付成功后立即跳转到订单页面
               navigate('/orders');
-              window.location.reload(); // 确保订单列表更新
               break;
 
             case 'pending_payment':
@@ -67,15 +68,31 @@ export const usePaymentPolling = ({
               break;
 
             case 'payment_timeout':
-              handleTimeoutStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+              clearInterval(pollInterval);
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付超时",
+                description: "二维码已过期，请重新下单",
+                variant: "destructive",
+              });
+              navigate('/orders');
               break;
 
             default:
-              handleErrorStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+              clearInterval(pollInterval);
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付异常",
+                description: "订单支付状态异常，请重新下单",
+                variant: "destructive",
+              });
+              navigate('/orders');
           }
         } catch (error) {
           console.error('轮询支付状态时发生错误:', error);
-          clearIntervals();
+          clearInterval(pollInterval);
           setIsPolling(false);
           onOpenChange(false);
           toast({
@@ -87,16 +104,32 @@ export const usePaymentPolling = ({
       }, 3000);
 
       // 5分钟后自动关闭
-      pollTimeoutRef.current = setTimeout(() => {
-        handleTimeoutStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+      const timeoutId = setTimeout(() => {
+        clearInterval(pollInterval);
+        setIsPolling(false);
+        onOpenChange(false);
+        toast({
+          title: "支付超时",
+          description: "二维码已过期，请重新下单",
+          variant: "destructive",
+        });
+        navigate('/orders');
       }, 5 * 60 * 1000);
 
+      // 清理函数
       return () => {
-        clearIntervals();
+        clearInterval(pollInterval);
+        clearTimeout(timeoutId);
         setIsPolling(false);
       };
     }
   }, [open, qrCodeUrl, orderId, onOpenChange, toast, navigate]);
+
+  const formatRemainingTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   return {
     isPolling,
