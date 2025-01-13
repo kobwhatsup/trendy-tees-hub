@@ -1,10 +1,35 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+async function verifySignature(headers: Headers, body: string) {
+  try {
+    const timestamp = headers.get('Wechatpay-Timestamp');
+    const nonce = headers.get('Wechatpay-Nonce');
+    const signature = headers.get('Wechatpay-Signature');
+    const serial = headers.get('Wechatpay-Serial');
+
+    if (!timestamp || !nonce || !signature || !serial) {
+      console.error('缺少必要的签名信息');
+      return false;
+    }
+
+    // 构造验签名串
+    const message = `${timestamp}\n${nonce}\n${body}\n`;
+    console.log('验签名串:', message);
+
+    // TODO: 实现完整的签名验证逻辑
+    // 由于验证需要微信支付平台证书，这里先返回true
+    return true;
+  } catch (error) {
+    console.error('验证签名时发生错误:', error);
+    return false;
+  }
+}
 
 async function decryptResource(ciphertext: string, associatedData: string, nonce: string, apiV3Key: string) {
   try {
@@ -43,6 +68,7 @@ async function decryptResource(ciphertext: string, associatedData: string, nonce
 serve(async (req) => {
   console.log('收到微信支付回调请求');
   console.log('请求方法:', req.method);
+  console.log('请求头:', Object.fromEntries(req.headers.entries()));
   
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -56,20 +82,40 @@ serve(async (req) => {
     console.log('初始化 Supabase 客户端');
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 获取回调数据
-    const payload = await req.json();
-    console.log('收到微信支付回调数据:', JSON.stringify(payload));
+    // 获取原始请求体
+    const rawBody = await req.text();
+    console.log('原始请求体:', rawBody);
+
+    // 验证签名
+    const isSignatureValid = await verifySignature(req.headers, rawBody);
+    if (!isSignatureValid) {
+      console.error('签名验证失败');
+      return new Response(
+        JSON.stringify({ code: "FAIL", message: "签名验证失败" }),
+        { 
+          status: 401,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
+    // 解析请求体
+    const payload = JSON.parse(rawBody);
+    console.log('解析后的回调数据:', payload);
 
     // 解密回调数据
     const decryptedData = await decryptResource(
       payload.resource.ciphertext,
-      payload.resource.associated_data,
+      payload.resource.associated_data || '',
       payload.resource.nonce,
       WECHAT_PAY_API_V3_KEY
     );
 
     const callbackData = JSON.parse(decryptedData);
-    console.log('解密后的回调数据:', JSON.stringify(callbackData));
+    console.log('解密后的回调数据:', callbackData);
 
     if (callbackData.trade_state === 'SUCCESS') {
       console.log('支付状态为成功，开始更新订单状态');

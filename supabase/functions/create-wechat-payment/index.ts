@@ -42,15 +42,14 @@ serve(async (req) => {
 
     console.log('获取到的订单号:', order.order_number);
 
-    // 准备请求数据
     const url = '/v3/pay/transactions/native';
     const host = 'api.mch.weixin.qq.com';
     const method = 'POST';
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const nonce = crypto.randomUUID();
 
-    // 确保回调URL使用完整的域名
-    const callbackUrl = `https://gfraqpwyfxmpzdllsfoc.supabase.co/functions/v1/wechat-payment-callback`;
+    // 使用线上域名作为回调地址
+    const callbackUrl = `https://gfraqpwyfxmpzdllsfoc.functions.supabase.co/wechat-payment-callback`;
     console.log('回调URL:', callbackUrl);
 
     const requestBody = JSON.stringify({
