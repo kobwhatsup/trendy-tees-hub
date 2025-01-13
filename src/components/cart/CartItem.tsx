@@ -35,7 +35,7 @@ export const CartItem = ({
   tshirt_size,
   quantity: initialQuantity,
   onUpdate,
-  price = 199,
+  price = 0.01,  // 修改默认价格为0.01
   selected,
   onSelect
 }: CartItemProps) => {
