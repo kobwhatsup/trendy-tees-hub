@@ -25,7 +25,7 @@ export const OrderConfirmDialog = ({ open, onOpenChange, items }: OrderConfirmDi
   const [addressInfo, setAddressInfo] = useState<AddressType | null>(null);
   
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
+  const subtotal = items.reduce((sum, item) => sum + ((item.price || 0.01) * item.quantity), 0);  // 修改默认价格为0.01
   const shipping = 0;
   const total = subtotal + shipping;
 
