@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { usePaymentStatus } from "./usePaymentStatus";
 import { usePaymentTimer } from "./usePaymentTimer";
 
@@ -17,6 +18,7 @@ export const usePaymentPolling = ({
   onOpenChange,
 }: UsePaymentPollingProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isPolling, setIsPolling] = useState(false);
   const {
     remainingTime,
@@ -48,7 +50,16 @@ export const usePaymentPolling = ({
           // 处理不同的支付状态
           switch (status) {
             case 'paid':
-              handlePaidStatus({ orderId, clearIntervals, setIsPolling, onOpenChange });
+              clearIntervals();
+              setIsPolling(false);
+              onOpenChange(false);
+              toast({
+                title: "支付成功",
+                description: "订单支付已完成",
+              });
+              // 支付成功后立即跳转到订单页面
+              navigate('/orders');
+              window.location.reload(); // 确保订单列表更新
               break;
 
             case 'pending_payment':
@@ -85,7 +96,7 @@ export const usePaymentPolling = ({
         setIsPolling(false);
       };
     }
-  }, [open, qrCodeUrl, orderId, onOpenChange, toast]);
+  }, [open, qrCodeUrl, orderId, onOpenChange, toast, navigate]);
 
   return {
     isPolling,
