@@ -49,7 +49,6 @@ export const PaymentHandling = ({
       orderId={orderId}
       totalAmount={totalAmount}
       qrCodeUrl={qrCodeUrl}
-      onCreatePayment={handleCreatePayment}
     />
   );
 };

@@ -1,6 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { QRCodeDisplay } from "./payment/QRCodeDisplay";
 import { usePaymentPolling } from "./payment/hooks/usePaymentPolling";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PaymentDialogProps {
   open: boolean;
