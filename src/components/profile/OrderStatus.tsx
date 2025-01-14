@@ -35,7 +35,7 @@ export const OrderStatus = ({ status }: OrderStatusProps) => {
       processing: "处理中",
       shipped: "已发货",
       delivered: "已送达",
-      refund_requested: "申请退款",
+      refund_requested: "退款申请中",
       refunded: "已退款",
     };
     return statusMap[status] || status;

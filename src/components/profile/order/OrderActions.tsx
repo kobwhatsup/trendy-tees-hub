@@ -10,6 +10,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentDialog } from "./PaymentDialog";
+import { RefundDialog } from "./RefundDialog";
 
 interface OrderActionsProps {
   orderId: string;
@@ -27,6 +28,7 @@ export const OrderActions = ({
   onViewDetails 
 }: OrderActionsProps) => {
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
@@ -87,28 +89,8 @@ export const OrderActions = ({
     }
   };
 
-  const handleRefundRequest = async () => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: 'refund_requested' })
-        .eq('id', orderId);
-
-      if (error) throw error;
-
-      toast({
-        title: "申请成功",
-        description: "退款申请已提交",
-      });
-
-    } catch (error) {
-      console.error('申请退款失败:', error);
-      toast({
-        title: "申请失败",
-        description: "请稍后重试",
-        variant: "destructive",
-      });
-    }
+  const handleRefundRequest = () => {
+    setShowRefundDialog(true);
   };
 
   return (
@@ -177,6 +159,16 @@ export const OrderActions = ({
         orderId={orderId}
         totalAmount={totalAmount}
         qrCodeUrl={qrCodeUrl}
+      />
+
+      <RefundDialog 
+        open={showRefundDialog}
+        onOpenChange={setShowRefundDialog}
+        orderId={orderId}
+        onSuccess={() => {
+          // 刷新页面以更新订单状态
+          window.location.reload();
+        }}
       />
     </>
   );
