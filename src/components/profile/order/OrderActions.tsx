@@ -60,6 +60,57 @@ export const OrderActions = ({
     }
   };
 
+  const handleConfirmReceipt = async () => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ 
+          status: 'delivered',
+          delivered_at: new Date().toISOString()
+        })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "确认成功",
+        description: "已确认收货",
+      });
+
+    } catch (error) {
+      console.error('确认收货失败:', error);
+      toast({
+        title: "确认失败",
+        description: "请稍后重试",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRefundRequest = async () => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'refund_requested' })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "申请成功",
+        description: "退款申请已提交",
+      });
+
+    } catch (error) {
+      console.error('申请退款失败:', error);
+      toast({
+        title: "申请失败",
+        description: "请稍后重试",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center border-t pt-3">
@@ -100,8 +151,21 @@ export const OrderActions = ({
             </Button>
           )}
           {status === 'shipped' && (
-            <Button variant="secondary" size="sm">
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={handleConfirmReceipt}
+            >
               确认收货
+            </Button>
+          )}
+          {status === 'delivered' && (
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={handleRefundRequest}
+            >
+              申请退款
             </Button>
           )}
         </div>

@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { AuthCheck } from "@/components/designs/AuthCheck";
 import { UserOrders } from "@/components/profile/UserOrders";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Orders = () => {
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
   return (
     <AuthCheck>
       <div className="container mx-auto px-4 pt-20 pb-8 md:pb-12">
@@ -17,17 +20,17 @@ const Orders = () => {
           </div>
         </div>
         
-        <Tabs defaultValue="all" className="mb-6">
+        <Tabs defaultValue="all" className="mb-6" onValueChange={setStatusFilter}>
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="all" className="min-w-[80px]">全部</TabsTrigger>
             <TabsTrigger value="pending_payment" className="min-w-[80px]">待付款</TabsTrigger>
-            <TabsTrigger value="paid" className="min-w-[80px]">待发货</TabsTrigger>
+            <TabsTrigger value="processing" className="min-w-[80px]">待发货</TabsTrigger>
             <TabsTrigger value="shipped" className="min-w-[80px]">待收货</TabsTrigger>
             <TabsTrigger value="refund" className="min-w-[80px]">退款/售后</TabsTrigger>
           </TabsList>
         </Tabs>
         
-        <UserOrders />
+        <UserOrders statusFilter={statusFilter} />
       </div>
     </AuthCheck>
   );
