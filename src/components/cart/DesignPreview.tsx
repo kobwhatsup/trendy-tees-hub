@@ -1,6 +1,6 @@
 import { DesignImage } from "./DesignImage";
 import { getValidImageUrl } from "@/utils/imageUrl";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -98,6 +98,9 @@ export const DesignPreview = ({
           ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] max-h-[90vh] w-auto h-auto p-4'}
           overflow-hidden
         `}>
+          <DialogTitle className="sr-only">
+            {previewImage?.title || "预览图"}
+          </DialogTitle>
           <div className="relative w-full h-full flex items-center justify-center">
             {previewImage?.url && (
               <img 
