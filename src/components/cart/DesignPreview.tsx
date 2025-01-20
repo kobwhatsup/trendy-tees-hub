@@ -1,7 +1,16 @@
 import { useState } from "react";
+import { TShirtImage } from "./preview/TShirtImage";
 import { PreviewDialog } from "./preview/PreviewDialog";
-import { DialogTitle } from "@/components/ui/dialog";
-import { DesignGrid } from "./preview/DesignGrid";
+import { DesignOverlay } from "./preview/DesignOverlay";
+
+interface DesignSettings {
+  scale: number;
+  rotation: number;
+  opacity: number;
+  position: "front" | "back";
+  offsetX: number;
+  offsetY: number;
+}
 
 interface DesignPreviewProps {
   design_front: string | null;
@@ -14,6 +23,8 @@ interface DesignPreviewProps {
 }
 
 export const DesignPreview = ({
+  design_front,
+  design_back,
   preview_front,
   preview_back,
 }: DesignPreviewProps) => {
@@ -29,21 +40,40 @@ export const DesignPreview = ({
 
   return (
     <>
-      <DesignGrid 
-        preview_front={preview_front}
-        preview_back={preview_back}
-        onPreviewClick={handlePreviewClick}
-      />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+        {design_front && (
+          <DesignOverlay 
+            imageUrl={design_front} 
+            title="正面设计"
+          />
+        )}
+        {preview_front && (
+          <TShirtImage 
+            imageUrl={preview_front}
+            title="正面效果"
+            onClick={() => handlePreviewClick(preview_front, "正面效果")}
+          />
+        )}
+        {design_back && (
+          <DesignOverlay 
+            imageUrl={design_back} 
+            title="背面设计"
+          />
+        )}
+        {preview_back && (
+          <TShirtImage 
+            imageUrl={preview_back}
+            title="背面效果"
+            onClick={() => handlePreviewClick(preview_back, "背面效果")}
+          />
+        )}
+      </div>
 
       <PreviewDialog 
         open={showPreview}
         onOpenChange={setShowPreview}
         image={previewImage}
-      >
-        <DialogTitle className="sr-only">
-          预览图片
-        </DialogTitle>
-      </PreviewDialog>
+      />
     </>
   );
 };
