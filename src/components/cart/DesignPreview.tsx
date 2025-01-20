@@ -2,15 +2,7 @@ import { useState } from "react";
 import { TShirtImage } from "./preview/TShirtImage";
 import { PreviewDialog } from "./preview/PreviewDialog";
 import { DesignOverlay } from "./preview/DesignOverlay";
-
-interface DesignSettings {
-  scale: number;
-  rotation: number;
-  opacity: number;
-  position: "front" | "back";
-  offsetX: number;
-  offsetY: number;
-}
+import { DialogTitle } from "@/components/ui/dialog";
 
 interface DesignPreviewProps {
   design_front: string | null;
@@ -27,6 +19,9 @@ export const DesignPreview = ({
   design_back,
   preview_front,
   preview_back,
+  tshirt_style,
+  tshirt_color,
+  tshirt_gender,
 }: DesignPreviewProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState<{url: string | null, title: string} | null>(null);
@@ -73,7 +68,11 @@ export const DesignPreview = ({
         open={showPreview}
         onOpenChange={setShowPreview}
         image={previewImage}
-      />
+      >
+        <DialogTitle className="sr-only">
+          预览图片
+        </DialogTitle>
+      </PreviewDialog>
     </>
   );
 };

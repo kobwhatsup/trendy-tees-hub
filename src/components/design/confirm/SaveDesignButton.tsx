@@ -26,6 +26,12 @@ export const SaveDesignButton = ({
   const { addToCart, isAdding } = useAddToCart();
 
   const handleAddToCart = async () => {
+    // 确保即使用户没有点击预览，也会保存预览图
+    if (!frontPreviewImage || !backPreviewImage) {
+      console.error('预览图未生成');
+      return;
+    }
+
     await addToCart({
       tshirtStyle,
       tshirtColor,
@@ -42,7 +48,7 @@ export const SaveDesignButton = ({
     <Button 
       className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white shadow-lg px-8 py-4 h-auto text-lg rounded-full"
       onClick={handleAddToCart}
-      disabled={isAdding}
+      disabled={isAdding || !frontPreviewImage || !backPreviewImage}
     >
       {isAdding ? (
         <>
