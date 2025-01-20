@@ -14,13 +14,8 @@ interface DesignPreviewProps {
 }
 
 export const DesignPreview = ({
-  design_front,
-  design_back,
   preview_front,
   preview_back,
-  tshirt_style,
-  tshirt_color,
-  tshirt_gender,
 }: DesignPreviewProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState<{url: string | null, title: string} | null>(null);
@@ -35,8 +30,6 @@ export const DesignPreview = ({
   return (
     <>
       <DesignGrid 
-        design_front={design_front}
-        design_back={design_back}
         preview_front={preview_front}
         preview_back={preview_back}
         onPreviewClick={handlePreviewClick}
