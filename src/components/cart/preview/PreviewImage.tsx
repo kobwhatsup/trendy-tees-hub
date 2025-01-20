@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PreviewDialog } from "./PreviewDialog";
 import { DialogTitle } from "@/components/ui/dialog";
+import { getValidImageUrl } from "@/utils/imageUrl";
 
 interface PreviewImageProps {
   imageUrl: string | null;
@@ -19,16 +20,21 @@ export const PreviewImage = ({ imageUrl, title, onClick }: PreviewImageProps) =>
     }
   };
 
+  if (!imageUrl) return null;
+
   return (
-    <>
-      {imageUrl && (
-        <div onClick={onClick || handlePreviewClick}>
-          <TShirtImage 
-            imageUrl={imageUrl}
-            title={title}
-          />
-        </div>
-      )}
+    <div className="flex flex-col items-center">
+      <h3 className="font-medium mb-2 text-center text-sm">{title}</h3>
+      <div 
+        className="w-full aspect-square bg-gray-50 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-zoom-in"
+        onClick={onClick || handlePreviewClick}
+      >
+        <img 
+          src={getValidImageUrl(imageUrl)} 
+          alt={title}
+          className="w-full h-full object-contain"
+        />
+      </div>
 
       <PreviewDialog 
         open={showPreview}
@@ -39,6 +45,6 @@ export const PreviewImage = ({ imageUrl, title, onClick }: PreviewImageProps) =>
           预览图片
         </DialogTitle>
       </PreviewDialog>
-    </>
+    </div>
   );
 };

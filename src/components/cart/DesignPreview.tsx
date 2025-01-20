@@ -39,9 +39,6 @@ export const DesignPreview = ({
         design_back={design_back}
         preview_front={preview_front}
         preview_back={preview_back}
-        tshirt_style={tshirt_style}
-        tshirt_color={tshirt_color}
-        tshirt_gender={tshirt_gender}
         onPreviewClick={handlePreviewClick}
       />
 
