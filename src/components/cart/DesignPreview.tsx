@@ -1,6 +1,6 @@
 import { DesignImage } from "./DesignImage";
 import { getValidImageUrl } from "@/utils/imageUrl";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -28,6 +28,7 @@ export const DesignPreview = ({
   design_back,
   preview_front,
   preview_back,
+  tshirt_color,
 }: DesignPreviewProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState<{url: string | null, title: string} | null>(null);
@@ -63,6 +64,7 @@ export const DesignPreview = ({
                 src={getValidImageUrl(preview_front)} 
                 alt="正面效果"
                 className="w-full h-full object-contain"
+                style={{ backgroundColor: tshirt_color === 'black' ? '#000' : '#fff' }}
               />
             </div>
           </div>
@@ -87,6 +89,7 @@ export const DesignPreview = ({
                 src={getValidImageUrl(preview_back)} 
                 alt="背面效果"
                 className="w-full h-full object-contain"
+                style={{ backgroundColor: tshirt_color === 'black' ? '#000' : '#fff' }}
               />
             </div>
           </div>
@@ -98,6 +101,7 @@ export const DesignPreview = ({
           ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] max-h-[90vh] w-auto h-auto p-4'}
           overflow-hidden
         `}>
+          <DialogTitle className="sr-only">预览图片</DialogTitle>
           <div className="relative w-full h-full flex items-center justify-center">
             {previewImage?.url && (
               <img 
@@ -107,6 +111,7 @@ export const DesignPreview = ({
                   max-w-full object-contain
                   ${isMobile ? 'max-h-[100vh]' : 'max-h-[80vh]'}
                 `}
+                style={{ backgroundColor: tshirt_color === 'black' ? '#000' : '#fff' }}
               />
             )}
           </div>
