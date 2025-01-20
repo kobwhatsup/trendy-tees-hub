@@ -4,15 +4,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface DesignSettings {
-  scale: number;
-  rotation: number;
-  opacity: number;
-  position: "front" | "back";
-  offsetX: number;
-  offsetY: number;
-}
-
 interface DesignPreviewProps {
   design_front: string | null;
   design_back: string | null;
@@ -24,8 +15,6 @@ interface DesignPreviewProps {
 }
 
 export const DesignPreview = ({
-  design_front,
-  design_back,
   preview_front,
   preview_back,
 }: DesignPreviewProps) => {
@@ -42,16 +31,7 @@ export const DesignPreview = ({
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
-        {design_front && (
-          <div className="flex flex-col items-center">
-            <DesignImage 
-              imageUrl={design_front} 
-              title="正面设计"
-              className="w-full aspect-square p-2"
-            />
-          </div>
-        )}
+      <div className="grid grid-cols-2 gap-4 flex-1">
         {preview_front && (
           <div className="flex flex-col items-center">
             <h3 className="font-medium mb-2 text-center text-sm">正面效果</h3>
@@ -65,15 +45,6 @@ export const DesignPreview = ({
                 className="w-full h-full object-contain"
               />
             </div>
-          </div>
-        )}
-        {design_back && (
-          <div className="flex flex-col items-center">
-            <DesignImage 
-              imageUrl={design_back} 
-              title="背面设计"
-              className="w-full aspect-square p-2"
-            />
           </div>
         )}
         {preview_back && (

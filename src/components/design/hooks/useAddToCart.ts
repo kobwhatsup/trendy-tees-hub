@@ -42,17 +42,24 @@ export const useAddToCart = () => {
         return;
       }
 
-      await saveDesignToDatabase({
-        userId: user.id,
-        frontDesignImage,
-        backDesignImage,
-        frontPreviewImage,
-        backPreviewImage,
-        tshirtStyle,
-        tshirtColor,
-        tshirtGender,
-        tshirtSize,
-      });
+      // 保存到购物车
+      const { error: cartError } = await supabase
+        .from('cart_items')
+        .insert({
+          user_id: user.id,
+          design_front: frontDesignImage,
+          design_back: backDesignImage,
+          preview_front: frontPreviewImage,
+          preview_back: backPreviewImage,
+          tshirt_style: tshirtStyle,
+          tshirt_color: tshirtColor,
+          tshirt_gender: tshirtGender,
+          tshirt_size: tshirtSize,
+        });
+
+      if (cartError) {
+        throw cartError;
+      }
 
       toast({
         title: "添加成功",
