@@ -1,14 +1,16 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { getValidImageUrl } from "@/utils/imageUrl";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ReactNode } from "react";
 
 interface PreviewDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   image: { url: string | null; title: string } | null;
+  children?: ReactNode;
 }
 
-export const PreviewDialog = ({ open, onOpenChange, image }: PreviewDialogProps) => {
+export const PreviewDialog = ({ open, onOpenChange, image, children }: PreviewDialogProps) => {
   const isMobile = useIsMobile();
 
   return (
@@ -17,9 +19,7 @@ export const PreviewDialog = ({ open, onOpenChange, image }: PreviewDialogProps)
         ${isMobile ? 'max-w-[100vw] w-screen h-screen p-2 m-0 rounded-none border-0' : 'max-w-[90vw] max-h-[90vh] w-auto h-auto p-4'}
         overflow-hidden
       `}>
-        <DialogTitle className="sr-only">
-          {image?.title || "预览图"}
-        </DialogTitle>
+        {children}
         <div className="relative w-full h-full flex items-center justify-center">
           {image?.url && (
             <img 
