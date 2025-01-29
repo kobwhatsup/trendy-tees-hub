@@ -8,6 +8,7 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -16,6 +17,7 @@ serve(async (req) => {
     const { orderId, amount, description } = await req.json();
     console.log('收到支付请求:', { orderId, amount, description });
 
+    // 获取必要的配置
     const mchid = Deno.env.get('WECHAT_PAY_MCH_ID');
     const appid = Deno.env.get('WECHAT_PAY_APP_ID');
     const privateKey = Deno.env.get('WECHAT_PAY_PRIVATE_KEY');
@@ -25,11 +27,13 @@ serve(async (req) => {
       throw new Error('缺少必要的配置参数');
     }
 
+    // 创建 Supabase 客户端
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // 获取订单信息
     const { data: order, error: orderError } = await supabaseClient
       .from('orders')
       .select('order_number')
@@ -49,16 +53,12 @@ serve(async (req) => {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const nonce = crypto.randomUUID();
 
-    // 确保回调URL使用完整的域名
-    const callbackUrl = `https://gfraqpwyfxmpzdllsfoc.supabase.co/functions/v1/wechat-payment-callback`;
-    console.log('回调URL:', callbackUrl);
-
     const requestBody = JSON.stringify({
       mchid,
       appid,
       description,
-      out_trade_no: order.order_number,
-      notify_url: callbackUrl,
+      out_trade_no: order.order_number, // 使用数据库中的order_number
+      notify_url: `https://gfraqpwyfxmpzdllsfoc.supabase.co/functions/v1/wechat-payment-callback`,
       amount: {
         total: amount,
         currency: 'CNY'
@@ -67,6 +67,7 @@ serve(async (req) => {
 
     console.log('请求参数:', requestBody);
 
+    // 生成签名
     const signature = await generateSignature(
       method,
       url,
@@ -76,8 +77,10 @@ serve(async (req) => {
       privateKey
     );
 
+    // 构造认证头
     const token = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonce}",timestamp="${timestamp}",serial_no="${serialNo}",signature="${signature}"`;
 
+    // 发送请求到微信支付API
     const response = await fetch(`https://${host}${url}`, {
       method,
       headers: {
@@ -96,6 +99,7 @@ serve(async (req) => {
       throw new Error(`微信支付API错误: ${JSON.stringify(responseData)}`);
     }
 
+    // 创建支付记录
     await createPaymentRecord(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',

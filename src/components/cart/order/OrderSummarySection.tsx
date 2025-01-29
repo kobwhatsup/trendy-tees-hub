@@ -21,15 +21,15 @@ export const OrderSummarySection = ({
         </div>
         <div className="flex justify-between text-sm">
           <span>商品金额</span>
-          <span>¥{subtotal.toFixed(2)}</span>
+          <span>¥{subtotal}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span>运费</span>
-          <span>¥{shipping.toFixed(2)}</span>
+          <span>¥{shipping}</span>
         </div>
         <div className="flex justify-between text-sm font-medium pt-2 border-t">
           <span>应付金额</span>
-          <span className="text-red-500">¥{total.toFixed(2)}</span>
+          <span className="text-red-500">¥{total}</span>
         </div>
       </div>
     </div>
