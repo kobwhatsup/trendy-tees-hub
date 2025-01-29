@@ -335,9 +335,6 @@ export type Database = {
           paid_at: string | null
           recipient_name: string | null
           recipient_phone: string | null
-          refund_completed_at: string | null
-          refund_reason: string | null
-          refund_requested_at: string | null
           shipped_at: string | null
           shipping_address: string | null
           shipping_company: string | null
@@ -357,9 +354,6 @@ export type Database = {
           paid_at?: string | null
           recipient_name?: string | null
           recipient_phone?: string | null
-          refund_completed_at?: string | null
-          refund_reason?: string | null
-          refund_requested_at?: string | null
           shipped_at?: string | null
           shipping_address?: string | null
           shipping_company?: string | null
@@ -379,9 +373,6 @@ export type Database = {
           paid_at?: string | null
           recipient_name?: string | null
           recipient_phone?: string | null
-          refund_completed_at?: string | null
-          refund_reason?: string | null
-          refund_requested_at?: string | null
           shipped_at?: string | null
           shipping_address?: string | null
           shipping_company?: string | null

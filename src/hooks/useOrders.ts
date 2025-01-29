@@ -24,13 +24,12 @@ export const useOrders = () => {
         return;
       }
 
-      // 修改查询，使用正确的排序语法
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
         .select("*")
         .eq('is_deleted', false)
         .eq('user_id', session.session.user.id)
-        .order('created_at', { ascending: false });
+        .order("created_at", { ascending: false });
 
       if (ordersError) {
         console.error("获取订单列表错误:", ordersError);

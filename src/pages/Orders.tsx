@@ -1,28 +1,13 @@
 import { AuthCheck } from "@/components/designs/AuthCheck";
 import { UserOrders } from "@/components/profile/UserOrders";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
-  const navigate = useNavigate();
-
   return (
     <AuthCheck>
       <div className="container mx-auto px-4 pt-20 pb-8 md:pb-12">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/")}
-              className="hover:bg-accent"
-            >
-              <Home className="h-5 w-5" />
-            </Button>
-            <h1 className="text-2xl font-bold">订单管理</h1>
-          </div>
+          <h1 className="text-2xl font-bold">订单管理</h1>
           <div className="relative">
             <input
               type="search"
