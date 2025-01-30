@@ -69,11 +69,13 @@ export const useDesignGeneration = () => {
         setBackDesignImage(response.data.imageUrl);
       }
       
-      // 显示成功提示，根据正面或背面设计显示不同的消息
+      // 显示成功提示
       toast({
         title: `${position === "front" ? "正面" : "背面"}设计图已成功生成`,
         description: "您可以继续调整设计效果",
+        variant: "default",
         className: "bg-white border-primary text-foreground",
+        duration: 3000,
       });
 
     } catch (error) {
