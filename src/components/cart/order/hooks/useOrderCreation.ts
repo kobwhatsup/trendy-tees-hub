@@ -79,6 +79,7 @@ export const useOrderCreation = (items: CartItemType[], total: number) => {
         const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-wechat-payment', {
           body: {
             orderId: order.id,
+            orderNumber: orderNumber,
             amount: Math.round(total * 100), // 转换为分
             description: `订单支付 #${orderNumber}`
           }
