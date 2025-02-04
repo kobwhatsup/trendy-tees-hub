@@ -13,7 +13,6 @@ interface TShirtPreviewProps {
     offsetX: number;
     offsetY: number;
   };
-  position: "front" | "back";
 }
 
 export const TShirtPreview = ({ 
@@ -28,8 +27,7 @@ export const TShirtPreview = ({
     position: "front",
     offsetX: 0,
     offsetY: 0
-  },
-  position
+  }
 }: TShirtPreviewProps) => {
   return (
     <PreviewDialog
@@ -38,7 +36,6 @@ export const TShirtPreview = ({
       gender={gender}
       designImage={designImage}
       settings={settings}
-      position={position}
     />
   );
 };

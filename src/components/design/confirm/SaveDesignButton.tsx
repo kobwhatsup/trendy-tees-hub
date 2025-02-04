@@ -3,6 +3,7 @@ import { ShoppingCart, Loader2 } from "lucide-react";
 import { useAddToCart } from "../hooks/useAddToCart";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
+import { TShirtPreview } from "../preview/TShirtPreview";
 
 interface SaveDesignButtonProps {
   tshirtStyle: string;
@@ -84,9 +85,8 @@ export const SaveDesignButton = ({
             color={tshirtColor}
             style={tshirtStyle}
             gender={tshirtGender}
-            designImage={frontDesignImage}
+            designImage={frontDesignImage || ''}
             settings={frontDesignSettings}
-            position="front"
           />
         </div>
         <div ref={backPreviewRef}>
@@ -94,9 +94,8 @@ export const SaveDesignButton = ({
             color={tshirtColor}
             style={tshirtStyle}
             gender={tshirtGender}
-            designImage={backDesignImage}
+            designImage={backDesignImage || ''}
             settings={backDesignSettings}
-            position="back"
           />
         </div>
       </div>
