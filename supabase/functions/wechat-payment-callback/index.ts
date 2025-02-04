@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { createDecipheriv } from "https://deno.land/std@0.208.0/crypto/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,112 +32,140 @@ serve(async (req) => {
     // 验证通知数据
     const { resource } = callbackData;
     if (!resource || !resource.ciphertext) {
+      console.error('回调数据格式错误');
       throw new Error('回调数据格式错误');
     }
 
     // 解密通知数据
     const apiV3Key = Deno.env.get('WECHAT_PAY_API_V3_KEY') ?? '';
-    const decryptedData = await decryptResource(
-      resource.ciphertext,
-      resource.associated_data,
-      resource.nonce,
-      apiV3Key
-    );
-    console.log('解密后的数据:', decryptedData);
-
-    const paymentInfo = JSON.parse(decryptedData);
-
-    // 根据商户订单号查询订单
-    const { data: order } = await supabaseClient
-      .from('orders')
-      .select('id, status')
-      .eq('order_number', paymentInfo.out_trade_no)
-      .single();
-
-    if (!order) {
-      throw new Error(`未找到订单: ${paymentInfo.out_trade_no}`);
+    if (!apiV3Key) {
+      console.error('未找到 WECHAT_PAY_API_V3_KEY');
+      throw new Error('未找到 WECHAT_PAY_API_V3_KEY');
     }
 
-    // 验证支付状态
-    if (paymentInfo.trade_state === 'SUCCESS') {
-      console.log('支付成功，更新订单状态');
+    try {
+      // 将 APIv3 密钥转换为 Buffer
+      const key = new TextEncoder().encode(apiV3Key);
       
-      // 更新订单状态
-      const { error: orderError } = await supabaseClient
-        .from('orders')
-        .update({ 
-          status: 'paid',
-          paid_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', order.id);
-
-      if (orderError) {
-        console.error('更新订单状态失败:', orderError);
-        throw orderError;
-      }
-
-      // 更新支付记录
-      const { error: paymentError } = await supabaseClient
-        .from('payment_records')
-        .update({ 
-          status: 'success',
-          transaction_id: paymentInfo.transaction_id,
-          updated_at: new Date().toISOString()
-        })
-        .eq('order_id', order.id);
-
-      if (paymentError) {
-        console.error('更新支付记录失败:', paymentError);
-        throw paymentError;
-      }
-
-      console.log('成功处理支付回调，订单号:', paymentInfo.out_trade_no);
-    } else {
-      console.log(`支付未成功: ${paymentInfo.trade_state}`);
+      // 解密
+      const algorithm = { name: "AES-GCM", iv: new TextEncoder().encode(resource.nonce) };
+      const cryptoKey = await crypto.subtle.importKey(
+        "raw",
+        key,
+        algorithm,
+        false,
+        ["decrypt"]
+      );
       
-      // 更新订单状态
-      const { error: orderError } = await supabaseClient
+      const ciphertext = new TextEncoder().encode(resource.ciphertext);
+      const decrypted = await crypto.subtle.decrypt(
+        algorithm,
+        cryptoKey,
+        ciphertext
+      );
+
+      const decryptedText = new TextDecoder().decode(decrypted);
+      console.log('解密后的数据:', decryptedText);
+      
+      const paymentInfo = JSON.parse(decryptedText);
+
+      // 根据商户订单号查询订单
+      const { data: order, error: orderError } = await supabaseClient
         .from('orders')
-        .update({ 
-          status: 'payment_failed',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', order.id);
+        .select('id, status')
+        .eq('order_number', paymentInfo.out_trade_no)
+        .single();
 
-      if (orderError) {
-        console.error('更新订单状态失败:', orderError);
-        throw orderError;
+      if (orderError || !order) {
+        console.error('未找到订单:', paymentInfo.out_trade_no);
+        throw new Error(`未找到订单: ${paymentInfo.out_trade_no}`);
       }
 
-      // 更新支付记录
-      const { error: paymentError } = await supabaseClient
-        .from('payment_records')
-        .update({ 
-          status: 'failed',
-          updated_at: new Date().toISOString()
-        })
-        .eq('order_id', order.id);
+      // 验证支付状态
+      if (paymentInfo.trade_state === 'SUCCESS') {
+        console.log('支付成功，更新订单状态');
+        
+        // 更新订单状态
+        const { error: updateOrderError } = await supabaseClient
+          .from('orders')
+          .update({ 
+            status: 'paid',
+            paid_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', order.id);
 
-      if (paymentError) {
-        console.error('更新支付记录失败:', paymentError);
-        throw paymentError;
+        if (updateOrderError) {
+          console.error('更新订单状态失败:', updateOrderError);
+          throw updateOrderError;
+        }
+
+        // 更新支付记录
+        const { error: updatePaymentError } = await supabaseClient
+          .from('payment_records')
+          .update({ 
+            status: 'success',
+            transaction_id: paymentInfo.transaction_id,
+            updated_at: new Date().toISOString()
+          })
+          .eq('order_id', order.id);
+
+        if (updatePaymentError) {
+          console.error('更新支付记录失败:', updatePaymentError);
+          throw updatePaymentError;
+        }
+
+        console.log('成功处理支付回调，订单号:', paymentInfo.out_trade_no);
+      } else {
+        console.log(`支付未成功: ${paymentInfo.trade_state}`);
+        
+        // 更新订单状态
+        const { error: updateOrderError } = await supabaseClient
+          .from('orders')
+          .update({ 
+            status: 'payment_failed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', order.id);
+
+        if (updateOrderError) {
+          console.error('更新订单状态失败:', updateOrderError);
+          throw updateOrderError;
+        }
+
+        // 更新支付记录
+        const { error: updatePaymentError } = await supabaseClient
+          .from('payment_records')
+          .update({ 
+            status: 'failed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('order_id', order.id);
+
+        if (updatePaymentError) {
+          console.error('更新支付记录失败:', updatePaymentError);
+          throw updatePaymentError;
+        }
       }
+
+      // 返回成功响应
+      return new Response(
+        JSON.stringify({
+          code: "SUCCESS",
+          message: "成功"
+        }), 
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+
+    } catch (decryptError) {
+      console.error('解密回调数据失败:', decryptError);
+      throw new Error('解密回调数据失败: ' + decryptError.message);
     }
-
-    // 返回成功响应
-    return new Response(
-      JSON.stringify({
-        code: "SUCCESS",
-        message: "成功"
-      }), 
-      { 
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
 
   } catch (error) {
     console.error('处理支付回调失败:', error);
@@ -155,31 +184,3 @@ serve(async (req) => {
     );
   }
 });
-
-// 解密回调数据
-async function decryptResource(ciphertext: string, associatedData: string, nonce: string, apiV3Key: string) {
-  try {
-    const key = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(apiV3Key),
-      { name: "AES-GCM" },
-      false,
-      ["decrypt"]
-    );
-
-    const decrypted = await crypto.subtle.decrypt(
-      {
-        name: "AES-GCM",
-        iv: new TextEncoder().encode(nonce),
-        additionalData: new TextEncoder().encode(associatedData),
-      },
-      key,
-      new TextEncoder().encode(ciphertext)
-    );
-
-    return new TextDecoder().decode(decrypted);
-  } catch (error) {
-    console.error('解密回调数据失败:', error);
-    throw new Error('解密回调数据失败');
-  }
-}
