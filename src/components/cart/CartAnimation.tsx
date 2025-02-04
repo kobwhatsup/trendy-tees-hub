@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 
 export const CartAnimation = () => {
   const [showAnimation, setShowAnimation] = useState(false);
@@ -9,10 +10,18 @@ export const CartAnimation = () => {
     audio.play();
   };
 
-  // 显示动画
+  // 显示动画和提示
   const showAddToCartAnimation = () => {
     setShowAnimation(true);
     playAddToCartSound();
+    
+    // 显示成功提示
+    toast({
+      title: "添加成功",
+      description: "商品已成功添加到购物车",
+      className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+    });
+    
     setTimeout(() => setShowAnimation(false), 1000);
   };
 
