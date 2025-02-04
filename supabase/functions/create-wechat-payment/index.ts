@@ -43,6 +43,8 @@ serve(async (req) => {
     const timestamp = Math.floor(Date.now() / 1000).toString()
     const nonceStr = crypto.randomUUID()
 
+    console.log('开始调用微信支付API')
+
     const requestData = {
       appid,
       mchid,
@@ -83,7 +85,8 @@ serve(async (req) => {
 
     const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",timestamp="${timestamp}",serial_no="${serialNo}",signature="${signature}"`
 
-    console.log('开始调用微信支付API')
+    console.log('待签名字符串:', { method, url, timestamp, nonceStr, requestData })
+
     const response = await fetch('https://api.mch.weixin.qq.com/v3/pay/transactions/native', {
       method: 'POST',
       headers: {
@@ -99,6 +102,7 @@ serve(async (req) => {
     console.log('微信支付API响应:', result)
 
     if (!response.ok) {
+      console.error('微信支付API错误:', result)
       throw new Error(`微信支付API错误: ${result.message || '未知错误'}`)
     }
 

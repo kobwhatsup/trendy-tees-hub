@@ -53,7 +53,7 @@ export const useOrderCreation = (items: CartItemType[], total: number) => {
         tshirt_gender: item.tshirt_gender,
         tshirt_size: item.tshirt_size,
         quantity: item.quantity,
-        unit_price: item.price || 199
+        unit_price: 0.01
       }));
 
       const { error: itemsError } = await supabase
@@ -76,6 +76,13 @@ export const useOrderCreation = (items: CartItemType[], total: number) => {
 
       // 创建支付
       try {
+        console.log('开始创建支付，参数:', {
+          orderId: order.id,
+          orderNumber: orderNumber,
+          amount: Math.round(total * 100),
+          description: `订单支付 #${orderNumber}`
+        });
+
         const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-wechat-payment', {
           body: {
             orderId: order.id,
@@ -86,6 +93,8 @@ export const useOrderCreation = (items: CartItemType[], total: number) => {
         });
 
         if (paymentError) throw paymentError;
+
+        console.log('支付创建成功，返回数据:', paymentData);
 
         setOrderId(order.id);
         setQrCodeUrl(paymentData.code_url);
