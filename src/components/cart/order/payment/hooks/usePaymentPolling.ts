@@ -45,6 +45,8 @@ export const usePaymentPolling = ({
           const status = await checkOrderStatus(orderId);
           updateRemainingTime(startTime);
 
+          console.log('当前订单状态:', status);
+
           // 处理不同的支付状态
           switch (status) {
             case 'paid':
