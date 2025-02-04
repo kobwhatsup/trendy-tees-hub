@@ -3,10 +3,16 @@ import { UserOrders } from "@/components/profile/UserOrders";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Orders = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentStatus = searchParams.get("status") || "all";
+
+  const handleStatusChange = (value: string) => {
+    setSearchParams({ status: value });
+  };
 
   return (
     <AuthCheck>
@@ -32,7 +38,7 @@ const Orders = () => {
           </div>
         </div>
         
-        <Tabs defaultValue="all" className="mb-6">
+        <Tabs value={currentStatus} onValueChange={handleStatusChange} className="mb-6">
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="all" className="min-w-[80px]">全部</TabsTrigger>
             <TabsTrigger value="pending_payment" className="min-w-[80px]">待付款</TabsTrigger>
