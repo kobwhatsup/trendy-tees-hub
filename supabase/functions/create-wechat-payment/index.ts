@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { generateSignature, createPaymentRecord } from '../_shared/wechat.ts'
 
 const corsHeaders = {
@@ -14,27 +13,16 @@ serve(async (req) => {
   }
 
   try {
-    const { orderId, orderNumber, amount, description } = await req.json()
-    console.log('收到创建支付请求:', { orderId, orderNumber, amount, description })
+    const { orderId, orderNumber, amount, description, out_trade_no } = await req.json()
+    console.log('收到创建支付请求:', { orderId, orderNumber, amount, description, out_trade_no })
 
     // 创建支付记录
-    const supabaseClient = createClient(
+    await createPaymentRecord(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      orderId,
+      amount
     )
-
-    const { error: insertError } = await supabaseClient
-      .from('payment_records')
-      .insert({
-        order_id: orderId,
-        amount: amount / 100, // 转换回元
-        status: 'pending'
-      })
-
-    if (insertError) {
-      console.error('创建支付记录失败:', insertError)
-      throw insertError
-    }
 
     // 调用微信支付Native下单API
     const appid = Deno.env.get('WECHAT_PAY_APP_ID')
@@ -49,7 +37,7 @@ serve(async (req) => {
       appid,
       mchid,
       description,
-      out_trade_no: orderNumber,
+      out_trade_no: out_trade_no, // 使用传入的商户订单号
       notify_url: notifyUrl,
       amount: {
         total: amount,
