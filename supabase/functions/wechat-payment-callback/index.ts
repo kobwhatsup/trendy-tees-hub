@@ -59,8 +59,10 @@ serve(async (req) => {
 
     // 验证支付状态
     if (paymentInfo.trade_state === 'SUCCESS') {
+      console.log('支付成功，更新订单状态');
+      
       // 更新订单状态
-      await supabaseClient
+      const { error: orderError } = await supabaseClient
         .from('orders')
         .update({ 
           status: 'paid',
@@ -69,8 +71,13 @@ serve(async (req) => {
         })
         .eq('id', order.id);
 
+      if (orderError) {
+        console.error('更新订单状态失败:', orderError);
+        throw orderError;
+      }
+
       // 更新支付记录
-      await supabaseClient
+      const { error: paymentError } = await supabaseClient
         .from('payment_records')
         .update({ 
           status: 'success',
@@ -79,12 +86,17 @@ serve(async (req) => {
         })
         .eq('order_id', order.id);
 
+      if (paymentError) {
+        console.error('更新支付记录失败:', paymentError);
+        throw paymentError;
+      }
+
       console.log('成功处理支付回调，订单号:', paymentInfo.out_trade_no);
     } else {
       console.log(`支付未成功: ${paymentInfo.trade_state}`);
       
       // 更新订单状态
-      await supabaseClient
+      const { error: orderError } = await supabaseClient
         .from('orders')
         .update({ 
           status: 'payment_failed',
@@ -92,14 +104,24 @@ serve(async (req) => {
         })
         .eq('id', order.id);
 
+      if (orderError) {
+        console.error('更新订单状态失败:', orderError);
+        throw orderError;
+      }
+
       // 更新支付记录
-      await supabaseClient
+      const { error: paymentError } = await supabaseClient
         .from('payment_records')
         .update({ 
           status: 'failed',
           updated_at: new Date().toISOString()
         })
         .eq('order_id', order.id);
+
+      if (paymentError) {
+        console.error('更新支付记录失败:', paymentError);
+        throw paymentError;
+      }
     }
 
     // 返回成功响应
