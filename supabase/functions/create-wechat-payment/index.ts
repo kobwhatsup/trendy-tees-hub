@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-import { generateWechatPaySign } from '../_shared/wechat.ts'
+import { generateSignature, createPaymentRecord } from '../_shared/wechat.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,7 +10,7 @@ const corsHeaders = {
 serve(async (req) => {
   // 处理 CORS 预检请求
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
@@ -61,7 +61,25 @@ serve(async (req) => {
     const privateKey = Deno.env.get('WECHAT_PAY_PRIVATE_KEY') ?? ''
     const serialNo = Deno.env.get('WECHAT_PAY_CERT_SERIAL_NO') ?? ''
 
-    const signature = await generateWechatPaySign(method, url, timestamp, nonceStr, requestData, privateKey)
+    console.log('开始生成签名，参数:', {
+      method,
+      url,
+      timestamp,
+      nonceStr,
+      requestData: JSON.stringify(requestData),
+      privateKeyLength: privateKey.length
+    })
+
+    const signature = await generateSignature(
+      method,
+      url,
+      timestamp,
+      nonceStr,
+      JSON.stringify(requestData),
+      privateKey
+    )
+
+    console.log('签名生成成功')
 
     const authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${mchid}",nonce_str="${nonceStr}",timestamp="${timestamp}",serial_no="${serialNo}",signature="${signature}"`
 
