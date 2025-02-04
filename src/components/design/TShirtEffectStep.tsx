@@ -1,5 +1,5 @@
 import React from "react";
-import { TShirtColorPreview } from "../TShirtColorPreview";
+import { TShirtColorPreview } from "./TShirtColorPreview";
 
 interface DesignSettings {
   scale: number;
