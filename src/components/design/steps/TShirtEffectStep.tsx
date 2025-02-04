@@ -28,6 +28,8 @@ export const TShirtEffectStep = ({
   tshirtStyle,
   tshirtColor,
   tshirtGender,
+  onFrontPreviewCapture,
+  onBackPreviewCapture,
   onFrontSettingsChange,
   onBackSettingsChange
 }: TShirtEffectStepProps) => {
@@ -45,6 +47,7 @@ export const TShirtEffectStep = ({
             tshirtColor={tshirtColor}
             tshirtGender={tshirtGender}
             position="front"
+            onPreviewCapture={onFrontPreviewCapture}
             onSettingsChange={onFrontSettingsChange}
           />
         </div>
@@ -56,6 +59,7 @@ export const TShirtEffectStep = ({
             tshirtColor={tshirtColor}
             tshirtGender={tshirtGender}
             position="back"
+            onPreviewCapture={onBackPreviewCapture}
             onSettingsChange={onBackSettingsChange}
           />
         </div>

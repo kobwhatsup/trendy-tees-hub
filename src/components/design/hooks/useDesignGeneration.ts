@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { DESIGN_GUIDELINES } from "../constants/designGuidelines";
 
@@ -69,13 +69,9 @@ export const useDesignGeneration = () => {
         setBackDesignImage(response.data.imageUrl);
       }
       
-      // 显示成功提示
       toast({
-        title: `${position === "front" ? "正面" : "背面"}设计图已成功生成`,
-        description: "您可以继续调整设计效果",
-        variant: "default",
-        className: "bg-white border-primary text-foreground",
-        duration: 3000,
+        title: "设计生成成功",
+        description: `${position === "front" ? "正面" : "背面"}设计已生成`,
       });
 
     } catch (error) {
