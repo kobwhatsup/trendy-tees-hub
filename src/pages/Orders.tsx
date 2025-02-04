@@ -21,11 +21,11 @@ const Orders = () => {
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
-              size="icon"
               onClick={() => navigate(-1)}
-              className="hover:bg-muted"
+              className="hover:bg-muted flex items-center gap-1 pl-2 pr-4"
             >
               <ChevronLeft className="h-5 w-5" />
+              <span>返回</span>
             </Button>
             <h1 className="text-2xl font-bold">订单管理</h1>
           </div>
