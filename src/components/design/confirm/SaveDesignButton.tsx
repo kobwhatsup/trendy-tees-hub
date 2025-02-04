@@ -12,8 +12,6 @@ interface SaveDesignButtonProps {
   tshirtSize: string;
   frontDesignImage?: string;
   backDesignImage?: string;
-  frontPreviewImage?: string;
-  backPreviewImage?: string;
   frontDesignSettings?: any;
   backDesignSettings?: any;
 }
@@ -36,12 +34,14 @@ export const SaveDesignButton = ({
   const generatePreview = async (ref: HTMLDivElement | null) => {
     if (!ref) return null;
     try {
+      console.log('开始生成预览图...');
       const canvas = await html2canvas(ref, {
         useCORS: true,
         backgroundColor: null,
         scale: 2,
         logging: true,
       });
+      console.log('预览图生成成功');
       return canvas.toDataURL('image/png');
     } catch (error) {
       console.error('生成预览图失败:', error);
@@ -52,10 +52,17 @@ export const SaveDesignButton = ({
   const handleAddToCart = async () => {
     try {
       setIsGeneratingPreviews(true);
+      console.log('开始生成正面和背面预览图...');
       
       // 生成正面和背面预览图
       const frontPreviewImage = await generatePreview(frontPreviewRef.current);
       const backPreviewImage = await generatePreview(backPreviewRef.current);
+
+      if (!frontPreviewImage && !backPreviewImage) {
+        throw new Error('预览图生成失败');
+      }
+
+      console.log('预览图生成完成，准备添加到购物车');
 
       // 添加到购物车
       await addToCart({
@@ -86,7 +93,10 @@ export const SaveDesignButton = ({
             style={tshirtStyle}
             gender={tshirtGender}
             designImage={frontDesignImage || ''}
-            settings={frontDesignSettings}
+            settings={{
+              ...frontDesignSettings,
+              position: "front"
+            }}
           />
         </div>
         <div ref={backPreviewRef}>
@@ -95,7 +105,10 @@ export const SaveDesignButton = ({
             style={tshirtStyle}
             gender={tshirtGender}
             designImage={backDesignImage || ''}
-            settings={backDesignSettings}
+            settings={{
+              ...backDesignSettings,
+              position: "back"
+            }}
           />
         </div>
       </div>
