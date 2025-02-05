@@ -15,7 +15,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session) => {
       if (event === 'SIGNED_OUT') {
         // 清除所有认证相关的存储
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
