@@ -15,6 +15,7 @@ export const useDesignGeneration = () => {
         title: "请输入设计描述",
         description: "需要提供设计描述才能生成图案",
         variant: "destructive",
+        duration: 3000,
       });
       return;
     }
@@ -29,6 +30,7 @@ export const useDesignGeneration = () => {
           title: "会话错误",
           description: "请重新登录后再试",
           variant: "destructive",
+          duration: 3000,
         });
         return;
       }
@@ -38,6 +40,7 @@ export const useDesignGeneration = () => {
           title: "请先登录",
           description: "生成设计需要先登录账号",
           variant: "destructive",
+          duration: 3000,
         });
         return;
       }
@@ -67,6 +70,7 @@ export const useDesignGeneration = () => {
           title: "设计生成成功",
           description: "正面设计已生成完成",
           className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+          duration: 3000,
         });
       } else {
         setBackDesignImage(response.data.imageUrl);
@@ -74,6 +78,7 @@ export const useDesignGeneration = () => {
           title: "设计生成成功",
           description: "背面设计已生成完成",
           className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+          duration: 3000,
         });
       }
 
@@ -83,6 +88,7 @@ export const useDesignGeneration = () => {
         title: "生成失败",
         description: error.message || "生成设计时出现错误",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsGenerating(false);

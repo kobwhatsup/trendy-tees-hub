@@ -15,7 +15,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: string, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
@@ -34,6 +34,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           title: "登录成功",
           description: "欢迎回来！",
           className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+          duration: 3000,
         });
       } else if (event === 'SIGNED_UP') {
         onOpenChange(false);
@@ -42,6 +43,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           title: "注册成功",
           description: "欢迎加入！",
           className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+          duration: 3000,
         });
       }
     });

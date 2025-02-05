@@ -20,6 +20,7 @@ export const CartAnimation = () => {
       title: "添加成功",
       description: "商品已成功添加到购物车",
       className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+      duration: 3000,
     });
 
     window.dispatchEvent(new Event('cart-updated'));
