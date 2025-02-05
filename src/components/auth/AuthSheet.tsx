@@ -15,9 +15,8 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: string, session) => {
       if (event === 'SIGNED_OUT') {
-        // 清除所有认证相关的存储
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
         if (!session?.access_token) {
@@ -29,13 +28,12 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
           return;
         }
 
-        // 登录成功后关闭登录窗口
         onOpenChange(false);
         
         toast({
           title: "登录成功",
           description: "欢迎回来！",
-          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
         });
       } else if (event === 'SIGNED_UP') {
         onOpenChange(false);
@@ -43,7 +41,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
         toast({
           title: "注册成功",
           description: "欢迎加入！",
-          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
         });
       }
     });

@@ -21,7 +21,6 @@ export const useDesignGeneration = () => {
 
     setIsGenerating(true);
     try {
-      // 首先检查用户会话
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -62,19 +61,21 @@ export const useDesignGeneration = () => {
 
       console.log('获取到图片URL:', response.data.imageUrl);
 
-      // 更新状态
       if (position === "front") {
         setFrontDesignImage(response.data.imageUrl);
+        toast({
+          title: "设计生成成功",
+          description: "正面设计已生成完成",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+        });
       } else {
         setBackDesignImage(response.data.imageUrl);
+        toast({
+          title: "设计生成成功",
+          description: "背面设计已生成完成",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+        });
       }
-      
-      // 显示成功提示
-      toast({
-        title: "设计生成成功",
-        description: `${position === "front" ? "正面" : "背面"}设计已生成`,
-        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
-      });
 
     } catch (error) {
       console.error('生成设计失败:', error);
