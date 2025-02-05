@@ -4,7 +4,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -12,6 +12,8 @@ interface AuthSheetProps {
 }
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
+  const { toast } = useToast();
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
@@ -33,6 +35,15 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
         toast({
           title: "登录成功",
           description: "欢迎回来！",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+        });
+      } else if (event === 'SIGNED_UP') {
+        onOpenChange(false);
+        
+        toast({
+          title: "注册成功",
+          description: "欢迎加入！",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
         });
       }
     });
@@ -40,7 +51,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [onOpenChange]);
+  }, [onOpenChange, toast]);
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>

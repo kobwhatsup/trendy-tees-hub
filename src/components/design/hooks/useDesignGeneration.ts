@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { DESIGN_GUIDELINES } from "../constants/designGuidelines";
 
@@ -73,7 +73,7 @@ export const useDesignGeneration = () => {
       toast({
         title: "设计生成成功",
         description: `${position === "front" ? "正面" : "背面"}设计已生成`,
-        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
       });
 
     } catch (error) {
