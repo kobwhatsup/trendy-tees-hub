@@ -5,6 +5,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { AuthChangeEvent } from "@supabase/supabase-js";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session) => {
       if (event === 'SIGNED_OUT') {
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
@@ -24,6 +25,7 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
             title: "登录失败",
             description: "请重新尝试登录",
             variant: "destructive",
+            duration: 3000,
           });
           return;
         }
