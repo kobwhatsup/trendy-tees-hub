@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { DESIGN_GUIDELINES } from "../constants/designGuidelines";
 
@@ -15,13 +15,13 @@ export const useDesignGeneration = () => {
         title: "请输入设计描述",
         description: "需要提供设计描述才能生成图案",
         variant: "destructive",
-        duration: 3000,
       });
       return;
     }
 
     setIsGenerating(true);
     try {
+      // 首先检查用户会话
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -30,7 +30,6 @@ export const useDesignGeneration = () => {
           title: "会话错误",
           description: "请重新登录后再试",
           variant: "destructive",
-          duration: 3000,
         });
         return;
       }
@@ -40,7 +39,6 @@ export const useDesignGeneration = () => {
           title: "请先登录",
           description: "生成设计需要先登录账号",
           variant: "destructive",
-          duration: 3000,
         });
         return;
       }
@@ -64,23 +62,19 @@ export const useDesignGeneration = () => {
 
       console.log('获取到图片URL:', response.data.imageUrl);
 
+      // 更新状态
       if (position === "front") {
         setFrontDesignImage(response.data.imageUrl);
-        toast({
-          title: "设计生成成功",
-          description: "正面设计已生成完成",
-          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
-          duration: 3000,
-        });
       } else {
         setBackDesignImage(response.data.imageUrl);
-        toast({
-          title: "设计生成成功",
-          description: "背面设计已生成完成",
-          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
-          duration: 3000,
-        });
       }
+      
+      // 显示成功提示
+      toast({
+        title: "设计生成成功",
+        description: `${position === "front" ? "正面" : "背面"}设计已生成`,
+        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+      });
 
     } catch (error) {
       console.error('生成设计失败:', error);
@@ -88,7 +82,6 @@ export const useDesignGeneration = () => {
         title: "生成失败",
         description: error.message || "生成设计时出现错误",
         variant: "destructive",
-        duration: 3000,
       });
     } finally {
       setIsGenerating(false);
