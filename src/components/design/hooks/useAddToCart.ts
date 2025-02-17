@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { saveDesignToDatabase } from "../confirm/saveDesignToDatabase";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,7 +39,7 @@ export const useAddToCart = () => {
           description: "添加到购物车需要先登录账号",
           className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
         });
-        return false;
+        return;
       }
 
       await saveDesignToDatabase({
@@ -54,7 +54,11 @@ export const useAddToCart = () => {
         tshirtSize,
       });
 
-      return true;
+      toast({
+        title: "添加成功",
+        description: "设计已保存并添加到购物车",
+        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
+      });
 
     } catch (error) {
       console.error('添加到购物车失败:', error);
@@ -63,7 +67,6 @@ export const useAddToCart = () => {
         description: "添加到购物车时出现错误，请重试",
         className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
       });
-      return false;
     } finally {
       setIsAdding(false);
     }

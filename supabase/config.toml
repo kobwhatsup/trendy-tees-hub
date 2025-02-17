@@ -1,10 +1,1 @@
 project_id = "gfraqpwyfxmpzdllsfoc"
-
-[functions.create-wechat-payment]
-verify_jwt = true
-
-[functions.wechat-payment-callback]
-verify_jwt = false
-
-[functions.generate-tshirt-design]
-verify_jwt = true

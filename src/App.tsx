@@ -7,6 +7,7 @@ import Products from "./pages/Products";
 import Profile from "./pages/Profile";
 import Designs from "./pages/Designs";
 import MyDesigns from "./pages/MyDesigns";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/designs" element={<Designs />} />
         <Route path="/my-designs" element={<MyDesigns />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

@@ -26,7 +26,7 @@ export const SaveDesignButton = ({
   const { addToCart, isAdding } = useAddToCart();
 
   const handleAddToCart = async () => {
-    const result = await addToCart({
+    await addToCart({
       tshirtStyle,
       tshirtColor,
       tshirtGender,
@@ -36,11 +36,6 @@ export const SaveDesignButton = ({
       frontPreviewImage,
       backPreviewImage,
     });
-    
-    // 如果添加成功，触发动画和提示
-    if (result && window.showAddToCartAnimation) {
-      window.showAddToCartAnimation();
-    }
   };
 
   return (
