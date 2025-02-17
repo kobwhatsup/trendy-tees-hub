@@ -5,15 +5,21 @@ export const useCartCounter = () => {
   const [itemCount, setItemCount] = useState(0);
 
   const fetchCartItems = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: cartItems } = await supabase
-        .from('cart_items')
-        .select('quantity')
-        .eq('user_id', user.id);
-      
-      const totalQuantity = cartItems?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-      setItemCount(totalQuantity);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: cartItems, error } = await supabase
+          .from('cart_items')
+          .select('quantity')
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        const totalQuantity = cartItems?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+        setItemCount(totalQuantity);
+      }
+    } catch (error) {
+      console.error('获取购物车数量失败:', error);
     }
   };
 

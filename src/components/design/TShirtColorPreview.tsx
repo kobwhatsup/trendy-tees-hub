@@ -9,16 +9,6 @@ import {
 import { TShirtPreview } from "./TShirtPreview";
 import { DesignControls } from "./DesignControls";
 
-interface TShirtColorPreviewProps {
-  designImage: string;
-  tshirtStyle: string;
-  tshirtColor: string;
-  tshirtGender: string;
-  position?: "front" | "back";
-  onPreviewCapture?: (previewUrl: string) => void;
-  onSettingsChange?: (settings: DesignSettings) => void;
-}
-
 interface DesignSettings {
   scale: number;
   rotation: number;
@@ -26,6 +16,16 @@ interface DesignSettings {
   position: "front" | "back";
   offsetX: number;
   offsetY: number;
+}
+
+interface TShirtColorPreviewProps {
+  designImage: string;
+  tshirtStyle: string;
+  tshirtColor: string;
+  tshirtGender: string;
+  position?: "front" | "back";
+  onPreviewCapture?: (url: string) => void;
+  onSettingsChange?: (settings: DesignSettings) => void;
 }
 
 export const TShirtColorPreview = ({ 
@@ -62,6 +62,13 @@ export const TShirtColorPreview = ({
       const capturePreview = async () => {
         try {
           console.log(`开始捕获${position}面预览图...`);
+          console.log('当前T恤参数:', {
+            style: tshirtStyle,
+            color: tshirtColor,
+            gender: tshirtGender,
+            position: position
+          });
+          
           const canvas = await html2canvas(previewRef.current!, {
             useCORS: true,
             backgroundColor: null,
@@ -126,7 +133,7 @@ export const TShirtColorPreview = ({
       const timer = setTimeout(capturePreview, 1000);
       return () => clearTimeout(timer);
     }
-  }, [designImage, settings, onPreviewCapture, position]);
+  }, [designImage, settings, onPreviewCapture, position, tshirtStyle, tshirtColor, tshirtGender]);
 
   return (
     <Card>
@@ -144,10 +151,10 @@ export const TShirtColorPreview = ({
           <div ref={previewRef} className="relative bg-white rounded-lg overflow-hidden">
             <TShirtPreview 
               color={tshirtColor} 
-              designImage={designImage} 
-              settings={settings}
               style={tshirtStyle}
               gender={tshirtGender}
+              designImage={designImage} 
+              settings={settings}
             />
           </div>
         </div>

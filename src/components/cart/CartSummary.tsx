@@ -15,7 +15,7 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
 
   // 计算选中商品的总数量和总金额
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + ((item.price || 199) * item.quantity), 0);
+  const total = items.reduce((sum, item) => sum + (0.01 * item.quantity), 0);
 
   const handleCheckoutClick = () => {
     setShowOrderConfirm(true);
@@ -32,7 +32,7 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">总计</span>
-              <span className="font-medium text-lg">¥{total}</span>
+              <span className="font-medium text-lg">¥{total.toFixed(2)}</span>
             </div>
           </div>
           <Button 
