@@ -69,11 +69,9 @@ export const useDesignGeneration = () => {
         setBackDesignImage(response.data.imageUrl);
       }
       
-      // 显示成功提示
       toast({
         title: "设计生成成功",
         description: `${position === "front" ? "正面" : "背面"}设计已生成`,
-        className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none",
       });
 
     } catch (error) {

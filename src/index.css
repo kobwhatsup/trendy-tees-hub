@@ -42,7 +42,7 @@
 
 .hero-section {
   @apply relative overflow-hidden;
-  height: 65vh;
+  height: 50vh;
 }
 
 @keyframes cartItem {

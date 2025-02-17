@@ -42,7 +42,7 @@ export const FeaturedProducts = () => {
               </CardContent>
               <CardFooter className="flex flex-col items-start p-4">
                 <h3 className="font-semibold text-sm mb-2 line-clamp-2">{product.name}</h3>
-                <p className="text-red-500 font-medium">¥0.01</p>
+                <p className="text-red-500 font-medium">¥{product.price}</p>
               </CardFooter>
             </Card>
           ))}

@@ -25,7 +25,6 @@ export const CartContainer = ({
       toast({
         title: "请选择商品",
         description: "请至少选择一件商品进行结算",
-        variant: "destructive",
       });
       return;
     }
@@ -39,8 +38,8 @@ export const CartContainer = ({
   const selectedCartItems = cartItems.filter(item => selectedItems.has(item.id));
 
   return (
-    <div className="relative min-h-[calc(100vh-16rem)]">
-      <div className="space-y-4 pb-32">
+    <>
+      <div className="space-y-4">
         {cartItems.map((item) => (
           <CartItem 
             key={item.id}
@@ -59,6 +58,6 @@ export const CartContainer = ({
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
