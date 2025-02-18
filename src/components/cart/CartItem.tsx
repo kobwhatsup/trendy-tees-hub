@@ -35,7 +35,7 @@ export const CartItem = ({
   tshirt_size,
   quantity: initialQuantity,
   onUpdate,
-  price = 199,
+  price = 0.01,
   selected,
   onSelect
 }: CartItemProps) => {
