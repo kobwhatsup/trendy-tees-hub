@@ -4,7 +4,8 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { AuthError } from "@supabase/supabase-js";
 
 interface AuthSheetProps {
   isOpen: boolean;
@@ -12,10 +13,11 @@ interface AuthSheetProps {
 }
 
 export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
+  const { toast } = useToast();
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        // 清除所有认证相关的存储
         window?.localStorage?.removeItem('sb-gfraqpwyfxmpzdllsfoc-auth-token');
       } else if (event === 'SIGNED_IN') {
         if (!session?.access_token) {
@@ -23,24 +25,48 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
             title: "登录失败",
             description: "请重新尝试登录",
             variant: "destructive",
+            duration: 3000,
           });
           return;
         }
 
-        // 登录成功后关闭登录窗口
         onOpenChange(false);
         
         toast({
           title: "登录成功",
           description: "欢迎回来！",
+          className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+          duration: 3000,
         });
+      } else if (event === 'USER_UPDATED') {
+        if (session?.user.email_confirmed_at) {
+          toast({
+            title: "注册成功",
+            description: "欢迎加入！",
+            className: "bg-gradient-to-r from-[#0EA5E9] to-[#2563EB] text-white border-none animate-in slide-in-from-bottom-2",
+            duration: 3000,
+          });
+        }
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [onOpenChange]);
+  }, [onOpenChange, toast]);
+
+  const getErrorMessage = (error: AuthError) => {
+    switch (error.message) {
+      case 'Invalid login credentials':
+        return '邮箱或密码错误，请重新输入';
+      case 'User not found':
+        return '用户不存在，请先注册';
+      case 'Email not confirmed':
+        return '邮箱未验证，请先验证邮箱';
+      default:
+        return '登录失败，请稍后重试';
+    }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -97,6 +123,14 @@ export const AuthSheet = ({ isOpen, onOpenChange }: AuthSheetProps) => {
             }}
             theme="default"
             providers={[]}
+            onError={(error) => {
+              toast({
+                title: "错误提示",
+                description: getErrorMessage(error),
+                variant: "destructive",
+                duration: 3000,
+              });
+            }}
           />
         </div>
       </SheetContent>

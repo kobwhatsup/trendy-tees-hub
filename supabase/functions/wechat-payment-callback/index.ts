@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-import { createDecipheriv } from "https://deno.land/std@0.208.0/crypto/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,7 +30,7 @@ serve(async (req) => {
 
     // 验证通知数据
     const { resource } = callbackData;
-    if (!resource || !resource.ciphertext) {
+    if (!resource || !resource.ciphertext || !resource.nonce || !resource.associated_data) {
       console.error('回调数据格式错误');
       throw new Error('回调数据格式错误');
     }
@@ -44,11 +43,27 @@ serve(async (req) => {
     }
 
     try {
+      console.log('开始解密回调数据');
+      console.log('解密参数:', {
+        ciphertext: resource.ciphertext,
+        nonce: resource.nonce,
+        associated_data: resource.associated_data
+      });
+
       // 将 APIv3 密钥转换为 Buffer
       const key = new TextEncoder().encode(apiV3Key);
       
-      // 解密
-      const algorithm = { name: "AES-GCM", iv: new TextEncoder().encode(resource.nonce) };
+      // Base64 解码密文
+      const ciphertext = Uint8Array.from(atob(resource.ciphertext), c => c.charCodeAt(0));
+      
+      // 准备解密参数
+      const algorithm = { 
+        name: "AES-GCM", 
+        iv: new TextEncoder().encode(resource.nonce),
+        additionalData: resource.associated_data ? new TextEncoder().encode(resource.associated_data) : undefined
+      };
+
+      // 导入密钥
       const cryptoKey = await crypto.subtle.importKey(
         "raw",
         key,
@@ -57,7 +72,7 @@ serve(async (req) => {
         ["decrypt"]
       );
       
-      const ciphertext = new TextEncoder().encode(resource.ciphertext);
+      // 解密数据
       const decrypted = await crypto.subtle.decrypt(
         algorithm,
         cryptoKey,
@@ -68,6 +83,7 @@ serve(async (req) => {
       console.log('解密后的数据:', decryptedText);
       
       const paymentInfo = JSON.parse(decryptedText);
+      console.log('解析后的支付信息:', paymentInfo);
 
       // 根据商户订单号查询订单
       const { data: order, error: orderError } = await supabaseClient
